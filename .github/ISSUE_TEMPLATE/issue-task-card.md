@@ -1,13 +1,13 @@
 ---
 name: Issue Task Card
 about: Issue Task Card
-title: "[Client || Server] feature/function task"
+title: "[Client || Server] feat/function task"
 labels: ''
 assignees: ''
 
 ---
 
-> [Client || Server] feature/function task  
+> [Client || Server] Feat/function task  
 > ### Labels
 > - Estimated time: `E: 1h`
 > - Group : `Client`, `Server`  
@@ -19,7 +19,7 @@ assignees: ''
 
 ### ISSUE
 - Group:  `Client`, `Server`, `SR`
-- Type: `Feature`, `Hotfix`, `Delete`, `Bug`
+- Type: `Feat`, `Hotfix`, `Delete`, `Bug`
 - Detail: fix actions from client redux
 
 ### TODO
