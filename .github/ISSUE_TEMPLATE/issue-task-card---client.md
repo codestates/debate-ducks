@@ -1,7 +1,7 @@
 ---
 name: 'Issue Task Card : Client'
 about: Issue Task Card for Client
-title: "[Client] Feat/function task  "
+title: "[Client] feat/function task  "
 labels: client
 assignees: ''
 

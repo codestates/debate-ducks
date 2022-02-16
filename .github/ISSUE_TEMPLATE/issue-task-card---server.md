@@ -1,7 +1,7 @@
 ---
 name: 'Issue Task Card : Server'
 about: Issue Task Card for Server
-title: "[Server] Feat/function task  "
+title: "[Server] feat/function task  "
 labels: server
 assignees: ''
 
