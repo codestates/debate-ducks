@@ -1,11 +1,7 @@
 function App() {
   return (
     <div className="App">
-      <h1>Hello world!</h1>
-      <select>
-        <option>Hi</option>
-      </select>
-      <input type="date" />
+      <h1 className="text-3xl font-bold underline">Hello world!</h1>
     </div>
   );
 }
