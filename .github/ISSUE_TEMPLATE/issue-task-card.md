@@ -1,16 +1,16 @@
 ---
 name: Issue Task Card
 about: Issue Task Card
-title: "[Client || Server] feat/function task"
-labels: ''
+title: "[All] feat/function task"
+labels: client, server
 assignees: ''
 
 ---
 
-> [Client || Server] Feat/function task  
+> [All] Feat/function task  
 > ### Labels
 > - Estimated time: `E: 1h`
-> - Group : `Client`, `Server`  
+
 
 > - 프로젝트와 스프린트를 설정해주세요
 
@@ -18,9 +18,9 @@ assignees: ''
 > - Urgency: `High`, `Middle`, `Low`  
 
 ### ISSUE
-- Group:  `Client`, `Server`, `SR`
+- Group:  `Client`, `Server`
 - Type: `Feat`, `Hotfix`, `Delete`, `Bug`
-- Detail: fix actions from client redux
+- Detail: 
 
 ### TODO
 1. [ ] Job1
