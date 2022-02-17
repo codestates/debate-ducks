@@ -16,6 +16,9 @@ import Community from "./pages/Community";
 import CreateColumn from "./pages/CreateColumn";
 import EditColumn from "./pages/EditColumn";
 import Column from "./pages/Column";
+import BtnSample from "./components/btn/sample";
+import InputSample from "./components/input/sample";
+import ModalSample from "./components/modal/sample";
 
 function App() {
   return (
@@ -37,6 +40,10 @@ function App() {
         <Route path="/community/edit/:columnId" element={<EditColumn />} />
         <Route path="/community/column/:columnId" element={<Column />} />
         <Route path="*" element={<Error />} />
+
+        <Route path="/sample/btn" element={<BtnSample />} />
+        <Route path="/sample/input" element={<InputSample />} />
+        <Route path="/sample/modal" element={<ModalSample />} />
       </Routes>
       <Footer />
     </BrowserRouter>
