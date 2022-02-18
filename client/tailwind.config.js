@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       spacing: {
         // padding, margin, width, height
+        12: "0.75rem",
         18: "1.125rem",
         20: "1.25rem",
         24: "1.5rem",
@@ -18,7 +19,9 @@ module.exports = {
         80: "5rem",
         90: "5.625rem",
         112: "7rem",
+        140: "8.75rem",
         274: "17.125rem",
+        336: "21rem",
         370: "23.125rem",
         410: "25.625rem",
       },

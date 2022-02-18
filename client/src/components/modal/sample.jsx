@@ -1,27 +1,42 @@
 import AlarmModal from "./alarm";
 import ConfirmModal from "./confirm";
+import EditOrDeleteModal from "./editOrDelete";
 
 export default function Sample() {
-  const alarms = {
+  const content = {
     title: "Alarms",
-    alarms: [
+    data: [
       { type: "start", title: "Do Aliens Exist?", author: "user1234" },
-      { type: "debate", title: "Which Universe id Better?", author: "user5678" },
+      { type: "messsage", title: "Which Universe id Better?", author: "user5678" },
     ],
   };
 
-  const noalarms = {
+  const none = {
     title: "Alarms",
-    alarms: [],
+    data: [],
   };
 
-  const content = { title: "Delete Account", text: "Are you sure to delete your account?", left: "yes", right: "no" };
+  const confirmContent = {
+    title: "Delete Account",
+    text: "Are you sure to delete your account? Are you sure to delete your account?",
+    left: "yes",
+    right: "no",
+  };
+
+  function confirmCallback() {
+    alert("confirm");
+  }
+
+  function cancelCallback() {
+    alert("cancel");
+  }
 
   return (
     <>
-      <AlarmModal alarms={alarms} />
-      <AlarmModal alarms={noalarms} />
-      <ConfirmModal content={content}></ConfirmModal>
+      <AlarmModal content={content} />
+      <AlarmModal content={none} />
+      <ConfirmModal content={confirmContent} confirmCallback={confirmCallback} cancelCallback={cancelCallback}></ConfirmModal>
+      <EditOrDeleteModal />
     </>
   );
 }
