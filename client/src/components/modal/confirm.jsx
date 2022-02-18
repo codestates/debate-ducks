@@ -1,4 +1,4 @@
-import PropsTypes from "prop-types";
+import PropTypes from "prop-types";
 import { OrangeBtn } from "../btn/base";
 
 export default function ConfirmModal({ content, confirmCallback, cancelCallback }) {
@@ -25,4 +25,4 @@ export default function ConfirmModal({ content, confirmCallback, cancelCallback 
   );
 }
 
-ConfirmModal.propTypes = { content: PropsTypes.object, confirmCallback: PropsTypes.func, cancelCallback: PropsTypes.func };
+ConfirmModal.propTypes = { content: PropTypes.object, confirmCallback: PropTypes.func, cancelCallback: PropTypes.func };
