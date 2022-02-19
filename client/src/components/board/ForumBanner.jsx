@@ -11,13 +11,13 @@ export default function ForumBanner({ userId }) {
     <div>
       <h1>-Banner-</h1>
       <div>
-        {banner.data["mostExpected"].map((el) => (
-          <div key={el.columnId}>
+        {banner.data?.mostExpected?.map((mostExpected) => (
+          <div key={mostExpected.columnId}>
             <div>---</div>
-            <div>{el.userName}</div>
-            <div>{el.title}</div>
-            <div>{el.likey}</div>
-            <div>{el.likeyCnt}</div>
+            <div>{mostExpected.userName}</div>
+            <div>{mostExpected.title}</div>
+            <div>{mostExpected.likey}</div>
+            <div>{mostExpected.likeyCnt}</div>
           </div>
         ))}
       </div>
