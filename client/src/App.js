@@ -24,8 +24,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/signin" element={<SignIn />} />
-        <Route path="/userinfo/:userinfo" element={<UserInfo />} />
-        <Route path="/activities/:userId" element={<Activities />} />
+        <Route path="/userinfo/:username" element={<UserInfo />} />
+        <Route path="/activities/:username" element={<Activities />} />
         <Route path="/alarm" element={<Alarm />} />
         <Route path="/ranking" element={<Ranking />} />
         <Route path="/forum" element={<Forum />} />
