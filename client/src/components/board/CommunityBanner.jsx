@@ -2,9 +2,9 @@ import useGetAsync from "../../hooks/useGetAsync";
 import { getColumnRankings } from "../../redux/modules/columnRankings";
 
 import PropTypes from "prop-types";
-Banner.propTypes = { userId: PropTypes.number };
+CommunityBanner.propTypes = { userId: PropTypes.number };
 
-export default function Banner({ userId }) {
+export default function CommunityBanner({ userId }) {
   const banner = useGetAsync("columnRankings", getColumnRankings, { userId });
 
   return (

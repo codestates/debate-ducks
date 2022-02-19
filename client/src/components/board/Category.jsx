@@ -1,8 +1,7 @@
 import PropTypes from "prop-types";
-Category.propTypes = { categories: PropTypes.array, setCategories: PropTypes.func };
+Category.propTypes = { categories: PropTypes.array, setCategories: PropTypes.func, list: PropTypes.array };
 
-export default function Category({ categories, setCategories }) {
-  const listOfCategory = ["General", "Notice", "Discussion", "Essay"];
+export default function Category({ categories, setCategories, list }) {
   const clickCategory = (e) => {
     if (categories.includes(e.target.innerText)) {
       setCategories(categories.filter((category) => category !== e.target.innerText));
@@ -13,8 +12,7 @@ export default function Category({ categories, setCategories }) {
 
   return (
     <div>
-      <h1>-Category-</h1>
-      {listOfCategory.map((category, idx) => (
+      {list.map((category, idx) => (
         <button key={idx} onClick={clickCategory}>
           {category}
         </button>
