@@ -5,13 +5,13 @@ import useGetAsync from "../hooks/useGetAsync";
 import useInput from "../hooks/useInput";
 import useSelect from "../hooks/useSelect";
 import checkPageValid from "../utils/checkPageValid";
-import Banner from "../components/community/Banner";
-import Category from "../components/community/Category";
-import Like from "../components/community/Like";
-import Search from "../components/community/Search";
-import Sort from "../components/community/Sort";
-import Columns from "../components/community/Columns";
-import Page from "../components/community/Page";
+import CommunityBanner from "../components/board/CommunityBanner";
+import Category from "../components/board/Category";
+import Like from "../components/board/Like";
+import Search from "../components/board/Search";
+import Sort from "../components/board/Sort";
+import Columns from "../components/board/Columns";
+import Page from "../components/board/Page";
 
 export default function Community() {
   //! 임시 변수
@@ -20,6 +20,7 @@ export default function Community() {
 
   // Category
   const [categories, setCategories] = useState([]);
+  const categoryList = ["General", "Notice", "Discussion", "Essay"];
   // Like
   const [isLiked, setIsLiked] = useState(false);
   // Search
@@ -37,11 +38,11 @@ export default function Community() {
   return (
     <div>
       <h1>-Community-</h1>
-      <Banner userId={userId} />
-      <Category categories={categories} setCategories={setCategories} />
+      <CommunityBanner userId={userId} />
+      <Category categories={categories} setCategories={setCategories} list={categoryList} />
       <Like isLiked={isLiked} setIsLiked={setIsLiked} />
       <div>
-        <Link to="/create">CreateBtn</Link>
+        <Link to="/community/create">CreateBtn</Link>
       </div>
       <Search search={search} />
       <Sort sort={sort} options={options} />
