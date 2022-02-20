@@ -1,8 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { OrangeBtn as SignInBtn } from "./btn/base";
+import UserInfoModal from "./modal/userInfo";
+import { HiBell } from "react-icons/hi";
+
 export default function Header() {
   const listItemStyle = "mx-20 px-12 py-12 cursor-pointer";
   const navigate = useNavigate();
+  let isLogin = true;
+  const userInfo = {
+    username: "user1234",
+    ranking: "123",
+    points: "123,000",
+    debates: "123",
+    winrate: "12%",
+    votes: "123",
+  };
+
   return (
     <div className="flex justify-between items-center h-60 px-20 border-b border-solid border-ducks-gray-eee">
       <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
@@ -24,13 +37,22 @@ export default function Header() {
             support
           </li>
         </ul>
-        <SignInBtn
-          callback={() => {
-            navigate("/signin");
-          }}
-        >
-          sign in
-        </SignInBtn>
+        {isLogin ? (
+          <div className="flex items-center">
+            <HiBell className="text-24 mr-20 text-ducks-orange-ff9425" />
+            <div className="rounded-full w-32 h-32 bg-ducks-orange-ff9425 relative">
+              <UserInfoModal content={userInfo}></UserInfoModal>
+            </div>
+          </div>
+        ) : (
+          <SignInBtn
+            callback={() => {
+              navigate("/signin");
+            }}
+          >
+            sign in
+          </SignInBtn>
+        )}
       </div>
     </div>
   );
