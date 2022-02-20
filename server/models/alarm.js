@@ -26,18 +26,18 @@ module.exports = (sequelize, DataTypes) => {
       user_id: DataTypes.INTEGER,
       debate_id: DataTypes.INTEGER,
       created_at: {
-        tyoe: DataTypes.DATEONLY,
+        type: DataTypes.DATEONLY,
         defaultValue: DataTypes.NOW,
       },
       updated_at: {
-        tyoe: DataTypes.DATEONLY,
+        type: DataTypes.DATEONLY,
         defaultValue: DataTypes.NOW,
       },
     },
     {
       sequelize,
       timestamps: false,
-      modelName: "Alarm",
+      modelName: "alarm",
     },
   );
   return Alarm;

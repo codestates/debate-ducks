@@ -31,18 +31,18 @@ module.exports = (sequelize, DataTypes) => {
       column_id: DataTypes.INTEGER,
       debate_id: DataTypes.INTEGER,
       created_at: {
-        tyoe: DataTypes.DATEONLY,
+        type: DataTypes.DATEONLY,
         defaultValue: DataTypes.NOW,
       },
       updated_at: {
-        tyoe: DataTypes.DATEONLY,
+        type: DataTypes.DATEONLY,
         defaultValue: DataTypes.NOW,
       },
     },
     {
       sequelize,
       timestamps: false,
-      modelName: "Opinion",
+      modelName: "opinion",
     },
   );
   return Opinion;

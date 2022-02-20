@@ -54,14 +54,14 @@ module.exports = (sequelize, DataTypes) => {
       point: DataTypes.INTEGER,
       profile: DataTypes.STRING,
       created_at: {
-        tyoe: DataTypes.DATEONLY,
+        type: DataTypes.DATEONLY,
         defaultValue: DataTypes.NOW,
       },
     },
     {
       sequelize,
       timestamps: false,
-      modelName: "User",
+      modelName: "user",
     },
   );
   return User;
