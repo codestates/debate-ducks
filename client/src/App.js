@@ -4,8 +4,8 @@ import Footer from "./components/Footer";
 import Main from "./pages/Main";
 import Error from "./pages/Error";
 import SignIn from "./pages/SignIn";
-import MyPage from "./pages/MyPage";
-import MyHistory from "./pages/MyHistory";
+import UserInfo from "./pages/UserInfo";
+import Activities from "./pages/Activities";
 import Alarm from "./pages/Alarm";
 import Ranking from "./pages/Ranking";
 import Forum from "./pages/Forum";
@@ -24,8 +24,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/signin" element={<SignIn />} />
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/mypage/myhistory" element={<MyHistory />} />
+        <Route path="/userinfo/:username" element={<UserInfo />} />
+        <Route path="/activities/:username" element={<Activities />} />
         <Route path="/alarm" element={<Alarm />} />
         <Route path="/ranking" element={<Ranking />} />
         <Route path="/forum" element={<Forum />} />
