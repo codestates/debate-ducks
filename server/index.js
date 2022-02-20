@@ -19,7 +19,6 @@ app.use(cors());
 app.use("/", indexRouter);
 
 // Socket
-//! http로 임시 설정(https로 변경 및 cors 상세 설정 필요)
 const http = require("http");
 const server = http.createServer(app);
 const { Server } = require("socket.io");
