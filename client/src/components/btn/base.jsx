@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-const style = "box-border rounded-16 h-32 mx-2 px-24 capitalize text-14 font-poppins font-medium duration-200 ease-linear";
+const style = "box-border rounded-16 h-32 px-24 capitalize text-14 font-poppins font-medium duration-200 ease-linear";
 
 function BlueBtn({ children, callback }) {
   function handleCallback() {
