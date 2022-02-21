@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       spacing: {
         // padding, margin, width, height
+        12: "0.75rem",
         18: "1.125rem",
         20: "1.25rem",
         24: "1.5rem",
@@ -12,13 +13,16 @@ module.exports = {
         32: "2rem",
         36: "2.25rem",
         40: "2.5rem",
+        46: "2.875rem",
         48: "3rem",
         60: "3.75rem",
         70: "4.375rem",
         80: "5rem",
         90: "5.625rem",
         112: "7rem",
+        140: "8.75rem",
         274: "17.125rem",
+        336: "21rem",
         370: "23.125rem",
         410: "25.625rem",
       },
@@ -31,7 +35,7 @@ module.exports = {
         35: "2.188rem",
       },
       fontFamily: {
-        poppins: '"Poppins"',
+        poppins: ["Poppins"],
       },
       fontSize: {
         12: "0.75rem",
@@ -55,6 +59,9 @@ module.exports = {
           },
           black: "#000000",
         },
+      },
+      backgroundImage: {
+        logo: "url('../public/images/Logo1.png')",
       },
     },
   },
