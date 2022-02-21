@@ -12,9 +12,9 @@ function OrangeSelect({ attributes, options }) {
   );
 }
 
-function GraySelect({ options }) {
+function GraySelect({ attributes, options }) {
   return (
-    <select className={`${style} border-ducks-gray-666 text-ducks-gray-666`}>
+    <select {...attributes} className={`${style} border-ducks-gray-666 text-ducks-gray-666`}>
       {options.map((option, index) => {
         return <option key={index}>{option}</option>;
       })}
