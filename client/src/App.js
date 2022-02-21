@@ -12,6 +12,7 @@ import Forum from "./pages/Forum";
 import CreateDebate from "./pages/CreateDebate";
 import EditDebate from "./pages/EditDebate";
 import Debate from "./pages/Debate";
+import DebateRoom from "./pages/DebateRoom";
 import Community from "./pages/Community";
 import CreateColumn from "./pages/CreateColumn";
 import EditColumn from "./pages/EditColumn";
@@ -32,6 +33,7 @@ function App() {
         <Route path="/forum/create" element={<CreateDebate />} />
         <Route path="/forum/edit/:debateId" element={<EditDebate />} />
         <Route path="/forum/debate/:debateId" element={<Debate />} />
+        <Route path="/forum/debateroom/:debateId" element={<DebateRoom />} />
         <Route path="/community" element={<Community />} />
         <Route path="/community/create" element={<CreateColumn />} />
         <Route path="/community/edit/:columnId" element={<EditColumn />} />
