@@ -26,5 +26,12 @@ export default function useInput(initialInputValue = "", initialValue = "", inpu
     }
   };
 
-  return { attribute: { value: input, onChange, onKeyDown }, state, setState, setInput, isValid };
+  const onClick = () => {
+    if (typeof validator === "function") {
+      setIsValid(validator(input));
+    }
+    if (isValid) setState(input);
+  };
+
+  return { attribute: { value: input, onChange, onKeyDown }, state, setState, setInput, onClick, isValid };
 }
