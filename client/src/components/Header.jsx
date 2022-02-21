@@ -6,7 +6,7 @@ import { HiBell } from "react-icons/hi";
 export default function Header() {
   const listItemStyle = "mx-20 px-12 py-12 cursor-pointer";
   const navigate = useNavigate();
-  let isLogin = true;
+  let isLogin = false;
   const userInfo = {
     username: "user1234",
     ranking: "123",
