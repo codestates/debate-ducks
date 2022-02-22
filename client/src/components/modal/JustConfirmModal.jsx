@@ -12,7 +12,7 @@ export default function JustConfirmModal({ content, callback }) {
       <p className="mb-20 text-ducks-gray-666 text-14">{content.text}</p>
       <div className="flex justify-center items-center">
         <div className="w-max flex justify-between">
-          <OrangeBtn callback={handle}>{content.btn}</OrangeBtn>
+          <OrangeBtn text={content.btn} callback={handle} />
         </div>
       </div>
     </div>
