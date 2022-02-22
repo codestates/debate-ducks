@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { OrangeBtn as SignInBtn } from "./btn/base";
-import UserInfoModal from "./modal/userInfo";
+import { OrangeBtn as SignInBtn } from "./btn/BaseBtn";
+import UserInfoModal from "./modal/UserInfoModal";
 import { HiBell } from "react-icons/hi";
 
 export default function Header() {
