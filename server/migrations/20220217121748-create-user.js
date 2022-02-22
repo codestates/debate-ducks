@@ -20,6 +20,9 @@ module.exports = {
       profile: {
         type: Sequelize.STRING,
       },
+      sign_method: {
+        type: Sequelize.STRING,
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,

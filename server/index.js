@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 const indexRouter = require("./routes/index");
+const oauthRouter = require("./routes/oauth");
 
 app.use(helmet());
 app.use(express.json());
@@ -17,6 +18,7 @@ app.use(compression());
 app.use(cors());
 
 app.use("/", indexRouter);
+app.use("/oauth", oauthRouter);
 
 // Socket
 const http = require("http");
@@ -36,6 +38,15 @@ io.on("connection", (socket) => {
   socket.on("nice_to_meet_yot", (msg) => {
     console.log(msg);
   });
+});
+
+app.use((req, res, next) => {
+  res.status(404).send("Sorry cant find that!");
+});
+
+app.use(function (err, req, res, next) {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
 });
 
 server.listen(port, () => console.log(`Listening on http://localhost:${port}`));
