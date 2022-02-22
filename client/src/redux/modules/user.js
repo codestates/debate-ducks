@@ -7,15 +7,16 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const userSlice = createSlice({
   name: "user",
-  initialState: { id: null, email: null, password: null, username: null },
+  initialState: { id: null, email: null, name: null, profile: null, sign_method: null },
   reducers: {
     setUserInfo: (state, action) => {
       state.id = action.payload.id;
       state.email = action.payload.email;
-      state.password = action.payload.password;
-      state.username = action.payload.username;
+      state.name = action.payload.name;
+      state.profile = action.payload.profile;
+      state.sign_method = action.payload.sign_method;
     },
-    //removeUserInfo?
+    //removeUserInfo? 그냥 db에서 삭제.
   },
 });
 
