@@ -27,16 +27,42 @@ const { Server } = require("socket.io");
 const io = new Server(server, { cors: { origin: "*" } });
 
 io.on("connection", (socket) => {
-  console.log("A user connected");
-
-  socket.on("disconnecting", () => {
-    console.log("A user disconnected");
+  // Common
+  socket.on("join", (debateId, userName, done) => {
+    const userCount = io.sockets.adapter.rooms.get(debateId)?.size;
+    if (userCount >= 2) {
+      done("exceed");
+    } else {
+      console.log("join", socket.rooms);
+      socket.join(debateId);
+      socket.userName = userName;
+      socket.to(debateId).emit("welcome", userName);
+      done("join");
+    }
   });
 
-  socket.emit("welcome", "Welcome");
+  socket.on("disconnecting", () => {
+    socket.rooms.forEach((room) => {
+      socket.to(room).emit("leave");
+    });
+  });
 
-  socket.on("nice_to_meet_yot", (msg) => {
-    console.log(msg);
+  // Chat
+  socket.on("chat", (debateId, chat, authorName) => {
+    socket.to(debateId).emit("chat", chat, authorName);
+  });
+
+  // Video
+  socket.on("offer", (debateId, webRTCOffer) => {
+    socket.to(debateId).emit("offer", webRTCOffer);
+  });
+
+  socket.on("answer", (debateId, webRTCAnswer) => {
+    socket.to(debateId).emit("answer", webRTCAnswer);
+  });
+
+  socket.on("ice-candidate", (debateId, iceCandidate) => {
+    socket.to(debateId).emit("ice-candidate", iceCandidate);
   });
 });
 

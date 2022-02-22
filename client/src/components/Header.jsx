@@ -16,6 +16,8 @@ export default function Header() {
     votes: "123",
   };
 
+  if (/^\/forum\/debateroom\/\d$/i.test(window.location.pathname)) return null;
+
   return (
     <div className="flex justify-between items-center h-60 px-20 border-b border-solid border-ducks-gray-eee">
       <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
