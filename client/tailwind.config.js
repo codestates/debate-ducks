@@ -63,6 +63,10 @@ module.exports = {
       },
       backgroundImage: {
         logo: "url('../public/images/Logo1.png')",
+        orangeduck: "url('../public/images/profile-theme-orange.png')",
+        greenduck: "url('../public/images/profile-theme-green.png')",
+        strawduck: "url('../public/images/profile-theme-straw.png')",
+        grayduck: "url('../public/images/profile-theme-gray.png')",
       },
     },
   },
