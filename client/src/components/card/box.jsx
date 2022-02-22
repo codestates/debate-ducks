@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { RankItem, LikedItem, VotedItem } from "./item.jsx";
+import { RankItem, LikedItem, VotedItem } from "./Item.jsx";
 
 RankBox.propTypes = { title: PropTypes.string, content: PropTypes.array, type: PropTypes.string };
 LikedBox.propTypes = { title: PropTypes.string, content: PropTypes.array };

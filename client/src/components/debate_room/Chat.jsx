@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import useInput from "../../hooks/useInput";
 
 import PropTypes from "prop-types";
-import JustConfirmModal from "../modal/JustConfirm";
-import ConfirmModal from "../modal/confirm";
+import JustConfirmModal from "../modal/JustConfirmModal";
+import ConfirmModal from "../modal/ConfirmModal";
 Chat.propTypes = { socket: PropTypes.object, debateId: PropTypes.string };
 
 export default function Chat({ socket, debateId }) {

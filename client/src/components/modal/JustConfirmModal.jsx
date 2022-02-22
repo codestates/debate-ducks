@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { OrangeBtn } from "../btn/base";
+import { OrangeBtn } from "../btn/BaseBtn";
 
 export default function JustConfirmModal({ content, callback }) {
   function handle() {

@@ -1,14 +1,13 @@
 import PropTypes from "prop-types";
-import { OrangeBtn } from "../btn/base";
+import { OrangeBtn, BlueBtn } from "../btn/BaseBtn";
 
 export default function ConfirmModal({ content, confirmCallback, cancelCallback }) {
-  // 함수 추가해서 동작하는 부분 추가
-  function handleConfirm() {
-    confirmCallback();
-  }
-
   function handleCancel() {
     cancelCallback();
+  }
+
+  function handleConfirm() {
+    confirmCallback();
   }
 
   return (
@@ -18,7 +17,7 @@ export default function ConfirmModal({ content, confirmCallback, cancelCallback 
       <div className="flex justify-center items-center">
         <div className="w-max flex justify-between">
           <OrangeBtn callback={handleCancel}>{content.left}</OrangeBtn>
-          <OrangeBtn callback={handleConfirm}>{content.right}</OrangeBtn>
+          <BlueBtn callback={handleConfirm}>{content.right}</BlueBtn>
         </div>
       </div>
     </div>
