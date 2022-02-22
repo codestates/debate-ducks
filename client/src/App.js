@@ -4,6 +4,7 @@ import Footer from "./components/Footer";
 import Main from "./pages/Main";
 import Error from "./pages/Error";
 import SignIn from "./pages/SignIn";
+import Oauth from "./pages/Oauth";
 import UserInfo from "./pages/UserInfo";
 import Activities from "./pages/Activities";
 import Alarm from "./pages/Alarm";
@@ -24,6 +25,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/oauth/kakao" element={<Oauth />} />
         <Route path="/userinfo/:username" element={<UserInfo />} />
         <Route path="/activities/:username" element={<Activities />} />
         <Route path="/alarm" element={<Alarm />} />
