@@ -48,12 +48,11 @@ export default function Header() {
           </div>
         ) : (
           <SignInBtn
+            text="sign in"
             callback={() => {
               navigate("/signin");
             }}
-          >
-            sign in
-          </SignInBtn>
+          />
         )}
       </div>
     </div>
