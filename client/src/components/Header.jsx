@@ -1,9 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { OrangeBtn as SignInBtn } from "./btn/BaseBtn";
 import UserInfoModal from "./modal/UserInfoModal";
 import { HiBell } from "react-icons/hi";
 
 export default function Header() {
+  const location = useLocation();
+
   const listItemStyle = "mx-20 px-12 py-12 cursor-pointer";
   const navigate = useNavigate();
   let isLogin = false;
@@ -16,9 +18,7 @@ export default function Header() {
     votes: "123",
   };
 
-  if (/^\/forum\/debateroom\/\d$/i.test(window.location.pathname)) return null;
-
-  return (
+  return /^\/forum\/debateroom\/\d$/i.test(location.pathname) ? null : (
     <div className="flex justify-between items-center h-60 px-20 border-b border-solid border-ducks-gray-eee">
       <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
         <div className="bg-logo bg-cover w-46 h-40 mr-12"></div>
@@ -48,12 +48,11 @@ export default function Header() {
           </div>
         ) : (
           <SignInBtn
+            text="sign in"
             callback={() => {
               navigate("/signin");
             }}
-          >
-            sign in
-          </SignInBtn>
+          />
         )}
       </div>
     </div>
