@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 router.post("/kakao", async (req, res) => {
   try {
     const authorizationCode = req.query.code;
-    const KAKAO_CLIENT_ID = process.env.KAKAO_REST_API_KEY;
+    const KAKAO_CLIENT_ID = process.env.KAKAO_CLIENT_ID;
     const KAKAO_REDIRECT_URI = process.env.KAKAO_REDIRECT_URI;
     // const KAKAO_CLIENT_SECRET = process.env.KAKAO_CLIENT_SECRET;
     const grantType = "authorization_code";
