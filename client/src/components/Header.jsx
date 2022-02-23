@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { OrangeBtn as SignInBtn } from "./btn/base";
-import UserInfoModal from "./modal/userInfo";
+import { OrangeBtn as SignInBtn } from "./btn/BaseBtn";
+import UserInfoModal from "./modal/UserInfoModal";
 import { HiBell } from "react-icons/hi";
 
 export default function Header() {
@@ -15,6 +15,8 @@ export default function Header() {
     winrate: "12%",
     votes: "123",
   };
+
+  if (/^\/forum\/debateroom\/\d$/i.test(window.location.pathname)) return null;
 
   return (
     <div className="flex justify-between items-center h-60 px-20 border-b border-solid border-ducks-gray-eee">
@@ -46,12 +48,11 @@ export default function Header() {
           </div>
         ) : (
           <SignInBtn
+            text="sign in"
             callback={() => {
               navigate("/signin");
             }}
-          >
-            sign in
-          </SignInBtn>
+          />
         )}
       </div>
     </div>

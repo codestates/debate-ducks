@@ -5,10 +5,10 @@ export default function useInput(initialInputValue = "", initialValue = "", inpu
   const [state, setState] = useState(initialValue);
   const [isValid, setIsValid] = useState(true);
 
-  const onChange = (e) => {
+  const onChange = (ev) => {
     const {
       target: { value },
-    } = e;
+    } = ev;
     let isInputValid = true;
     if (typeof inputValidator === "function") {
       isInputValid = inputValidator(value);
@@ -17,8 +17,8 @@ export default function useInput(initialInputValue = "", initialValue = "", inpu
     if (isInputValid) setInput(value);
   };
 
-  const onKeyDown = (e) => {
-    if (e.key === "Enter") {
+  const onKeyDown = (ev) => {
+    if (ev.key === "Enter") {
       if (typeof validator === "function") {
         setIsValid(validator(input));
       }
@@ -33,5 +33,5 @@ export default function useInput(initialInputValue = "", initialValue = "", inpu
     if (isValid) setState(input);
   };
 
-  return { attribute: { value: input, onChange, onKeyDown }, state, setState, setInput, onClick, isValid };
+  return { attribute: { value: input, onChange, onKeyDown }, state, setState, input, setInput, onClick, isValid };
 }

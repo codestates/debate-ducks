@@ -51,8 +51,12 @@ module.exports = (sequelize, DataTypes) => {
     {
       email: DataTypes.STRING,
       name: DataTypes.STRING,
-      point: DataTypes.INTEGER,
+      point: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
       profile: DataTypes.STRING,
+      sign_method: DataTypes.STRING,
       created_at: {
         type: DataTypes.DATEONLY,
         defaultValue: DataTypes.NOW,

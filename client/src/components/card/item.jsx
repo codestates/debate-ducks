@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { Likey, Voted } from "./likeyOrVoted";
+import { Likey, Voted } from "./LikeyOrVoted";
 RankItem.propTypes = { number: PropTypes.number, item: PropTypes.object, type: PropTypes.string };
 LikedItem.propTypes = { item: PropTypes.object };
 VotedItem.propTypes = { item: PropTypes.object };

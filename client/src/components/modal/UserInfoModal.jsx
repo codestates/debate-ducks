@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { OrangeBtn as UserInfo } from "../btn/base";
-import { BlueBtn as SignOut } from "../btn/base";
+import { OrangeBtn as UserInfo } from "../btn/BaseBtn";
+import { BlueBtn as SignOut } from "../btn/BaseBtn";
 export default function UserInfoModal({ content }) {
   // axios.get('/use/modal/:userId')
 
