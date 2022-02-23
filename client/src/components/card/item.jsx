@@ -4,11 +4,27 @@ RankItem.propTypes = { number: PropTypes.number, item: PropTypes.object, type: P
 LikedItem.propTypes = { item: PropTypes.object };
 VotedItem.propTypes = { item: PropTypes.object };
 
+// const defaultProfile = ({ color }) => {
+//   return <div className={`w-30 h-30 mx-20 bg-profile-theme-${color} bg-cover rounded-full`}></div>;
+// };
+
 export function RankItem({ number, item, type }) {
   return (
     <div className="text-12 w-320 p-12 flex items-center border-b border-solid border-ducks-gray-eee">
       <div className="w-24 text-center">{number + 1}</div>
-      <img className="w-30 h-30 mx-20 object-cover rounded-full" src={item.profile} alt={`profile of ${item.userName}`} />
+      {item.profile.color ? (
+        item.profile.color === "orange" ? (
+          <div className="w-30 h-30 mx-20 bg-orangeduck bg-cover rounded-full"></div>
+        ) : item.profile.color === "green" ? (
+          <div className="w-30 h-30 mx-20 bg-greenduck bg-cover rounded-full"></div>
+        ) : item.profile.color === "straw" ? (
+          <div className="w-30 h-30 mx-20 bg-strawduck bg-cover rounded-full"></div>
+        ) : (
+          <div className="w-30 h-30 mx-20 bg-grayduck bg-cover rounded-full"></div>
+        )
+      ) : (
+        <img className="w-30 h-30 mx-20 object-cover rounded-full" src={item.profile} alt={`profile of ${item.userName}`} />
+      )}
       <div>
         <div className="mb-1">{item.userName}</div>
         <div>

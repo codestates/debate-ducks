@@ -22,6 +22,7 @@ module.exports = {
         112: "7rem",
         140: "8.75rem",
         274: "17.125rem",
+        304: "19rem",
         320: "20rem",
         336: "21rem",
         370: "23.125rem",
@@ -63,6 +64,10 @@ module.exports = {
       },
       backgroundImage: {
         logo: "url('../public/images/Logo1.png')",
+        orangeduck: "url('../public/images/profile-theme-orange.png')",
+        greenduck: "url('../public/images/profile-theme-green.png')",
+        strawduck: "url('../public/images/profile-theme-straw.png')",
+        grayduck: "url('../public/images/profile-theme-gray.png')",
       },
     },
   },
