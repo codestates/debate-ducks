@@ -16,8 +16,8 @@ export default function ConfirmModal({ content, cancelCallback, confirmCallback 
       <p className="mb-20 text-ducks-gray-666 text-14">{content.text}</p>
       <div className="flex justify-center items-center">
         <div className="w-max flex justify-between">
-          <OrangeBtn text={content.left} callback={handleCancel} />
-          <BlueBtn text={content.right} callback={handleConfirm} />
+          <BlueBtn text={content.left} callback={handleCancel} />
+          <OrangeBtn text={content.right} callback={handleConfirm} />
         </div>
       </div>
     </div>

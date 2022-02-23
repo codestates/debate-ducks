@@ -6,7 +6,7 @@ export default function Sort({ sort, options }) {
   return (
     <div>
       <h1>-Sort-</h1>
-      <OrangeSelect attributes={sort.attributes} options={options} />
+      <OrangeSelect attribute={sort.attribute} options={options} />
     </div>
   );
 }
