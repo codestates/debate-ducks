@@ -1,17 +1,18 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import useInput from "../../hooks/useInput";
+import { onOffModal } from "../../redux/modules/exceedModal";
+import ConfirmModal from "../modal/ConfirmModal";
 
 import PropTypes from "prop-types";
-import JustConfirmModal from "../modal/JustConfirmModal";
-import ConfirmModal from "../modal/ConfirmModal";
 Chat.propTypes = { socket: PropTypes.object, debateId: PropTypes.string };
 
 export default function Chat({ socket, debateId }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [chats, setChats] = useState([]);
-  const [isExceedModalOpen, setIsExceedModalOpen] = useState(false);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
 
   //! 임시 변수
@@ -45,7 +46,9 @@ export default function Chat({ socket, debateId }) {
     socket.emit("join", debateId, userName, (status) => {
       switch (status) {
         case "exceed":
-          setIsExceedModalOpen(true);
+          socket.disconnect();
+          dispatch(onOffModal(true));
+          navigate(`/forum/debate/${debateId}`);
           break;
         case "join":
           console.log("temp: join");
@@ -79,7 +82,6 @@ export default function Chat({ socket, debateId }) {
   return (
     <div>
       <h1>Chat</h1>
-      {isExceedModalOpen ? <JustConfirmModal content={{ title: "퇴장", text: "인원이 다 찼습니다.", btn: "확인" }} callback={leaveRoom} /> : null}
       {isLeaveModalOpen ? (
         <ConfirmModal content={{ title: "퇴장", text: "상대방이 퇴장하였습니다. 당신도 떠나겠습니까?", left: "남는다", right: "떠난다" }} cancelCallback={onStayBtn} confirmCallback={onLeaveBtn} />
       ) : null}
