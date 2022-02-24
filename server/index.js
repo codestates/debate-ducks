@@ -21,8 +21,13 @@ app.use("/", indexRouter);
 app.use("/oauth", oauthRouter);
 
 // Socket
-const http = require("http");
-const server = http.createServer(app);
+const fs = require("fs");
+const options = {
+  key: fs.readFileSync(__dirname + "/key.pem", "utf-8"),
+  cert: fs.readFileSync(__dirname + "/cert.pem", "utf-8"),
+};
+const https = require("https");
+const server = https.createServer(options, app);
 const { Server } = require("socket.io");
 const io = new Server(server, { cors: { origin: "*" } });
 
@@ -33,9 +38,7 @@ io.on("connection", (socket) => {
     if (userCount >= 2) {
       done("exceed");
     } else {
-      console.log("join", socket.rooms);
       socket.join(debateId);
-      socket.userName = userName;
       socket.to(debateId).emit("welcome", userName);
       done("join");
     }
@@ -75,4 +78,4 @@ app.use(function (err, req, res, next) {
   res.status(500).send("Something broke!");
 });
 
-server.listen(port, () => console.log(`Listening on http://localhost:${port}`));
+server.listen(port, () => console.log(`Listening on https://localhost:${port}`));
