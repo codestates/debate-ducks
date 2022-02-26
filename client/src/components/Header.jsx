@@ -18,7 +18,7 @@ export default function Header() {
     votes: "123",
   };
 
-  return /^\/forum\/debateroom\/\d$/i.test(location.pathname) ? null : (
+  return /^\/forum\/debateroom\/\d/i.test(location.pathname) ? null : (
     <div className="flex justify-between items-center h-60 px-20 border-b border-solid border-ducks-gray-eee">
       <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
         <div className="bg-logo bg-cover w-46 h-40 mr-12"></div>
