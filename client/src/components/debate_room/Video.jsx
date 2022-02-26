@@ -1,143 +1,149 @@
-import Peer from "simple-peer";
-import { useRef, useEffect } from "react";
-
 import PropTypes from "prop-types";
+import Peer from "simple-peer";
+import { useState, useRef, useEffect } from "react";
+
 Video.propTypes = { socket: PropTypes.object, debateId: PropTypes.string };
 
 export default function Video({ socket, debateId }) {
-  const myVideoRef = useRef(null);
-  const peerVideoRef = useRef(null);
-  const camerasRef = useRef(null);
-  const micsRef = useRef(null);
-  let hostPeer;
-  let guestPeer;
-  let selectors;
+  const [stream, setStream] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const [audioMuted, setAudioMuted] = useState(false);
+  const [videoMuted, setVideoMuted] = useState(false);
+
+  const hostVideoRef = useRef(null);
+  const guestVideoRef = useRef(null);
+  const myPeer = useRef();
+
   useEffect(() => {
-    selectors = [micsRef.current, camerasRef.current];
-  }, [micsRef.current, camerasRef.current]);
+    console.log("0. join"); //*console
+    socket.emit("join", { debateId });
 
-  function gotDevices(deviceInfos) {
-    const values = selectors.map((select) => select.value);
+    socket.on("guest_join", () => {
+      console.log("1. guest_join"); //*console
 
-    selectors.forEach((select) => {
-      while (select.firstChild) {
-        select.removeChild(select.firstChild);
-      }
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          setStream(stream);
+          if (hostVideoRef.current) {
+            hostVideoRef.current.srcObject = stream;
+          }
+          const peer = new Peer({
+            initiator: true,
+            trickle: false,
+            config: {
+              iceServers: [
+                { url: "stun:stun.l.google.com:19302" },
+                { url: "stun:stun1.l.google.com:19302" },
+                { url: "stun:stun2.l.google.com:19302" },
+                { url: "stun:stun3.l.google.com:19302" },
+                { url: "stun:stun4.l.google.com:19302" },
+                { url: "stun:stun.nextcloud.com:443" },
+              ],
+            },
+            stream,
+          });
+
+          myPeer.current = peer;
+
+          peer.on("signal", (signal) => {
+            socket.emit("host_signal", { debateId, signal });
+          });
+
+          peer.on("stream", (stream) => {
+            if (guestVideoRef.current) {
+              guestVideoRef.current.srcObject = stream;
+            }
+          });
+
+          // peer.on("error", (err) => {
+          //   console.log(err)
+          //   endCall();
+          // });
+
+          socket.on("guest_signal", (signal) => {
+            console.log("3. guest_signal"); //*console
+            setIsConnected(true);
+            peer.signal(signal);
+          });
+
+          // socket.current.on("close", () => {
+          //   window.location.reload();
+          // });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     });
 
-    for (let i = 0; i < deviceInfos.length; ++i) {
-      const deviceInfo = deviceInfos[i];
-      const option = document.createElement("option");
-      option.value = deviceInfo.deviceId;
-      switch (deviceInfo.kind) {
-        case "audioinput":
-          option.text = deviceInfo.label || `microphone ${micsRef.current.length + 1}`;
-          micsRef.current.appendChild(option);
-          break;
-        case "videoinput":
-          option.text = deviceInfo.label || `camera ${camerasRef.current.length + 1}`;
-          camerasRef.current.appendChild(option);
-          break;
-      }
-    }
+    socket.on("host_signal", (signal) => {
+      console.log("2. host_signal"); //*console
 
-    selectors.forEach((select, selectorIndex) => {
-      if (Array.prototype.slice.call(select.childNodes).some((n) => n.value === values[selectorIndex])) {
-        select.value = values[selectorIndex];
-      }
-    });
-  }
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          setStream(stream);
+          if (hostVideoRef.current) {
+            hostVideoRef.current.srcObject = stream;
+          }
+          const peer = new Peer({
+            initiator: false,
+            trickle: false,
+            stream,
+          });
 
-  function gotStream(stream) {
-    if (myVideoRef.current !== null) {
-      myVideoRef.current.srcObject = stream;
-    }
-    return navigator.mediaDevices.enumerateDevices();
-  }
+          myPeer.current = peer;
 
-  async function getStream() {
-    let audioSource;
-    let videoSource;
-    if (micsRef.current !== null) audioSource = micsRef.current.value;
-    if (camerasRef.current !== null) videoSource = camerasRef.current.value;
-    const constraints = {
-      audio: { deviceId: audioSource ? { exact: audioSource } : true },
-      video: { deviceId: videoSource ? { exact: videoSource } : { facingMode: "user" } },
-    };
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    await addStream(stream);
-    const deviceInfos = await gotStream(stream);
-    await gotDevices(deviceInfos);
-    return stream;
-  }
+          peer.on("signal", (signal) => {
+            socket.emit("guest_signal", { debateId, signal });
+          });
 
-  function addStream(stream) {
-    if (hostPeer) hostPeer.addStream(stream);
-    if (guestPeer) guestPeer.addStream(stream);
-  }
+          peer.on("stream", (stream) => {
+            if (guestVideoRef.current) {
+              guestVideoRef.current.srcObject = stream;
+            }
+          });
 
-  useEffect(async () => {
-    console.log("join");
+          // peer.on("error", (err) => {
+          //   console.log(err)
+          //   endCall();
+          // });
 
-    socket.emit("join", debateId);
+          setIsConnected(true);
+          peer.signal(signal);
 
-    const stream = await getStream();
-    gotStream(stream);
-
-    socket.on("someone_join", async () => {
-      console.log("host: someone_join");
-
-      const stream = await getStream();
-      hostPeer = new Peer({ initiator: true, stream });
-
-      hostPeer.on("signal", (signal) => {
-        socket.emit("sent_host_signal", signal, debateId);
-      });
-    });
-
-    socket.on("received_host_signal", async (signal) => {
-      console.log("guest: received_host_signal");
-
-      const stream = await getStream();
-      guestPeer = new Peer({ initiator: false, stream });
-
-      guestPeer.on("signal", (signal) => {
-        socket.emit("sent_guest_signal", signal, debateId);
-      });
-
-      guestPeer.signal(signal);
-    });
-
-    socket.on("received_guest_signal", (signal) => {
-      console.log("host: received_guest_signal");
-
-      hostPeer.signal(signal);
-    });
-
-    guestPeer.on("stream", (stream) => {
-      console.log("guest: host_stream");
-      if (peerVideoRef.current !== null) {
-        peerVideoRef.current.srcObject = stream;
-      }
-    });
-
-    hostPeer.on("stream", (stream) => {
-      console.log("host: guest_stream");
-      if (peerVideoRef.current !== null) {
-        peerVideoRef.current.srcObject = stream;
-      }
+          // socket.current.on("close", () => {
+          //   window.location.reload();
+          // });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     });
   }, []);
 
+  function toggleMuteAudio() {
+    if (stream) {
+      setAudioMuted(!audioMuted);
+      stream.getAudioTracks()[0].enabled = audioMuted;
+    }
+  }
+
+  function toggleMuteVideo() {
+    if (stream) {
+      setVideoMuted(!videoMuted);
+      stream.getVideoTracks()[0].enabled = videoMuted;
+    }
+  }
+
   return (
     <div>
-      <h1>Video</h1>
-      <h1>My Video</h1>
-      <video ref={myVideoRef} autoPlay playsInline width="400" height="400"></video>
-      <select ref={camerasRef} onChange={getStream}></select>
-      <select ref={micsRef} onChange={getStream}></select>
-      <h1>Peer Video</h1>
-      <video ref={peerVideoRef} autoPlay playsInline width="400" height="400"></video>
+      <h1>Host Video</h1>
+      {stream !== null ? <video className="reverse" ref={hostVideoRef} muted autoPlay playsInline width="400" height="400"></video> : <div>비디오 없음</div>}
+      <h1>Guest Video</h1>
+      {isConnected ? <video className="reverse" ref={guestVideoRef} autoPlay playsInline width="400" height="400"></video> : <div>비디오 없음</div>}
+      <button onClick={toggleMuteAudio}>{audioMuted ? "Unmute" : "Mute"}</button>
+      <button onClick={toggleMuteVideo}>{videoMuted ? "On" : "Off"}</button>
     </div>
   );
 }
