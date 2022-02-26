@@ -67,13 +67,29 @@ io.on("connection", (socket) => {
     socket.join(debateId);
     socket.to(debateId).emit("someone_join");
   });
-
   socket.on("sent_host_signal", (signal, debateId) => {
     socket.to(debateId).emit("received_host_signal", signal);
   });
-
   socket.on("sent_guest_signal", (signal, debateId) => {
     socket.to(debateId).emit("received_guest_signal", signal);
+  });
+
+  // socket.on("join", (debateId) => {
+  //   socket.join(debateId);
+  //   socket.to(debateId).emit("get_host_signal");
+  // });
+  // socket.on("guest_signal", (signal, hostPeerStr, debateId) => {
+  //   socket.to(debateId).emit("guest_signal", signal, hostPeerStr);
+  // });
+  // socket.on("set_host_signal", (signal, hostPeerStr, debateId) => {
+  //   socket.to(debateId).emit("set_host_signal", signal, hostPeerStr);
+  // });
+
+  // --- //
+
+  socket.on("join", (debateId) => {
+    socket.join(debateId);
+    socket.to(debateId).emit("someone_join");
   });
 });
 
