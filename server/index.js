@@ -7,7 +7,6 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 const indexRouter = require("./routes/index");
-// const oauthRouter = require("./routes/oauth");
 
 app.use(helmet());
 app.use(express.json());
@@ -15,16 +14,16 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compression());
+
 app.use(
   cors({
-    origin: process.env.SERVER_DOMAIN,
+    origin: process.env.CORS_ORIGIN,
     credentials: true,
     methods: ["GET", "POST", "OPTIONS", "PATCH"],
   }),
 );
 
 app.use("/", indexRouter);
-// app.use("/oauth", oauthRouter);
 
 // Socket local
 // const fs = require("fs");
@@ -91,4 +90,4 @@ app.use(function (err, req, res, next) {
   res.status(500).send("Something broke!");
 });
 
-server.listen(port, () => console.log(`Listening on https://localhost:${port}`));
+server.listen(port, () => console.log(`${port}포트에서 서버 가동 중`));

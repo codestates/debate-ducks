@@ -10,7 +10,7 @@ module.exports = {
 
   sendAccessToken: (res, data, accessToken) => {
     res.cookie("accessToken", accessToken, {
-      domain: process.env.SERVER_DOMAIN,
+      domain: process.env.COOKIE_DOMAIN,
       path: "/",
       maxAge: 24 * 60 * 60 * 1000,
       sameSite: "none",

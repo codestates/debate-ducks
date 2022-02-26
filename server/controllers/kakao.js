@@ -5,7 +5,7 @@ const models = require("../models");
 const { generateAccessToken, sendAccessToken } = require("./tokenFunctions");
 
 module.exports = {
-  login: async (req, res, next) => {
+  login: async (req, res) => {
     try {
       const authorizationCode = req.query.code;
       const KAKAO_CLIENT_ID = process.env.KAKAO_CLIENT_ID;
@@ -85,7 +85,6 @@ module.exports = {
     } catch (err) {
       console.log(err);
       res.status(500).json({ message: "Internal Server Error!" });
-      next(err);
     }
   },
 };
