@@ -136,6 +136,17 @@ export default function Video({ socket, debateId }) {
     }
   }
 
+  function shareScreen() {
+    navigator.mediaDevices.getDisplayMedia({ cursor: true }).then((screenStream) => {
+      myPeer.current.replaceTrack(stream.getVideoTracks()[0], screenStream.getVideoTracks()[0], stream);
+      hostVideoRef.current.srcObject = screenStream;
+      screenStream.getTracks()[0].onended = () => {
+        myPeer.current.replaceTrack(screenStream.getVideoTracks()[0], stream.getVideoTracks()[0], stream);
+        hostVideoRef.current.srcObject = stream;
+      };
+    });
+  }
+
   return (
     <div>
       <h1>Host Video</h1>
@@ -144,6 +155,7 @@ export default function Video({ socket, debateId }) {
       {isConnected ? <video className="reverse" ref={guestVideoRef} autoPlay playsInline width="400" height="400"></video> : <div>비디오 없음</div>}
       <button onClick={toggleMuteAudio}>{audioMuted ? "Unmute" : "Mute"}</button>
       <button onClick={toggleMuteVideo}>{videoMuted ? "On" : "Off"}</button>
+      <button onClick={shareScreen}>shareScreen</button>
     </div>
   );
 }
