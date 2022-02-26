@@ -75,17 +75,43 @@ io.on("connection", (socket) => {
   //   socket.to(debateId).emit("ice-candidate", iceCandidate);
   // });
 
-  socket.on("join", (debateId) => {
-    socket.join(debateId);
-    socket.to(debateId).emit("someone_join");
+  // //
+  // socket.on("join", (debateId) => {
+  //   socket.join(debateId);
+  //   socket.to(debateId).emit("someone_join");
+  // });
+  // socket.on("sent_host_signal", (signal, debateId) => {
+  //   socket.to(debateId).emit("received_host_signal", signal);
+  // });
+  // socket.on("sent_guest_signal", (signal, debateId) => {
+  //   socket.to(debateId).emit("received_guest_signal", signal);
+  // });
+
+  // //
+  // socket.on("join", (debateId) => {
+  //   socket.join(debateId);
+  //   socket.to(debateId).emit("get_host_signal");
+  // });
+  // socket.on("guest_signal", (signal, hostPeerStr, debateId) => {
+  //   socket.to(debateId).emit("guest_signal", signal, hostPeerStr);
+  // });
+  // socket.on("set_host_signal", (signal, hostPeerStr, debateId) => {
+  //   socket.to(debateId).emit("set_host_signal", signal, hostPeerStr);
+  // });
+
+  // --- //
+
+  socket.on("join", (data) => {
+    socket.join(data.debateId);
+    socket.to(data.debateId).emit("guest_join");
   });
 
-  socket.on("sent_host_signal", (signal, debateId) => {
-    socket.to(debateId).emit("received_host_signal", signal);
+  socket.on("host_signal", (data) => {
+    socket.to(data.debateId).emit("host_signal", data.signal);
   });
 
-  socket.on("sent_guest_signal", (signal, debateId) => {
-    socket.to(debateId).emit("received_guest_signal", signal);
+  socket.on("guest_signal", (data) => {
+    socket.to(data.debateId).emit("guest_signal", data.signal);
   });
 });
 
