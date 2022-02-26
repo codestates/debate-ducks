@@ -13,7 +13,7 @@ function Oauth() {
 
   useEffect(async () => {
     await axios
-      .post(`http://localhost:80/oauth/kakao?code=${code}`)
+      .post(`${process.env.REACT_APP_API_URL}/oauth/kakao?code=${code}`, {}, { withCredentials: true })
       .then((data) => {
         console.log(data);
         console.log("서버에서 주는 유저인포", data.data.data.userInfo);
