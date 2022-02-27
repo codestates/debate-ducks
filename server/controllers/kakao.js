@@ -55,6 +55,7 @@ module.exports = {
             res,
             {
               id: newUserInfo.dataValues.id,
+              email: newUserInfo.dataValues.email,
               name: newUserInfo.dataValues.name,
               profile: newUserInfo.dataValues.profile,
               sign_method: newUserInfo.dataValues.sign_method,
@@ -75,6 +76,7 @@ module.exports = {
           res,
           {
             id: userInfo.dataValues.id,
+            email: userInfo.dataValues.email,
             name: userInfo.dataValues.name,
             profile: userInfo.dataValues.profile,
             sign_method: userInfo.dataValues.sign_method,
