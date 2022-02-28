@@ -1,26 +1,5 @@
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { onOffModal } from "../redux/modules/exceedModal";
-import JustConfirmModal from "../components/modal/JustConfirmModal";
-import { OrangeBtn } from "../components/btn/BigBtn";
-import { Likey } from "../components/card/LikeyOrVoted";
-// import { useEffect, useState } from "react";
 
 export default function Debate() {
-  const { debateId } = useParams();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const isExceedModalOpen = useSelector((state) => state.exceedModal.isOpen);
-  const closeModal = () => {
-    dispatch(onOffModal(false));
-  };
-
-  // ! 임시 변수
-  const isSignIn = true;
-  // const hasVideo = false;
-  // const isMatching = true;
-
   const users = {
     pros: {
       id: 1,
@@ -82,19 +61,9 @@ export default function Debate() {
           <div className="text-ducks-blue-6667ab text-center">cons</div>
         </div>
       </div>
-      {isSignIn ? <Likey likey={users.pros.likey} likeyCnt={debate.likeyCnt}></Likey> : null}
       <div>
         <p>{debate.topic}</p>
       </div>
-
-      {/* debate room 입장 및 인원 체크 */}
-      {isExceedModalOpen ? <JustConfirmModal content={{ title: "퇴장", text: "인원이 다 찼습니다.", btn: "확인" }} callback={closeModal} /> : null}
-      <OrangeBtn
-        text="Enter"
-        callback={() => {
-          navigate(`/forum/debateroom/${debateId}`);
-        }}
-      />
     </div>
   );
 }
