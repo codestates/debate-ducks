@@ -203,7 +203,15 @@ export default function RealtimeDebate({ socket, debateId }) {
 
   return (
     <div>
-      {isExceedModalOn ? <JustConfirmModal content={{ title: "정원 초과", text: "방에 입장할 수 없습니다.", btn: "확인" }} callback={goToDebate} /> : null}
+      {isExceedModalOn ? (
+        <JustConfirmModal
+          content={{ title: "정원 초과", text: "방에 입장할 수 없습니다.", btn: "확인" }}
+          callback={() => {
+            socket.disconnect();
+            navigate(`/forum/debate/${debateId}`);
+          }}
+        />
+      ) : null}
       {isErrorModalOn ? <JustConfirmModal content={{ title: "에러 발생", text: "에러가 발생하였습니다.", btn: "확인" }} callback={goToDebate} /> : null}
       {isPeerLeaveModalOn ? <JustConfirmModal content={{ title: "상대 퇴장", text: "상대방이 방에서 나갔습니다.", btn: "확인" }} callback={goToDebate} /> : null}
       {isLeaveModalOn ? (
