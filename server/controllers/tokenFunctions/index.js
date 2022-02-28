@@ -4,7 +4,7 @@ const { sign, verify } = require("jsonwebtoken");
 module.exports = {
   generateAccessToken: (data) => {
     return sign({ data: data }, process.env.ACCESS_SECRET, {
-      expiresIn: 60 * 60 * 1000,
+      expiresIn: 60 * 60 * 24,
     });
   },
 
@@ -21,7 +21,7 @@ module.exports = {
   },
 
   isAuthorized: (req) => {
-    console.log("req.cookies : ", req.cookies);
+    console.log("isAuthorized | req.cookies : ", req.cookies);
 
     const accessToken = req.cookies.accessToken;
     if (!accessToken) {
