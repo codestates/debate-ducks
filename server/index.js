@@ -5,15 +5,21 @@ const compression = require("compression");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-// require("dotenv").config();
+const fs = require("fs");
+
 const indexRouter = require("./routes/index");
 const userRouter = require("./routes/user");
-const profileRouter = require("./routes/profile");
 const videoBoxRouter = require("./routes/videoBox");
 
+fs.readdir("uploads", (error) => {
+  if (error) {
+    console.error("uploads 폴더가 존재하지 않습니다. 생성합니다.");
+    fs.mkdirSync("uploads");
+  }
+});
+app.use(express.static("uploads"));
 app.use(helmet());
 app.use(express.json());
-app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compression());
@@ -28,26 +34,23 @@ app.use(
 
 app.use("/", indexRouter);
 app.use("/user", userRouter);
-app.use("/profile", profileRouter);
 app.use("/videoBox", videoBoxRouter);
 
 //! Local
-const fs = require("fs");
-const options = {
-  key: fs.readFileSync(__dirname + "/key.pem", "utf-8"),
-  cert: fs.readFileSync(__dirname + "/cert.pem", "utf-8"),
-};
-const https = require("https");
-const server = https.createServer(options, app);
-const { Server } = require("socket.io");
-const io = new Server(server, { cors: { origin: "*" } });
-
-//! Deploy;
-// const fs = require("fs");
-// const http = require("http");
-// const server = http.createServer(app);
+// const options = {
+//   key: fs.readFileSync(__dirname + "/key.pem", "utf-8"),
+//   cert: fs.readFileSync(__dirname + "/cert.pem", "utf-8"),
+// };
+// const https = require("https");
+// const server = https.createServer(options, app);
 // const { Server } = require("socket.io");
 // const io = new Server(server, { cors: { origin: "*" } });
+
+//! Deploy;
+const http = require("http");
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server, { cors: { origin: "*" } });
 
 io.on("connection", (socket) => {
   socket.on("join", (data, done) => {
