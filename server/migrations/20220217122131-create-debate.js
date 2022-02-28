@@ -29,6 +29,10 @@ module.exports = {
       video: {
         type: Sequelize.STRING,
       },
+      ended_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
       host_id: {
         references: {
           model: "users",
