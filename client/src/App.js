@@ -5,10 +5,10 @@ import Main from "./pages/Main";
 import Error from "./pages/Error";
 import SignIn from "./pages/SignIn";
 import Oauth from "./pages/Oauth";
-import UserInfo from "./pages/UserInfo";
+import MyPage from "./pages/MyPage";
 import Activities from "./pages/Activities";
 import Alarm from "./pages/Alarm";
-import Ranking from "./pages/Ranking";
+// import Ranking from "./pages/Ranking";
 import Forum from "./pages/Forum";
 import CreateDebate from "./pages/CreateDebate";
 import EditDebate from "./pages/EditDebate";
@@ -27,10 +27,10 @@ function App() {
         <Route path="/" element={<Main />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/oauth/kakao" element={<Oauth />} />
-        <Route path="/userinfo/:username" element={<UserInfo />} />
+        <Route path="/mypage" element={<MyPage />} />
         <Route path="/activities/:username" element={<Activities />} />
         <Route path="/alarm" element={<Alarm />} />
-        <Route path="/ranking" element={<Ranking />} />
+        {/* <Route path="/ranking" element={<Ranking />} /> */}
         <Route path="/forum" element={<Forum />} />
         <Route path="/forum/create" element={<CreateDebate />} />
         <Route path="/forum/edit/:debateId" element={<EditDebate />} />
