@@ -4,7 +4,6 @@ import columns from "./columns";
 import columnRankings from "./columnRankings";
 import debates from "./debates";
 import debateRankings from "./debateRankings";
-import exceedModal from "./exceedModal";
 
 const rootReducer = combineReducers({
   user,
@@ -12,7 +11,6 @@ const rootReducer = combineReducers({
   columnRankings,
   debates,
   debateRankings,
-  exceedModal,
 });
 
 export default rootReducer;
