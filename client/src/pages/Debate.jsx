@@ -21,13 +21,6 @@ export default function Debate() {
   // const hasVideo = false;
   // const isMatching = true;
 
-  // 리덕스에 유저정보가 있는지 확인한다
-  // 유정정보가 있으면 리덕스에서 유저정보를 가져온다
-  // 리덕스에 없으면 토큰을 확인한다
-  // 토큰 정보를 가져온다
-  // 토큰에 정보가 없으면 isSignIn = false
-  // 토큰을 보내고 유저정보를 받아서 리덕스에 저장한다
-
   const users = {
     pros: {
       id: 1,
