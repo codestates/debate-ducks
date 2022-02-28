@@ -11,10 +11,5 @@ export default function DebateRoom() {
     setSocket(io(`${process.env.REACT_APP_API_URL}`));
   }, []);
 
-  return (
-    <div>
-      <h1>-DebateRoom-</h1>
-      {Object.keys(socket).length === 0 ? <div>Loading</div> : <RealtimeDebate socket={socket} debateId={debateId} />}
-    </div>
-  );
+  return <div>{Object.keys(socket).length === 0 ? <div>Loading</div> : <RealtimeDebate socket={socket} debateId={debateId} />}</div>;
 }
