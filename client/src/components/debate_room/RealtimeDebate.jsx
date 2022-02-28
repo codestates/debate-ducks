@@ -27,6 +27,7 @@ export default function RealtimeDebate({ socket, debateId }) {
 
   //! 임시 변수
   const userName = "Yuchan";
+  const isStarted = false;
 
   usePrevent();
 
@@ -201,37 +202,70 @@ export default function RealtimeDebate({ socket, debateId }) {
     navigate(`/forum/debate/${debateId}`);
   }
 
+  const modalClass = "w-screen h-screen flex justify-center items-center absolute bg-black bg-opacity-20 z-50";
+
   return (
     <div>
-      {isExceedModalOn ? <JustConfirmModal content={{ title: "정원 초과", text: "방에 입장할 수 없습니다.", btn: "확인" }} callback={goToDebate} /> : null}
-      {isErrorModalOn ? <JustConfirmModal content={{ title: "에러 발생", text: "에러가 발생하였습니다.", btn: "확인" }} callback={goToDebate} /> : null}
-      {isPeerLeaveModalOn ? <JustConfirmModal content={{ title: "상대 퇴장", text: "상대방이 방에서 나갔습니다.", btn: "확인" }} callback={goToDebate} /> : null}
-      {isLeaveModalOn ? (
-        <ConfirmModal
-          content={{ title: "퇴장 ", text: "방에서 나가겠습니까?", left: "취소", right: "확인" }}
-          cancelCallback={() => {
-            setIsLeaveModalOn(false);
-          }}
-          confirmCallback={goToDebate}
-        />
-      ) : null}
-      {isConnected ? (
-        <div>
-          <div>{notice}</div>
-          <video className="reverse" ref={myVideoRef} muted autoPlay playsInline width="400" height="400"></video>
-          <video className="reverse" ref={peerVideoRef} autoPlay playsInline width="400" height="400"></video>
-          <button onClick={toggleMuteAudio}>{audioMuted ? "Unmute" : "Mute"}</button>
-          <button onClick={toggleMuteVideo}>{videoMuted ? "On" : "Off"}</button>
-          <button onClick={shareScreen}>ShareScreen</button>
-          <button
-            onClick={() => {
-              setIsLeaveModalOn(true);
+      {isExceedModalOn ? (
+        <div className={modalClass}>
+          <JustConfirmModal
+            content={{ title: "Sorry!", text: "Entry is not allowed. The room is currently full.", btn: "OK" }}
+            callback={() => {
+              socket.disconnect();
+              navigate(`/forum/debate/${debateId}`);
             }}
-          >
-            Leave
-          </button>
+          />
         </div>
       ) : null}
+      {isErrorModalOn ? (
+        <div className={modalClass}>
+          <JustConfirmModal content={{ title: "Sorry!", text: "There's an unexpected error. Try joining again.", btn: "OK" }} callback={goToDebate} />
+        </div>
+      ) : null}
+      {isPeerLeaveModalOn ? (
+        <div className={modalClass}>
+          <JustConfirmModal content={{ title: "Finished!", text: "Your partner has ended the debate. You will be redirected to the debate page. ", btn: "OK" }} callback={goToDebate} />
+        </div>
+      ) : null}
+      {isLeaveModalOn ? (
+        <div className={modalClass}>
+          <ConfirmModal
+            content={{ title: "Finished!", text: "Are you sure you want to end the call?", left: "NO", right: "YES" }}
+            cancelCallback={() => {
+              setIsLeaveModalOn(false);
+            }}
+            confirmCallback={goToDebate}
+          />
+        </div>
+      ) : null}
+      {!isConnected ? null : (
+        <div>
+          <div>{notice}</div>
+          {!isStarted ? (
+            <div>
+              <div>토론전</div>
+              <video className="reverse" ref={myVideoRef} muted autoPlay playsInline width="400" height="400"></video>
+              <video className="reverse" ref={peerVideoRef} autoPlay playsInline width="400" height="400"></video>
+              <button>Start</button>
+            </div>
+          ) : (
+            <div>토론중</div>
+          )}
+          <div>
+            <button onClick={toggleMuteAudio}>{audioMuted ? "Unmute" : "Mute"}</button>
+            <button onClick={toggleMuteVideo}>{videoMuted ? "On" : "Off"}</button>
+            <button onClick={shareScreen}>ShareScreen</button>
+            <button
+              onClick={() => {
+                setIsLeaveModalOn(true);
+              }}
+            >
+              Leave
+            </button>
+            {!isConnected ? <button>토론 시작</button> : null}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

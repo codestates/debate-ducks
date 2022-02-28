@@ -4,7 +4,7 @@ export default function usePrevent() {
   useEffect(() => {
     const preventGoBack = () => {
       history.pushState(null, "", location.href);
-      console.log("prevent go back!");
+      // console.log("prevent go back!"); //* console
     };
 
     history.pushState(null, "", location.href);

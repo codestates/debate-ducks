@@ -8,7 +8,7 @@ module.exports = {
   logout: async (req, res) => {
     if (isAuthorized(req)) {
       res.clearCookie("accessToken", {
-        domain: process.env.SERVER_DOMAIN,
+        domain: process.env.COOKIE_DOMAIN,
         path: "/",
         sameSite: "none",
         secure: true,
@@ -22,8 +22,8 @@ module.exports = {
 
   get_user: async (req, res) => {
     if (isAuthorized(req)) {
-      const accessTokenData = isAuthorized(req).data;
-      const { id } = accessTokenData;
+      const accessTokenData = JSON.parse(isAuthorized(req).data);
+      const { id } = accessTokenData.userInfo;
       await models.user
         .findOne({
           where: { id },
@@ -42,30 +42,17 @@ module.exports = {
 
   update_user: async (req, res) => {
     const userId = req.params.userId;
-
+    console.log("유저아이디 : ", userId);
     if (!userId) {
       return res.status(400).json({ message: "업데이트할 유저의 디비 id 값이 잘못되었거나 존재하지 않습니다." });
     }
 
     const { name, profile } = req.body;
-
+    console.log("바디 이름 : ", name);
     if (name) {
-      models.user.update(
+      await models.user.update(
         {
           name: name,
-        },
-        {
-          where: {
-            id: userId,
-          },
-        },
-      );
-    }
-
-    if (profile) {
-      models.user.update(
-        {
-          profile: profile,
         },
         {
           where: {
@@ -84,6 +71,33 @@ module.exports = {
     res.status(200).json({
       data: userInfo,
       message: "유저 정보 업데이트 완료, 제공되는 것은 업데이트 된 유저정보입니다.",
+    });
+  },
+
+  update_profile: async (req, res) => {
+    const userId = req.params.userId;
+    console.log("req.file", req.file.filename);
+    const newString = process.env.DOMAIN + "/" + req.file.filename;
+    await models.user.update(
+      {
+        profile: newString,
+      },
+      {
+        where: {
+          id: userId,
+        },
+      },
+    );
+
+    const userInfo = await models.user.findOne({
+      where: {
+        id: userId,
+      },
+    });
+
+    res.status(200).json({
+      data: userInfo,
+      message: `프로필 사진 업데이트 성공 filename : ${req.file.filename}`,
     });
   },
 
