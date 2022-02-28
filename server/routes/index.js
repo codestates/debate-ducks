@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const models = require("../models");
-const jwt = require("jsonwebtoken");
 const kakaoController = require("../controllers/kakao");
 const userController = require("../controllers/user");
 require("dotenv").config();

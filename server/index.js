@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
 const indexRouter = require("./routes/index");
+const userRouter = require("./routes/user");
 
 app.use(helmet());
 app.use(express.json());
@@ -24,6 +25,7 @@ app.use(
 );
 
 app.use("/", indexRouter);
+app.use("/user", userRouter);
 
 // Socket local
 // const fs = require("fs");
