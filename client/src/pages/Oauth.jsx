@@ -15,17 +15,15 @@ function Oauth() {
     await axios
       .post(`${process.env.REACT_APP_API_URL}/oauth/kakao?code=${code}`, {}, { withCredentials: true })
       .then((data) => {
-        console.log(data);
-        console.log("서버에서 주는 유저인포", data.data.data.userInfo);
-        dispatch(setUserInfo(data.data.data.userInfo));
+        dispatch(setUserInfo(data.data.data));
         navigate("/");
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log("Oauth err", err));
   }, []);
 
   return (
     <>
-      {userInfo.id ? (
+      {userInfo?.id ? (
         <Navigate to="/" />
       ) : (
         <div className="flex justify-center items-center text-ducks-gray-666 font-poppins text-18 m-90 h-18 w-18" viewBox="0 0 24 24">

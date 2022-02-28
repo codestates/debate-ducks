@@ -3,7 +3,9 @@ import axios from "axios";
 
 export const getColumns = createAsyncThunk("columns/getColumns", async (payload) => {
   const { userId, categories, isLiked, page, searchValue, sort } = payload;
-  const response = await axios.get(`${process.env.REACT_APP_API_URL}/columns/${userId}?category=${categories}&likey=${isLiked}&page=${page}&search=${searchValue}&sort=${sort}`);
+  const response = await axios.get(`${process.env.REACT_APP_API_URL}/columns/${userId}?category=${categories}&likey=${isLiked}&page=${page}&search=${searchValue}&sort=${sort}`, {
+    withCredentials: true,
+  });
   return response.data;
 });
 
