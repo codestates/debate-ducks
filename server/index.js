@@ -27,7 +27,7 @@ app.use(
 app.use("/", indexRouter);
 app.use("/user", userRouter);
 
-// Socket local
+//! Local
 // const fs = require("fs");
 // const options = {
 //   key: fs.readFileSync(__dirname + "/key.pem", "utf-8"),
@@ -38,7 +38,7 @@ app.use("/user", userRouter);
 // const { Server } = require("socket.io");
 // const io = new Server(server, { cors: { origin: "*" } });
 
-// deploy;
+//! Deploy;
 const fs = require("fs");
 const http = require("http");
 const server = http.createServer(app);
@@ -46,40 +46,32 @@ const { Server } = require("socket.io");
 const io = new Server(server, { cors: { origin: "*" } });
 
 io.on("connection", (socket) => {
-  // Common
-  socket.on("join", (debateId, userName, done) => {
-    const userCount = io.sockets.adapter.rooms.get(debateId)?.size;
+  socket.on("join", (data, done) => {
+    const userCount = io.sockets.adapter.rooms.get(data.debateId)?.size;
     if (userCount >= 2) {
-      done("exceed");
+      done();
     } else {
-      socket.join(debateId);
-      socket.to(debateId).emit("welcome", userName);
-      done("join");
+      socket.join(data.debateId);
+      socket.to(data.debateId).emit("guest_join", { userName: data.userName });
     }
   });
 
-  socket.on("disconnecting", () => {
+  socket.on("host_signal", (data) => {
+    socket.to(data.debateId).emit("host_signal", { signal: data.signal });
+  });
+
+  socket.on("guest_signal", (data) => {
+    socket.to(data.debateId).emit("guest_signal", { signal: data.signal });
+  });
+
+  socket.on("leave", (data) => {
+    socket.to(data.debateId).emit("peer_disconnect");
+  });
+
+  socket.on("disconnect", () => {
     socket.rooms.forEach((room) => {
-      socket.to(room).emit("leave");
+      socket.to(room).emit("peer_disconnect");
     });
-  });
-
-  // Chat
-  socket.on("chat", (debateId, chat, authorName) => {
-    socket.to(debateId).emit("chat", chat, authorName);
-  });
-
-  // Video
-  socket.on("offer", (debateId, webRTCOffer) => {
-    socket.to(debateId).emit("offer", webRTCOffer);
-  });
-
-  socket.on("answer", (debateId, webRTCAnswer) => {
-    socket.to(debateId).emit("answer", webRTCAnswer);
-  });
-
-  socket.on("ice-candidate", (debateId, iceCandidate) => {
-    socket.to(debateId).emit("ice-candidate", iceCandidate);
   });
 });
 

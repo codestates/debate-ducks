@@ -1,7 +1,7 @@
 import io from "socket.io-client";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Chat from "../components/debate_room/Chat";
+import RealtimeDebate from "../components/debate_room/RealtimeDebate";
 
 export default function DebateRoom() {
   const { debateId } = useParams();
@@ -14,7 +14,7 @@ export default function DebateRoom() {
   return (
     <div>
       <h1>-DebateRoom-</h1>
-      {Object.keys(socket).length === 0 ? <div>Loading</div> : <Chat socket={socket} debateId={debateId} />}
+      {Object.keys(socket).length === 0 ? <div>Loading</div> : <RealtimeDebate socket={socket} debateId={debateId} />}
     </div>
   );
 }
