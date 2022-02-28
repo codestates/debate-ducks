@@ -21,6 +21,13 @@ export default function Debate() {
   // const hasVideo = false;
   // const isMatching = true;
 
+  // 리덕스에 유저정보가 있는지 확인한다
+  // 유정정보가 있으면 리덕스에서 유저정보를 가져온다
+  // 리덕스에 없으면 토큰을 확인한다
+  // 토큰 정보를 가져온다
+  // 토큰에 정보가 없으면 isSignIn = false
+  // 토큰을 보내고 유저정보를 받아서 리덕스에 저장한다
+
   const users = {
     pros: {
       id: 1,
@@ -50,8 +57,8 @@ export default function Debate() {
     topic:
       "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Omnis odit laborum nobis nesciunt facilis voluptate ad magnam possimus, neque laudantium dolorem nam placeat exercitationem quos dicta sequi distinctio, beatae temporibus!",
     likeyCnt: 456780,
-    prosProfile: users.pros.profile,
-    constProfile: users.cons.profile,
+    prosProfile: null,
+    consProfile: null,
   };
 
   return (
@@ -62,13 +69,23 @@ export default function Debate() {
       <div className="flex">
         {/* pros user */}
         <div>
-          <img src={debate.prosProfile} className="w-140 h-140 object-cover rounded-full border-4 border-solid border-ducks-orange-ff9425" />
+          {debate.prosProfile ? (
+            <img src={debate.prosProfile} className="w-140 h-140 object-cover rounded-full border-4 border-solid border-ducks-orange-ff9425" />
+          ) : (
+            <div className="bg-grayduck w-140 h-140 rounded-full bg-cover border-4 border-solid border-ducks-orange-ff9425"></div>
+          )}
+
           <div className="text-ducks-orange-ff9425 text-center">pros</div>
         </div>
 
         {/* cons user */}
         <div>
-          <img src={debate.consProfile} className="w-140 h-140 object-top object-cover rounded-full border-4 border-solid border-ducks-blue-6667ab" />
+          {debate.consProfile ? (
+            <img src={debate.consProfile} className="w-140 h-140 object-top object-cover rounded-full border-4 border-solid border-ducks-blue-6667ab" />
+          ) : (
+            <div className="bg-grayduck w-140 h-140 rounded-full bg-cover border-4 border-solid border-ducks-blue-6667ab"></div>
+          )}
+
           <div className="text-ducks-blue-6667ab text-center">cons</div>
         </div>
       </div>
