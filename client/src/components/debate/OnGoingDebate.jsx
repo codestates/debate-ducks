@@ -25,7 +25,9 @@ export default function OnGoingDebate(debate) {
   // };
   return (
     <>
-      <h1>{debate.debateInfo.title}</h1>
+      <div className="bg-politics w-full h-410 bg-cover bg-center flex justify-center items-center">
+        <h1 className="text-white text-48 font-poppins font-bold">{debate.debateInfo.title}</h1>
+      </div>
       {!debate.debateInfo.participant_id ? (
         debate.debateInfo.host_id === debate.debateInfo.pros_id ? (
           <div>
