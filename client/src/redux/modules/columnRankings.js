@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const getColumnRankings = createAsyncThunk("columnRankings/getColumnRankings", async ({ userId }) => {
-  const response = await axios.get(`${process.env.REACT_APP_API_URL}/columns/ranking/${userId}`);
+  const response = await axios.get(`${process.env.REACT_APP_API_URL}/columns/ranking/${userId}`, { withCredentials: true });
   return response.data;
 });
 
