@@ -3,6 +3,10 @@ module.exports = {
   darkMode: false,
   theme: {
     extend: {
+      screens: {
+        mb: { max: "500px" },
+        tb: { max: "768px" },
+      },
       spacing: {
         // padding, margin, width, height
         12: "0.75rem",
