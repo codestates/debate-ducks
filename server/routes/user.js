@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const userController = require("../controllers/user");
-require("dotenv").config();
 
 const fileStorageEngine = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -15,9 +14,9 @@ const fileStorageEngine = multer.diskStorage({
 
 const upload = multer({ storage: fileStorageEngine });
 
-router.get("/", userController.get_user);
-router.patch("/:userId", userController.update_user);
-router.patch("/:userId/img", upload.single("img"), userController.update_profile);
-router.delete("/:userId", userController.delete_user);
+router.get("/", userController.get_user); // 유저 정보 조회
+router.patch("/:userId", userController.update_user); // 유저 정보 수정
+router.patch("/:userId/img", upload.single("img"), userController.update_profile); // 유저 프로필 사진 수정
+router.delete("/:userId", userController.delete_user); // 유저 정보 삭제
 
 module.exports = router;

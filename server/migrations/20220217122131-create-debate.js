@@ -30,7 +30,6 @@ module.exports = {
         type: Sequelize.STRING,
       },
       ended_at: {
-        allowNull: false,
         type: Sequelize.DATE,
       },
       host_id: {

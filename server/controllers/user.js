@@ -1,8 +1,6 @@
 require("dotenv").config();
-const axios = require("axios");
-axios.defaults.withCredentials = true;
 const models = require("../models");
-const { generateAccessToken, sendAccessToken, isAuthorized } = require("./tokenFunctions");
+const { isAuthorized } = require("./tokenFunctions");
 
 module.exports = {
   logout: async (req, res) => {
@@ -23,7 +21,9 @@ module.exports = {
   get_user: async (req, res) => {
     if (isAuthorized(req)) {
       const accessTokenData = JSON.parse(isAuthorized(req).data);
-      const { id } = accessTokenData.userInfo;
+
+      let id = accessTokenData.userInfo ? accessTokenData.userInfo.id : accessTokenData.newUserInfo.id;
+
       await models.user
         .findOne({
           where: { id },

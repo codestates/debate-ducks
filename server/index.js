@@ -9,6 +9,7 @@ const fs = require("fs");
 
 const indexRouter = require("./routes/index");
 const userRouter = require("./routes/user");
+const debateRouter = require("./routes/debate");
 const videoBoxRouter = require("./routes/videoBox");
 
 fs.readdir("uploads", (error) => {
@@ -28,12 +29,13 @@ app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
     credentials: true,
-    methods: ["GET", "POST", "OPTIONS", "PATCH"],
+    methods: ["GET", "POST", "OPTIONS", "PATCH", "DELETE"],
   }),
 );
 
 app.use("/", indexRouter);
 app.use("/user", userRouter);
+app.use("/debate", debateRouter);
 app.use("/videoBox", videoBoxRouter);
 
 //! Local
