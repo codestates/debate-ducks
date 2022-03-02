@@ -1,28 +1,10 @@
 // import axios from "axios";
 
+import { StrawBtn } from "../btn/BaseBtn";
+
 // import axios from "axios";
 
 export default function OnGoingDebate(debate) {
-  console.log(debate);
-  // console.log(user);
-  // debate = {
-  //   debateInfo: {
-  //     id: 5,
-  //     category: "history",
-  //     host_id: 1,
-  //     participant_id: null,
-  //     pros_id: null,
-  //     cons_id: 1,
-  //     title: "",
-  //     topic: "",
-  //     video: "",
-  //     ended_at: "",
-  //   },
-  //   consName: "김수빈",
-  //   consProfile: "",
-  //   prosName: "",
-  //   prosProfile: "",
-  // };
   return (
     <>
       <h1>{debate.debateInfo.title}</h1>
@@ -63,6 +45,7 @@ export default function OnGoingDebate(debate) {
         </div>
       )}
       <div>{debate.debateInfo.topic}</div>
+      {!debate.debateInfo.participant_id ? <StrawBtn text="participate" /> : null}
     </>
   );
 }
