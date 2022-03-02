@@ -5,7 +5,7 @@ import { MdOutlineCancel } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import ConfirmModal from "../components/modal/ConfirmModal";
 import { useSelector, useDispatch } from "react-redux";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import getByteLength from "../utils/getByteLength";
 import axios from "axios";
 import { setUserInfo } from "../redux/modules/user";
@@ -22,19 +22,21 @@ export default function MyPage() {
 
   const userInfo = useSelector((state) => state.user.data);
 
-  const [localUserInfo, setLocalUserInfo] = useState({});
+  //const [userInfo, setLocalUserInfo] = useState({});
+  //const [profileCheck, setProfileCheck] = useState(true);
   //const [preview, setPreview] = useState("");
 
   const changeUsernameInput = (e) => {
     setInputUsername(e.target.value);
   };
 
-  useEffect(() => {
-    setLocalUserInfo((state) => ({ ...state, ...userInfo }));
-  }, [userInfo]);
+  // useEffect(() => {
+  //   setLocalUserInfo((state) => ({ ...state, ...userInfo }));
+  //   console.log("유저인포", userInfo);
+  // }, [userInfo.name, profileCheck]);
 
-  console.log("userInfo", userInfo);
-  console.log("localUserInfo", localUserInfo);
+  // console.log("userInfo", userInfo);
+  // console.log("localUserInfo", localUserInfo);
 
   // useEffect(() => {
   //   if (profilePic) {
@@ -64,12 +66,12 @@ export default function MyPage() {
       return;
     }
     axios
-      .patch(`${process.env.REACT_APP_API_URL}/user/${localUserInfo?.id}`, {
+      .patch(`${process.env.REACT_APP_API_URL}/user/${userInfo?.id}`, {
         name: inputUsername,
       })
       .then((res) => {
         dispatch(setUserInfo(res.data.data));
-        setLocalUserInfo((state) => ({ ...state, ...res.data.data }));
+        //setLocalUserInfo((state) => ({ ...state, ...res.data.data }));
         window.location.reload(); //navigate('/mypage')와의 차이점?
       })
       .catch((err) => {
@@ -120,17 +122,19 @@ export default function MyPage() {
 
     if (image) {
       axios
-        .patch(`${process.env.REACT_APP_API_URL}/user/${localUserInfo?.id}/img`, formData, config)
+        .patch(`${process.env.REACT_APP_API_URL}/user/${userInfo?.id}/img`, formData, config)
         .then((res) => {
           dispatch(setUserInfo(res.data.data));
-          setLocalUserInfo((state) => ({ ...state, ...res.data.data }));
+          // setLocalUserInfo((state) => ({ ...state, ...res.data.data }));
           window.location.reload();
+          // setProfileCheck(!profileCheck);
         })
         .catch((err) => {
           alert(err);
         });
     }
   };
+  //console.log("프로필체크", profileCheck);
 
   const onCheckEnter = (e) => {
     if (e.key === "Enter") {
@@ -141,7 +145,7 @@ export default function MyPage() {
   const deleteAccount = async () => {
     signoutHandler();
     await axios
-      .delete(`${process.env.REACT_APP_API_URL}/user/${localUserInfo?.id}`, {
+      .delete(`${process.env.REACT_APP_API_URL}/user/${userInfo?.id}`, {
         withCredentials: true,
       })
       .then((res) => console.log(res))
@@ -156,7 +160,7 @@ export default function MyPage() {
       .then((res) => {
         console.log(res);
         dispatch(setUserInfo({}));
-        setLocalUserInfo((state) => ({ ...state, ...{} }));
+        //setLocalUserInfo((state) => ({ ...state, ...{} }));
         navigate("/");
       })
       .catch((err) => console.log(err));
@@ -182,7 +186,7 @@ export default function MyPage() {
           <div className="flex flex-col">
             <div className="flex flex-row">
               {!isEditUsername ? (
-                <div className="text-24 font-poppins">{localUserInfo?.name}</div>
+                <div className="text-24 font-poppins">{userInfo?.name}</div>
               ) : (
                 <input className="ml-12" onChange={changeUsernameInput} value={inputUsername} onKeyPress={onCheckEnter} />
               )}
@@ -198,7 +202,7 @@ export default function MyPage() {
             </div>
             <div className="flex flex-row mt-12">
               <RiKakaoTalkFill className="text-24 mr-12 mb-20 text-black-00000" />
-              <div className="flex text-18 font-poppins">{localUserInfo?.email}</div>
+              <div className="flex text-18 font-poppins">{userInfo?.email}</div>
             </div>
           </div>
           {/* BIG Right의 show activities, delete account */}
@@ -211,7 +215,7 @@ export default function MyPage() {
             </button>
             {isConfirmOpen ? (
               <ConfirmModal
-                content={{ title: "Alert!", text: "Are you sure you want delete your account?", left: "NO", right: "YES" }}
+                content={{ title: "Alert!", text: "Are you sure you want to delete your account?", left: "NO", right: "YES" }}
                 cancelCallback={() => {
                   setIsConfirmOpen(false);
                 }}
