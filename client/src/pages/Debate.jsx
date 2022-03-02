@@ -1,20 +1,32 @@
 import axios from "axios";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import OnGoingDebate from "../components/debate/OnGoingDebate";
+import Voting from "../components/debate/Voting";
+import Completed from "../components/debate/Completed";
 
 export default function Debate() {
-  // const debateId = 1;
-  // const debateData = axios.get(`${process.env.REACT_APP_API_URL}/debate/${debateId}`);
   const [debate, setDebate] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [deadline, setDeadline] = useState(0);
 
-  useEffect(async () => {
-    const debateData = await axios.get(`${process.env.REACT_APP_API_URL}/test`, { withCredentials: true }).then((data) => {
-      return data.data.data;
+  let { debateId } = useParams();
+
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_API_URL}/debate/single/${debateId}`, { withCredentials: true }).then((data) => {
+      const dayOfDeadline = data.data.data.debateInfo.ended_at;
+      if (dayOfDeadline) {
+        const today = new Date();
+        const gap = new Date(dayOfDeadline).getTime() - today.getTime();
+        setDeadline(Math.floor(gap / (1000 * 60 * 60 * 24)) * -1);
+      }
+      console.log(data.data.data);
+      setDebate(data.data.data);
+      setIsLoading(false);
     });
-    setDebate(debateData);
   }, []);
 
-  console.log(debate.video);
-  return <div>{typeof debate.video === "undefined" ? <OnGoingDebate {...debate} /> : debate.ended_at > Date.now() ? <div>Voting</div> : <div>Completed</div>}</div>;
+  console.log(deadline);
+  return <div>{isLoading ? <div>Loading...</div> : !debate?.debateInfo.video ? <OnGoingDebate {...debate} /> : deadline > 0 ? <Voting {...debate} /> : <Completed {...debate} />}</div>;
 }

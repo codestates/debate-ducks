@@ -3,17 +3,35 @@
 // import axios from "axios";
 
 export default function OnGoingDebate(debate) {
-  console.log(debate.participantProfile);
+  console.log(debate);
   // console.log(user);
+  // debate = {
+  //   debateInfo: {
+  //     id: 5,
+  //     category: "history",
+  //     host_id: 1,
+  //     participant_id: null,
+  //     pros_id: null,
+  //     cons_id: 1,
+  //     title: "",
+  //     topic: "",
+  //     video: "",
+  //     ended_at: "",
+  //   },
+  //   consName: "김수빈",
+  //   consProfile: "",
+  //   prosName: "",
+  //   prosProfile: "",
+  // };
   return (
     <>
-      <h1>{debate.title}</h1>
-      {!debate.participant_id ? (
-        debate.host_id === debate.pros_id ? (
+      <h1>{debate.debateInfo.title}</h1>
+      {!debate.debateInfo.participant_id ? (
+        debate.debateInfo.host_id === debate.debateInfo.pros_id ? (
           <div>
             <div>
               <div>pros</div>
-              <img src={debate.hostProfile} className="w-140 h-140 object-cover rounded-full" />
+              <img src={debate.prosProfile} className="w-140 h-140 object-cover rounded-full" />
             </div>
             <div>
               <div>const</div>
@@ -28,7 +46,7 @@ export default function OnGoingDebate(debate) {
             </div>
             <div>
               <div>cons</div>
-              <img src={debate.hostProfile} className="w-140 h-140 object-cover rounded-full" />
+              <img src={debate.consProfile} className="w-140 h-140 object-cover rounded-full" />
             </div>
           </div>
         )
@@ -36,15 +54,15 @@ export default function OnGoingDebate(debate) {
         <div>
           <div>
             <div>pros</div>
-            <img src={debate.host_id === debate.pros_id ? debate.hostProfile : debate.participantProfile} className="w-140 h-140 object-cover rounded-full" />
+            <img src={debate.debateInfo.host_id === debate.debateInfo.pros_id ? debate.prosProfile : debate.consProfile} className="w-140 h-140 object-cover rounded-full" />
           </div>
           <div>
             <div>cons</div>
-            <img src={debate.host_id === debate.cons_id ? debate.hostProfile : debate.participantProfile} className="w-140 h-140 object-cover rounded-full" />
+            <img src={debate.debateInfo.host_id === debate.debateInfo.cons_id ? debate.consProfile : debate.prosProfile} className="w-140 h-140 object-cover rounded-full" />
           </div>
         </div>
       )}
-      <div>{debate.topic}</div>
+      <div>{debate.debateInfo.topic}</div>
     </>
   );
 }
