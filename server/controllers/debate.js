@@ -1,6 +1,5 @@
 require("dotenv").config();
 const models = require("../models");
-const { generateAccessToken, sendAccessToken, isAuthorized } = require("./tokenFunctions");
 
 module.exports = {
   create_debate: async (req, res) => {
@@ -196,7 +195,8 @@ module.exports = {
   },
 
   get_debates: async (req, res) => {
-    // const { category, status, likey, page, search } = req.query;
+    // status x likey 내가 제공
+    // const { category, page, search } = req.query;
     // console.log("req.query : ", req.query);
 
     // res.status(200).json({ data: null, message: "토론 리스트를 조회합니다. 아직 미구현입니다." });
@@ -212,7 +212,7 @@ module.exports = {
     // if (pageNum > 1) {
     //   offset = limit * (pageNum - 1)
     // }
-
-    res.status(200).json({ data: null, message: "토론 리스트를 조회합니다. 아직 미구현입니다." });
+    const debateList = await models.debate.findAll({});
+    res.status(200).json({ data: debateList, message: "토론 리스트를 조회합니다. 아직 미구현입니다." });
   },
 };

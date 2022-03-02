@@ -9,7 +9,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       contents: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       debate_id: {
         references: {

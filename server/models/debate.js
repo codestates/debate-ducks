@@ -49,7 +49,7 @@ module.exports = (sequelize, DataTypes) => {
       participant_id: DataTypes.INTEGER,
       pros_id: DataTypes.INTEGER,
       cons_id: DataTypes.INTEGER,
-      topic: DataTypes.STRING,
+      topic: DataTypes.TEXT,
       title: DataTypes.STRING,
       video: DataTypes.STRING,
       ended_at: DataTypes.DATEONLY,
