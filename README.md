@@ -1,5 +1,7 @@
 # Debate-Ducks
 
+## 실시간 소통 기반 토론 플랫폼
+
 <br />
 
 ![white-debate-ducks-logo](https://user-images.githubusercontent.com/25292654/153126251-52ffb15e-9330-4ed8-8cba-d2d60192e3a6.png)
