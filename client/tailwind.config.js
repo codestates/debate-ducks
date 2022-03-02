@@ -23,6 +23,7 @@ module.exports = {
         70: "4.375rem",
         80: "5rem",
         90: "5.625rem",
+        92: "5.75rem",
         112: "7rem",
         140: "8.75rem",
         274: "17.125rem",
@@ -31,6 +32,7 @@ module.exports = {
         336: "21rem",
         370: "23.125rem",
         410: "25.625rem",
+        1200: "75rem",
       },
       borderRadius: {
         12: "0.75rem",
@@ -44,6 +46,14 @@ module.exports = {
         poppins: ["Poppins"],
       },
       fontSize: {
+        12: "0.75rem",
+        14: "0.875rem",
+        18: "1.125rem",
+        24: "1.5rem",
+        36: "2.25rem",
+        48: "3rem",
+      },
+      lineHeight: {
         12: "0.75rem",
         14: "0.875rem",
         18: "1.125rem",
@@ -68,6 +78,7 @@ module.exports = {
       },
       backgroundImage: {
         logo: "url('../public/images/Logo1.png')",
+        logoWhite: "url('../public/images/Logo3.png')",
         orangeduck: "url('../public/images/profile-theme-orange.png')",
         greenduck: "url('../public/images/profile-theme-green.png')",
         strawduck: "url('../public/images/profile-theme-straw.png')",
