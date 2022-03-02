@@ -40,6 +40,7 @@ module.exports = {
             email: email,
             name: profile.nickname,
             profile: profile.profile_image_url,
+            // created_at: Date.now(),
             sign_method: "kakao",
           });
 

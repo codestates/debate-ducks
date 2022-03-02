@@ -30,7 +30,8 @@ module.exports = (sequelize, DataTypes) => {
   Column.init(
     {
       category: DataTypes.STRING,
-      contents: DataTypes.STRING,
+      contents: DataTypes.TEXT,
+      title: DataTypes.STRING,
       image: DataTypes.STRING,
       author_id: DataTypes.INTEGER,
     },

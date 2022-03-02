@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Prep.init(
     {
-      contents: DataTypes.STRING,
+      contents: DataTypes.TEXT,
       debate_id: DataTypes.INTEGER,
       author_id: DataTypes.INTEGER,
     },
