@@ -100,7 +100,7 @@ module.exports = {
         sports: "url('../public/images/sports.jpg')",
         philosophy: "url('../public/images/philosophy.jpg')",
         culture: "url('../public/images/culture.jpg')",
-        forfun: "url('../public/images/politics.jpg')",
+        forfun: "url('../public/images/forfun.jpg')",
       },
     },
   },
