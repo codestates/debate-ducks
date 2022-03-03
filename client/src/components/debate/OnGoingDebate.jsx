@@ -155,9 +155,11 @@ export default function OnGoingDebate(debate) {
       </div>
       {!debate.debateInfo.participant_id ? <StrawBtn text="participate" callback={handleParticipate} /> : <StrawBtn text="enter debate room" callback={handleEnter} />}
       <div className="w-960 h-0 border-solid border-b border-ducks-gray-eee my-60"></div>
-      <div className="flex justify-end">
-        <button>Edit</button>
-        <button>Delete</button>
+
+      {/* debate video */}
+      <div className="my-60">
+        <h1 className="text-center font-bold text-24 mb-40">Topic</h1>
+        <div className="w-960 h-540 bg-ducks-gray-ccc"></div>
       </div>
     </div>
   );
