@@ -15,59 +15,63 @@ export default function RealtimeDebate({ socket, debateId }) {
   const query = useQuery();
   const isPros = query.get("pros");
   //! 임시 변수;
-  const [isStarted] = useState(false);
-  const prosName = "Yuchan";
-  const consName = "Chesley";
-  const debateInfo = { title: "Does Alien Exist?" };
-  const [isProsTurn] = useState(true);
+  const debateInfo = { title: "Does Alien Exist?", prosName: "Yuchan", consName: "Chesley" };
+  const [notice, setNotice] = useState({ turn: "pre", text: "" });
 
   // ---Modals 변수
   const [isExceedModalOn, setIsExceedModalOn] = useState(false);
   const [isErrorModalOn, setIsErrorModalOn] = useState(false);
   const [isPeerLeaveModalOn, setIsPeerLeaveModalOn] = useState(false);
   const [isLeaveModalOn, setIsLeaveModalOn] = useState(false);
+  const [isStartModalOn, setIsStartModalOn] = useState(false);
+  const [isRejectModalOn, setIsRejectModalOn] = useState(false);
+  const [isStartBtnOn, setIsStartBtnOn] = useState(true);
 
   // ---Buttons 변수
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
+  const [isProsScreenOn, setIsProsScreenOn] = useState(false);
+  const [isConsScreenOn, setIsConsScreenOn] = useState(false);
 
   // ---Socket, WebRTC 변수
   const [stream, setStream] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
-  const [isProsScreenOn, setIsProsScreenOn] = useState(false);
-  const [isConsScreenOn, setIsConsScreenOn] = useState(false);
+  const [isStarted, setIsStarted] = useState(false);
+  const [isProsTurn] = useState(true);
   const myPeer = useRef();
   const myVideoRef = useRef(null);
   const peerVideoRef = useRef(null);
 
   // ---Canvas 변수
   const canvasRef = useRef(null);
-  const [notice, setNotice] = useState({ turn: "pre", text: "" });
 
   // ---뒤로가기 방지
   usePrevent();
 
   // ---Socket, WebRTC
   useEffect(() => {
-    // console.log("join"); //*console
-    socket.emit("join", { debateId }, () => {
-      setIsExceedModalOn(true);
-    });
+    socket.emit("join", { debateId }, (status) => {
+      switch (status) {
+        case "rejected":
+          setIsExceedModalOn(true);
+          setNotice({ ...notice, ...{ turn: "pre", text: "Entry is not allowed. The room is currently full." } });
+          break;
+        case "success":
+          navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+            setStream(stream);
 
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-      setStream(stream);
-
-      if (myVideoRef.current) {
-        myVideoRef.current.srcObject = stream;
+            if (myVideoRef.current) {
+              myVideoRef.current.srcObject = stream;
+            }
+          });
+          setNotice({ ...notice, ...{ turn: "pre", text: "Waiting for another debater to join." } });
+          break;
       }
     });
 
-    setNotice({ ...notice, ...{ turn: "pre", text: "Waiting for another debater to join." } });
-
     // Event: 두 번째 사람 입장 시 첫 번째 사람에게 발생
     socket.on("guest_join", () => {
-      // console.log("host/guest_join"); //*console
-      setNotice({ ...notice, ...{ turn: "pros", text: "To start the debate, press the start button in the upper right corner." } });
+      setNotice({ ...notice, ...{ turn: "pre", text: "To start the debate, press the start button in the upper right corner." } });
 
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })
@@ -113,7 +117,6 @@ export default function RealtimeDebate({ socket, debateId }) {
           });
 
           socket.on("guest_signal", (data) => {
-            // console.log("host/guest_signal"); //*console
             peer.signal(data.signal);
           });
         })
@@ -125,8 +128,7 @@ export default function RealtimeDebate({ socket, debateId }) {
 
     // Event: 두 번째 사람 입장 시 두 번째 사람에게 발생
     socket.on("host_signal", (data) => {
-      // console.log("guest/host_signal"); //*console
-      setNotice({ ...notice, ...{ turn: "cons", text: "To start the debate, press the start button in the upper right corner." } });
+      setNotice({ ...notice, ...{ turn: "pre", text: "To start the debate, press the start button in the upper right corner." } });
 
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })
@@ -169,12 +171,14 @@ export default function RealtimeDebate({ socket, debateId }) {
         });
     });
 
+    // Disconnecting
     socket.on("peer_disconnecting", () => {
       disconnect();
       setIsConnected(false);
       setIsPeerLeaveModalOn(true);
     });
 
+    // Screen Share
     socket.on("screen_on", (data) => {
       if (data.isPros === "true") {
         setIsProsScreenOn(true);
@@ -189,6 +193,21 @@ export default function RealtimeDebate({ socket, debateId }) {
       } else if (data.isPros === "false") {
         setIsConsScreenOn(false);
       }
+    });
+
+    // Start
+    socket.on("start_debate_offer", () => {
+      setIsStartModalOn(true);
+    });
+
+    socket.on("start_debate_reject", () => {
+      setIsStartBtnOn(true);
+      setIsRejectModalOn(true);
+    });
+
+    socket.on("start_debate_consent", () => {
+      setIsStartBtnOn(true);
+      setIsStarted(true);
     });
   }, []);
 
@@ -232,7 +251,7 @@ export default function RealtimeDebate({ socket, debateId }) {
       prosTextCtx.font = "32px poppins";
       prosTextCtx.fillStyle = "#ff9425";
       prosTextCtx.textAlign = "center";
-      prosTextCtx.fillText(`${prosName}`, 320, 620);
+      prosTextCtx.fillText(`${debateInfo.prosName}`, 320, 620);
     }
 
     // Cons
@@ -253,7 +272,7 @@ export default function RealtimeDebate({ socket, debateId }) {
       consTextCtx.font = "32px poppins";
       consTextCtx.fillStyle = "#6667ab";
       consTextCtx.textAlign = "center";
-      consTextCtx.fillText(`${consName}`, 960, 620);
+      consTextCtx.fillText(`${debateInfo.consName}`, 960, 620);
     }
 
     // Draw
@@ -321,46 +340,6 @@ export default function RealtimeDebate({ socket, debateId }) {
     socket.disconnect();
   }
 
-  // ---Muted(default)
-  useEffect(() => {
-    if (isConnected) {
-      toggleMuteAudio(true);
-      toggleMuteVideo(true);
-    }
-  }, [isConnected]);
-
-  // ---Notice
-  useEffect(() => {
-    let color;
-    switch (notice?.turn) {
-      case "pre":
-        color = "black";
-        break;
-      case "pros":
-        color = "#ff9425";
-        break;
-      case "cons":
-        color = "#6667ab";
-        break;
-    }
-
-    const backgroundCtx = canvasRef?.current?.getContext("2d");
-    if (backgroundCtx) {
-      backgroundCtx.fillStyle = color;
-      backgroundCtx.fillRect(0, 0, canvasRef?.current?.width, 40);
-    }
-
-    const noticeCtx = canvasRef?.current?.getContext("2d");
-    if (noticeCtx) {
-      noticeCtx.font = "18px poppins";
-      noticeCtx.fillStyle = "White";
-      noticeCtx.textAlign = "center";
-    }
-
-    //! 타이머 추가해서 수정 필요
-    noticeCtx.fillText(`${notice.text}`, canvasRef?.current?.width / 2, 25);
-  }, [notice.text]);
-
   // ---Buttons
   function toggleMuteAudio(boolean) {
     if (stream) {
@@ -403,6 +382,52 @@ export default function RealtimeDebate({ socket, debateId }) {
     });
   }
 
+  // ---Muted(default)
+  useEffect(() => {
+    if (isConnected) {
+      toggleMuteAudio(true);
+      toggleMuteVideo(true);
+    }
+  }, [isConnected]);
+
+  // ---Start
+  function startDebate() {
+    setIsStartBtnOn(false);
+    socket.emit("start_debate_offer", { debateId });
+  }
+
+  // ---Notice
+  useEffect(() => {
+    let color;
+    switch (notice?.turn) {
+      case "pre":
+        color = "black";
+        break;
+      case "pros":
+        color = "#ff9425";
+        break;
+      case "cons":
+        color = "#6667ab";
+        break;
+    }
+
+    const backgroundCtx = canvasRef?.current?.getContext("2d");
+    if (backgroundCtx) {
+      backgroundCtx.fillStyle = color;
+      backgroundCtx.fillRect(0, 0, canvasRef?.current?.width, 40);
+    }
+
+    const noticeCtx = canvasRef?.current?.getContext("2d");
+    if (noticeCtx) {
+      noticeCtx.font = "18px poppins";
+      noticeCtx.fillStyle = "White";
+      noticeCtx.textAlign = "center";
+    }
+
+    //! 타이머 추가해서 수정 필요
+    noticeCtx.fillText(`${notice.text}`, canvasRef?.current?.width / 2, 25);
+  }, [notice.text, notice.time]);
+
   return (
     <div>
       <Modals
@@ -414,6 +439,11 @@ export default function RealtimeDebate({ socket, debateId }) {
         isLeaveModalOn={isLeaveModalOn}
         setIsLeaveModalOn={setIsLeaveModalOn}
         disconnect={disconnect}
+        isStartModalOn={isStartModalOn}
+        setIsStartModalOn={setIsStartModalOn}
+        setIsStarted={setIsStarted}
+        isRejectModalOn={isRejectModalOn}
+        setIsRejectModalOn={setIsRejectModalOn}
       />
       <div className="w-screen h-screen flex justify-center items-center fixed">
         <video ref={myVideoRef} muted autoPlay playsInline width="0" height="0"></video>
@@ -426,7 +456,11 @@ export default function RealtimeDebate({ socket, debateId }) {
           </div>
           <div className="font-poppins font-bold text-24">{debateInfo.title}</div>
           <div className="w-14 flex justify-end">
-            {isStarted ? <YellowBtn text="Start" callback={() => {}} /> : null}
+            {isStarted ? null : isStartBtnOn ? (
+              <YellowBtn text="Start" callback={startDebate} />
+            ) : (
+              <div className="mt-2 mr-4 capitalize text-14 font-poppins font-medium text-ducks-blue-6667ab">Waiting...</div>
+            )}
             <YellowBtn
               text="Exit"
               callback={() => {
@@ -438,7 +472,7 @@ export default function RealtimeDebate({ socket, debateId }) {
         <div>
           <canvas ref={canvasRef} width="1280px" height="660px"></canvas>
         </div>
-        <Buttons isAudioMuted={isAudioMuted} toggleMuteAudio={toggleMuteAudio} isVideoMuted={isVideoMuted} toggleMuteVideo={toggleMuteVideo} shareScreen={shareScreen} isConnected={isConnected} />
+        <Buttons isAudioMuted={isAudioMuted} toggleMuteAudio={toggleMuteAudio} isVideoMuted={isVideoMuted} toggleMuteVideo={toggleMuteVideo} shareScreen={shareScreen} isStarted={isStarted} />
       </div>
     </div>
   );

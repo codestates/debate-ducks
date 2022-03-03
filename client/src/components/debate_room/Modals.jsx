@@ -12,9 +12,28 @@ Modals.propTypes = {
   isLeaveModalOn: PropTypes.bool,
   setIsLeaveModalOn: PropTypes.func,
   disconnect: PropTypes.func,
+  isStartModalOn: PropTypes.bool,
+  setIsStartModalOn: PropTypes.func,
+  setIsStarted: PropTypes.func,
+  isRejectModalOn: PropTypes.bool,
+  setIsRejectModalOn: PropTypes.func,
 };
 
-export default function Modals({ socket, debateId, isExceedModalOn, isErrorModalOn, isPeerLeaveModalOn, isLeaveModalOn, setIsLeaveModalOn, disconnect }) {
+export default function Modals({
+  socket,
+  debateId,
+  isExceedModalOn,
+  isErrorModalOn,
+  isPeerLeaveModalOn,
+  isLeaveModalOn,
+  setIsLeaveModalOn,
+  disconnect,
+  isStartModalOn,
+  setIsStartModalOn,
+  setIsStarted,
+  isRejectModalOn,
+  setIsRejectModalOn,
+}) {
   const navigate = useNavigate();
 
   function goToDebate() {
@@ -44,8 +63,7 @@ export default function Modals({ socket, debateId, isExceedModalOn, isErrorModal
       )}
       {!isPeerLeaveModalOn ? null : (
         <div className={modalCSS}>
-          <div width="1280px" height="764px"></div>
-          <JustConfirmModal content={{ title: "Finished!", text: "Your partner has ended the debate. You will be redirected to the debate page. ", btn: "OK" }} callback={goToDebate} />
+          <JustConfirmModal content={{ title: "Finished!", text: "Your opponent has ended the debate. You will be redirected to the debate post.", btn: "OK" }} callback={goToDebate} />
         </div>
       )}
       {!isLeaveModalOn ? null : (
@@ -56,6 +74,32 @@ export default function Modals({ socket, debateId, isExceedModalOn, isErrorModal
               setIsLeaveModalOn(false);
             }}
             confirmCallback={goToDebate}
+          />
+        </div>
+      )}
+      {!isStartModalOn ? null : (
+        <div className={modalCSS}>
+          <ConfirmModal
+            content={{ title: "Start!", text: "Are you ready to start the debate?", left: "NO", right: "YES" }}
+            cancelCallback={() => {
+              setIsStartModalOn(false);
+              socket.emit("start_debate_reject", { debateId });
+            }}
+            confirmCallback={() => {
+              setIsStartModalOn(false);
+              setIsStarted(true);
+              socket.emit("start_debate_consent", { debateId });
+            }}
+          />
+        </div>
+      )}
+      {!isRejectModalOn ? null : (
+        <div className={modalCSS}>
+          <JustConfirmModal
+            content={{ title: "Rejected!", text: "Your opponent has rejected your request to start the debate. Please ask your opponent again.", btn: "OK" }}
+            callback={() => {
+              setIsRejectModalOn(false);
+            }}
           />
         </div>
       )}

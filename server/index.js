@@ -72,13 +72,15 @@ const { Server } = require("socket.io");
 const io = new Server(server, { cors: { origin: "*" } });
 
 io.on("connection", (socket) => {
+  // ---Join
   socket.on("join", (data, done) => {
     const userCount = io.sockets.adapter.rooms.get(data.debateId)?.size;
     if (userCount >= 2) {
-      done();
+      done("rejected");
     } else {
       socket.join(data.debateId);
       socket.to(data.debateId).emit("guest_join");
+      done("success");
     }
   });
 
@@ -90,6 +92,7 @@ io.on("connection", (socket) => {
     socket.to(data.debateId).emit("guest_signal", { signal: data.signal });
   });
 
+  // ---Leave
   socket.on("leave", (data) => {
     socket.to(data.debateId).emit("peer_disconnecting");
   });
@@ -100,12 +103,26 @@ io.on("connection", (socket) => {
     });
   });
 
+  // ---Screen Share
   socket.on("screen_on", (data) => {
     socket.to(data.debateId).emit("screen_on", { isPros: data.isPros });
   });
 
   socket.on("screen_off", (data) => {
     socket.to(data.debateId).emit("screen_off", { isPros: data.isPros });
+  });
+
+  // ---Start
+  socket.on("start_debate_offer", (data) => {
+    socket.to(data.debateId).emit("start_debate_offer");
+  });
+
+  socket.on("start_debate_reject", (data) => {
+    socket.to(data.debateId).emit("start_debate_reject");
+  });
+
+  socket.on("start_debate_consent", (data) => {
+    socket.to(data.debateId).emit("start_debate_consent");
   });
 });
 
