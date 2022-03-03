@@ -52,7 +52,7 @@ export default function Header() {
         {userInfo?.id ? (
           <div className="flex items-center">
             <HiBell className="text-24 mr-20 text-ducks-orange-ff9425" />
-            <div className="rounded-full w-32 h-32 bg-ducks-orange-ff9425 relative" onClick={toggleUserInfoModal}></div>
+            <img src={userInfo.profile} className="rounded-full w-32 h-32 bg-ducks-orange-ff9425 relative" onClick={toggleUserInfoModal}></img>
             {isUserModalOn ? <UserInfoModal content={userInfo}></UserInfoModal> : null}
           </div>
         ) : (
