@@ -9,7 +9,7 @@ export default function EditOrDeleteModal({ editCallback, deleteCallback }) {
   }
   const style = "text-ducks-gray-ccc hover:text-ducks-gray-666 py-1 px-3 duration-200 ease-linear hover:cursor-pointer text-14";
   return (
-    <div className="w-max border border-solid border-ducks-gray-ccc text-center m-3 font-poppins rounded-12 bg-white">
+    <div className="w-max border border-solid border-ducks-gray-ccc text-center m-3 font-poppins rounded-12 bg-white z-50">
       <div className={`${style} border-b border-solid border-ducks-gray-ccc`} onClick={handleEdit}>
         Edit
       </div>

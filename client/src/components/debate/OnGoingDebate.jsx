@@ -1,119 +1,164 @@
-// import axios from "axios";
-import { StrawBtn } from "../btn/BaseBtn";
-import EditOrDeleteModal from "../modal/EditOrDeleteModal";
-import { HiOutlineDotsVertical } from "react-icons/hi";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
-import ConfirmModal from "../modal/ConfirmModal";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { StrawBtn } from "../btn/BigBtn";
+import { Politics, Society, Economics, Science, IT, Environment, Education, History, Sports, Philosophy, Culture, JustForFun } from "./CategoryBackground";
 
 export default function OnGoingDebate(debate) {
-  const [isModalOn, setIsModalOn] = useState(false);
   const navigate = useNavigate();
-  //console.log(debate.debateInfo);
+  const { debateId } = useParams();
+  const userInfo = useSelector((state) => state.user.data);
+
+  const [isModalOn, setIsModalOn] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  console.log("isModalOn : ", isModalOn);
+  console.log("isConfirmOpen : ", isConfirmOpen);
 
   function toggleModal() {
     setIsModalOn(!isModalOn);
   }
 
-  //confirm모달 오픈
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
-  const openModalHandler = () => {
-    setIsConfirmOpen(true);
-  };
-
-  function deleteDebate() {
-    axios
-      .delete(`${process.env.REACT_APP_API_URL}/debate/${debate.debateInfo.id}`)
-      .then((res) => {
-        console.log(res);
-        alert("delete success!");
-        navigate("/forum");
-      })
-      .catch((err) => err);
+  function openModalHandler() {
+    setIsConfirmOpen(!isConfirmOpen);
   }
 
+  const handleParticipate = () => {
+    console.log("axios 하기 전입니다", userInfo);
+    if (debate.debateInfo.host_id === debate.debateInfo.pros_id) {
+      axios.patch(`${process.env.REACT_APP_API_URL}/debate/${debateId}`, { participant_id: userInfo.id, cons_id: userInfo.id }).then(() => navigate(`/debate/${debateId}`));
+    } else if (debate.debateInfo.host_id === debate.debateInfo.cons_id) {
+      axios.patch(`${process.env.REACT_APP_API_URL}/debate/${debateId}`, { participant_id: userInfo.id, pros_id: userInfo.id });
+    } else {
+      console.log("Errorrrrrrrr");
+    }
+  };
+
+  const handleEnter = () => {
+    navigate(`/forum/debateroom/${debateId}`);
+  };
+
+  function handleEdit() {
+    navigate(`/forum/edit/debate/${debateId}`);
+  }
+
+  function handleDelete() {
+    axios.delete(`${process.env.REACT_APP_API_URL}/debate/${debateId}`).then(() => navigate("/forum"));
+  }
+
+  const Background = (debate) => {
+    switch (debate.debateInfo.category) {
+      case "Politics":
+        return (
+          <Politics
+            debate={debate}
+            isModalOn={isModalOn}
+            toggleModal={toggleModal}
+            debateId={debateId}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            isConfirmOpen={isConfirmOpen}
+            setIsConfirmOpen={setIsConfirmOpen}
+            openModalHandler={openModalHandler}
+          />
+        );
+      case "Society":
+        return <Society {...debate} />;
+      case "Economics":
+        return <Economics {...debate} />;
+      case "Science":
+        return <Science {...debate} />;
+      case "IT":
+        return <IT {...debate} />;
+      case "Environment":
+        return <Environment {...debate} />;
+      case "Education":
+        return <Education {...debate} />;
+      case "History":
+        return <History {...debate} />;
+      case "Sports":
+        return <Sports {...debate} />;
+      case "Philosophy":
+        return <Philosophy {...debate} />;
+      case "Culture":
+        return <Culture {...debate} />;
+      case "Just For Fun":
+        return <JustForFun {...debate} />;
+    }
+  };
+
   return (
-    <>
-      <div className="bg-politics w-full h-410 bg-cover bg-center flex justify-center items-center">
-        <h1 className="text-white text-48 font-poppins font-bold">{debate.debateInfo.title}</h1>
-      </div>
+    <div className="flex flex-col items-center">
+      <Background {...debate} />
       {!debate.debateInfo.participant_id ? (
         debate.debateInfo.host_id === debate.debateInfo.pros_id ? (
-          <div>
-            <HiOutlineDotsVertical onClick={toggleModal} />
-
-            {isModalOn ? (
-              <EditOrDeleteModal
-                editCallback={() => {
-                  navigate(`/forum/edit/${debate.debateInfo.id}`);
-                }}
-                deleteCallback={openModalHandler}
-              />
-            ) : null}
-            {isConfirmOpen ? (
-              <ConfirmModal
-                content={{ title: "Confirm", text: "Do you want to delete this debate?", left: "NO", right: "YES" }}
-                cancelCallback={() => {
-                  setIsConfirmOpen(false);
-                }}
-                confirmCallback={deleteDebate}
-              />
-            ) : null}
+          <div className="w-410 flex justify-between items-center my-60 z-30">
             <div>
-              <div>pros</div>
-              <img src={debate.prosProfile} className="w-140 h-140 object-cover rounded-full" />
+              <img src={debate.prosProfile} className="w-140 h-140 object-cover rounded-full mb-20 border-4 border-solid border-ducks-orange-ff9425" />
+              <div className="text-center text-ducks-orange-ff9425 font-poppins font-bold">
+                <div>pros</div>
+                <div>{debate.prosName}</div>
+              </div>
             </div>
+            <div className="text-24 font-poppins font-bold">VS</div>
             <div>
-              <div>cons</div>
-              <div className="bg-grayduck w-140 h-140 bg-cover rounded-full"></div>
+              <div className="bg-grayduck w-140 h-140 bg-cover rounded-full mb-20"></div>
+              <div className="text-center text-ducks-gray-ccc font-poppins">
+                <div className="font-bold">cons</div>
+                <div>not in</div>
+              </div>
             </div>
           </div>
         ) : (
-          <div>
-            <HiOutlineDotsVertical onClick={toggleModal} />
-            {isModalOn ? (
-              <EditOrDeleteModal
-                editCallback={() => {
-                  navigate(`/forum/edit/${debate.debateInfo.id}`);
-                }}
-                deleteCallback={openModalHandler}
-              />
-            ) : null}
-            {isConfirmOpen ? (
-              <ConfirmModal
-                content={{ title: "Confirm", text: "Do you want to delete this debate?", left: "NO", right: "YES" }}
-                cancelCallback={() => {
-                  setIsConfirmOpen(false);
-                }}
-                confirmCallback={deleteDebate}
-              />
-            ) : null}
-
+          <div className="w-410 flex justify-between items-center my-60 z-30">
             <div>
-              <div>pros</div>
-              <div className="bg-grayduck w-140 h-140 bg-cover rounded-full"></div>
+              <div className="bg-grayduck w-140 h-140 bg-cover rounded-full mb-20"></div>
+              <div className="text-center text-ducks-gray-ccc font-poppins">
+                <div className="font-bold">pros</div>
+                <div>not in</div>
+              </div>
             </div>
+            <div className="text-24 font-poppins font-bold">VS</div>
             <div>
-              <div>cons</div>
-              <img src={debate.consProfile} className="w-140 h-140 object-cover rounded-full" />
+              <img src={debate.consProfile} className="w-140 h-140 object-cover rounded-full mb-20 border-4 border-solid border-ducks-blue-6667ab" />
+              <div className="text-center text-ducks-blue-6667ab font-poppins font-bold">
+                <div>cons</div>
+                <div>{debate.consName}</div>
+              </div>
             </div>
           </div>
         )
       ) : (
-        <div>
+        <div className="w-410 flex justify-between items-center my-60 z-30">
           <div>
-            <div>pros</div>
-            <img src={debate.debateInfo.host_id === debate.debateInfo.pros_id ? debate.prosProfile : debate.consProfile} className="w-140 h-140 object-cover rounded-full" />
+            <img src={debate.prosProfile} className="w-140 h-140 object-cover rounded-full mb-20 border-4 border-solid border-ducks-orange-ff9425" />
+            <div className="text-center text-ducks-orange-ff9425 font-poppins font-bold">
+              <div>pros</div>
+              <div>{debate.prosName}</div>
+            </div>
           </div>
+          <div className="text-24 font-poppins font-bold">VS</div>
           <div>
-            <div>cons</div>
-            <img src={debate.debateInfo.host_id === debate.debateInfo.cons_id ? debate.consProfile : debate.prosProfile} className="w-140 h-140 object-cover rounded-full" />
+            <img src={debate.consProfile} className="w-140 h-140 object-cover rounded-full mb-20 border-4 border-solid border-ducks-blue-6667ab" />
+            <div className="text-center text-ducks-blue-6667ab font-poppins font-bold">
+              <div>cons</div>
+              <div>{debate.consName}</div>
+            </div>
           </div>
         </div>
       )}
-      <div>{debate.debateInfo.topic}</div>
-      {!debate.debateInfo.participant_id ? <StrawBtn text="participate" /> : null}
-    </>
+      <div className="w-960 h-0 border-solid border-b border-ducks-gray-eee"></div>
+      <div className="my-60 text-center">
+        <h1 className="font-bold text-24 mb-40">Topic</h1>
+        <div className="w-960 text-justify">{debate.debateInfo.topic}</div>
+      </div>
+      {!debate.debateInfo.participant_id ? <StrawBtn text="participate" callback={handleParticipate} /> : <StrawBtn text="enter debate room" callback={handleEnter} />}
+      <div className="w-960 h-0 border-solid border-b border-ducks-gray-eee my-60"></div>
+      <div className="flex justify-end">
+        <button>Edit</button>
+        <button>Delete</button>
+      </div>
+    </div>
   );
 }
