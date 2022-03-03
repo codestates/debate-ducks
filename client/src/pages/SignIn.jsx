@@ -4,7 +4,7 @@ export default function SignIn() {
   // const KAKAO_CLIENT_ID =
   // const KAKAO_REDIRECT_URI = "http://localhost:3000/oauth/kakao";
   console.log("process.env : ", process.env);
-  const KAKAO_LOGIN_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
+  const KAKAO_LOGIN_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code&prompt=login`;
 
   const socialLoginHandler = () => {
     window.location.assign(KAKAO_LOGIN_URL);

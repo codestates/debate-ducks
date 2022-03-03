@@ -101,14 +101,42 @@ module.exports = {
 
   update_debate: async (req, res) => {
     const debateId = req.params.debate_id;
-    const { participant_id, pros_id, cons_id } = req.body;
+    const { title, topic, participant_id, pros_id, cons_id } = req.body;
+
+    console.log("title, topic : ", title, topic);
 
     if (!debateId) {
       return res.status(400).json({ message: "debateId가 들어오지 않았습니다." });
     }
 
+    if (title) {
+      await models.debate.update(
+        {
+          title: title,
+        },
+        {
+          where: {
+            id: debateId,
+          },
+        },
+      );
+    }
+
+    if (topic) {
+      await models.debate.update(
+        {
+          topic: topic,
+        },
+        {
+          where: {
+            id: debateId,
+          },
+        },
+      );
+    }
+
     if (participant_id) {
-      await models.user.update(
+      await models.debate.update(
         {
           participant_id: participant_id,
         },
@@ -121,7 +149,7 @@ module.exports = {
     }
 
     if (pros_id) {
-      await models.user.update(
+      await models.debate.update(
         {
           pros_id: pros_id,
         },
@@ -134,7 +162,7 @@ module.exports = {
     }
 
     if (cons_id) {
-      await models.user.update(
+      await models.debate.update(
         {
           cons_id: cons_id,
         },
@@ -199,20 +227,18 @@ module.exports = {
     // const { category, page, search } = req.query;
     // console.log("req.query : ", req.query);
 
-    // res.status(200).json({ data: null, message: "토론 리스트를 조회합니다. 아직 미구현입니다." });
+    // // res.status(200).json({ data: null, message: "토론 리스트를 조회합니다. 아직 미구현입니다." });
 
     // let pageNum = page;
     // let offset = 0;
     // let limit = 10;
-    // let count = await models.debate.count({});
-    // console.log("디베이트의 수 : ", count);
-
-    // let lastpage = parseInt(count / limit)
 
     // if (pageNum > 1) {
-    //   offset = limit * (pageNum - 1)
+    //   offset = limit * (pageNum - 1);
     // }
+
     const debateList = await models.debate.findAll({});
-    res.status(200).json({ data: debateList, message: "토론 리스트를 조회합니다. 아직 미구현입니다." });
+
+    res.status(200).json({ data: debateList, message: "토론 리스트 조회 성공" });
   },
 };

@@ -3,10 +3,6 @@ const models = require("../models");
 module.exports = {
   create_vote: async (req, res) => {
     const { user_id, debate_id } = req.params;
-
-    console.log("body.pros : ", req.body.pros);
-    console.log("typeof body.pros", typeof req.body.pros);
-
     const pros = req.body.pros;
 
     console.log("user_id : ", user_id);
@@ -14,6 +10,10 @@ module.exports = {
 
     if (!user_id || !debate_id) {
       res.status(400).json({ data: null, message: "투표를 하기 위한 유저id 혹은 토론id가 존재하지 않습니다." });
+    }
+
+    if (!(typeof pros === "boolean")) {
+      return res.status(400).json({ data: null, message: "찬성 반대에 관한 내용이 없습니다." });
     }
 
     if (pros === true) {
