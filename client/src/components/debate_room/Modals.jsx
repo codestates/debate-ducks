@@ -6,39 +6,26 @@ import ConfirmModal from "../modal/ConfirmModal";
 Modals.propTypes = {
   socket: PropTypes.object,
   debateId: PropTypes.string,
-  stream: PropTypes.object,
-  myPeer: PropTypes.object,
   isExceedModalOn: PropTypes.bool,
   isErrorModalOn: PropTypes.bool,
   isPeerLeaveModalOn: PropTypes.bool,
   isLeaveModalOn: PropTypes.bool,
   setIsLeaveModalOn: PropTypes.func,
+  disconnect: PropTypes.func,
 };
 
-export default function Modals({ socket, debateId, stream, myPeer, isExceedModalOn, isErrorModalOn, isPeerLeaveModalOn, isLeaveModalOn, setIsLeaveModalOn }) {
+export default function Modals({ socket, debateId, isExceedModalOn, isErrorModalOn, isPeerLeaveModalOn, isLeaveModalOn, setIsLeaveModalOn, disconnect }) {
   const navigate = useNavigate();
 
-  // 방 나가기
   function goToDebate() {
-    if (stream) {
-      stream.getTracks().forEach((track) => {
-        track.stop();
-      });
-    }
-    if (myPeer.current) {
-      myPeer.current.destroy();
-    }
-    socket.emit("leave", { debateId });
-    socket.disconnect();
+    disconnect();
     navigate(`/forum/debate/${debateId}`);
   }
 
-  // Styles
   const modalCSS = "w-screen h-screen flex justify-center items-center absolute z-50";
 
   return (
     <div>
-      {/* Modals */}
       {!isExceedModalOn ? null : (
         <div className={modalCSS}>
           <JustConfirmModal

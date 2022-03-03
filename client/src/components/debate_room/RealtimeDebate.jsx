@@ -5,6 +5,7 @@ import usePrevent from "../../hooks/usePrevent";
 import { YellowBtn } from "../btn/BaseBtn";
 import Modals from "./Modals";
 import Buttons from "./Buttons";
+import useSetInterval from "../../hooks/useSetInterval";
 import useQuery from "../../hooks/useQuery"; //! 테스트용
 
 RealtimeDebate.propTypes = { socket: PropTypes.object, debateId: PropTypes.string };
@@ -18,32 +19,35 @@ export default function RealtimeDebate({ socket, debateId }) {
   const prosName = "Yuchan";
   const consName = "Chesley";
   const debateInfo = { title: "Does Alien Exist?" };
+  const [isProsTurn] = useState(true);
 
-  // Variable: Modals
+  // ---Modals 변수
   const [isExceedModalOn, setIsExceedModalOn] = useState(false);
   const [isErrorModalOn, setIsErrorModalOn] = useState(false);
   const [isPeerLeaveModalOn, setIsPeerLeaveModalOn] = useState(false);
   const [isLeaveModalOn, setIsLeaveModalOn] = useState(false);
 
-  // Variable: Buttons
+  // ---Buttons 변수
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
 
-  // Variable: Socket, WebRTC
+  // ---Socket, WebRTC 변수
   const [stream, setStream] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [isProsScreenOn, setIsProsScreenOn] = useState(false);
+  const [isConsScreenOn, setIsConsScreenOn] = useState(false);
   const myPeer = useRef();
   const myVideoRef = useRef(null);
   const peerVideoRef = useRef(null);
 
-  // Variable: Canvas
+  // ---Canvas 변수
   const canvasRef = useRef(null);
   const [notice, setNotice] = useState({ turn: "pre", text: "" });
 
-  // Hook: 뒤로가기 방지
+  // ---뒤로가기 방지
   usePrevent();
 
-  // Hook: 입장
+  // ---Socket, WebRTC
   useEffect(() => {
     // console.log("join"); //*console
     socket.emit("join", { debateId }, () => {
@@ -112,11 +116,6 @@ export default function RealtimeDebate({ socket, debateId }) {
             // console.log("host/guest_signal"); //*console
             peer.signal(data.signal);
           });
-
-          socket.on("peer_disconnecting", () => {
-            setIsConnected(false);
-            setIsPeerLeaveModalOn(true);
-          });
         })
         .catch(() => {
           setIsConnected(false);
@@ -163,11 +162,6 @@ export default function RealtimeDebate({ socket, debateId }) {
           });
 
           peer.signal(data.signal);
-
-          socket.on("peer_disconnecting", () => {
-            setIsConnected(false);
-            setIsPeerLeaveModalOn(true);
-          });
         })
         .catch(() => {
           setIsConnected(false);
@@ -175,74 +169,167 @@ export default function RealtimeDebate({ socket, debateId }) {
         });
     });
 
-    // Event: Canvas
-    function drawImage() {
-      // Pros
-      const prosCtx = canvasRef?.current?.getContext("2d");
-      if (prosCtx) {
-        prosCtx.fillStyle = "#ff9425";
-        prosCtx.fillRect(10, 90, 620, 470);
-      }
+    socket.on("peer_disconnecting", () => {
+      disconnect();
+      setIsConnected(false);
+      setIsPeerLeaveModalOn(true);
+    });
 
-      const prosBgCtx = canvasRef?.current?.getContext("2d");
-      if (prosBgCtx) {
-        prosBgCtx.fillStyle = "White";
-        prosBgCtx.fillRect(20, 580, 600, 60);
+    socket.on("screen_on", (data) => {
+      if (data.isPros === "true") {
+        setIsProsScreenOn(true);
+      } else if (data.isPros === "false") {
+        setIsConsScreenOn(true);
       }
+    });
 
-      const prosTextCtx = canvasRef?.current?.getContext("2d");
-      if (prosTextCtx) {
-        prosTextCtx.font = "32px poppins";
-        prosTextCtx.fillStyle = "#ff9425";
-        prosTextCtx.textAlign = "center";
-        prosTextCtx.fillText(`${prosName}`, 320, 620);
+    socket.on("screen_off", (data) => {
+      if (data.isPros === "true") {
+        setIsProsScreenOn(false);
+      } else if (data.isPros === "false") {
+        setIsConsScreenOn(false);
       }
-
-      // Cons
-      const consCtx = canvasRef?.current?.getContext("2d");
-      if (consCtx) {
-        consCtx.fillStyle = "#6667ab";
-        consCtx.fillRect(650, 90, 620, 470);
-      }
-
-      const consBgCtx = canvasRef?.current?.getContext("2d");
-      if (consBgCtx) {
-        consBgCtx.fillStyle = "White";
-        consBgCtx.fillRect(660, 580, 600, 60);
-      }
-
-      const consTextCtx = canvasRef?.current?.getContext("2d");
-      if (consTextCtx) {
-        consTextCtx.font = "32px poppins";
-        consTextCtx.fillStyle = "#6667ab";
-        consTextCtx.textAlign = "center";
-        consTextCtx.fillText(`${consName}`, 960, 620);
-      }
-
-      // Draw
-      if (isPros === "true") {
-        canvasRef?.current?.getContext("2d").drawImage(myVideoRef?.current, 20, 100, 600, 450);
-        canvasRef?.current?.getContext("2d").drawImage(peerVideoRef?.current, 660, 100, 600, 450);
-      } else if (isPros === "false") {
-        canvasRef?.current?.getContext("2d").drawImage(peerVideoRef?.current, 20, 100, 600, 450);
-        canvasRef?.current?.getContext("2d").drawImage(myVideoRef?.current, 660, 100, 600, 450);
-      }
-      //! 자기턴 화면공유일 때는 전체 보여주는 로직 짜야함 따로 빼서 짜야 할 듯
-    }
-
-    window.setInterval(() => {
-      drawImage();
-    }, 1000 / 60);
+    });
   }, []);
 
-  // Hook: 연결 시 화면 꺼진 상태가 기본값
+  // ---Canvas
+  const [drawVideoStart, drawVideoStop] = useSetInterval(drawVideo, 1000 / 60);
+  const [drawScreenStart, drawScreenStop] = useSetInterval(drawScreen, 1000 / 60);
+
+  useEffect(() => {
+    drawVideoStart();
+    if ((isProsScreenOn && isProsTurn) || (isConsScreenOn && !isProsTurn)) {
+      drawVideoStop();
+      drawScreenStart();
+    } else {
+      drawScreenStop();
+    }
+  }, [isProsScreenOn, isConsScreenOn]);
+
+  function drawVideo() {
+    // Eraser
+    const EraserCtx = canvasRef?.current?.getContext("2d");
+    if (EraserCtx) {
+      EraserCtx.fillStyle = "White";
+      EraserCtx.fillRect(0, 40, 1280, 620);
+    }
+
+    // Pros
+    const prosCtx = canvasRef?.current?.getContext("2d");
+    if (prosCtx) {
+      prosCtx.fillStyle = "#ff9425";
+      prosCtx.fillRect(10, 90, 620, 470);
+    }
+
+    const prosBgCtx = canvasRef?.current?.getContext("2d");
+    if (prosBgCtx) {
+      prosBgCtx.fillStyle = "White";
+      prosBgCtx.fillRect(20, 580, 600, 60);
+    }
+
+    const prosTextCtx = canvasRef?.current?.getContext("2d");
+    if (prosTextCtx) {
+      prosTextCtx.font = "32px poppins";
+      prosTextCtx.fillStyle = "#ff9425";
+      prosTextCtx.textAlign = "center";
+      prosTextCtx.fillText(`${prosName}`, 320, 620);
+    }
+
+    // Cons
+    const consCtx = canvasRef?.current?.getContext("2d");
+    if (consCtx) {
+      consCtx.fillStyle = "#6667ab";
+      consCtx.fillRect(650, 90, 620, 470);
+    }
+
+    const consBgCtx = canvasRef?.current?.getContext("2d");
+    if (consBgCtx) {
+      consBgCtx.fillStyle = "White";
+      consBgCtx.fillRect(660, 580, 600, 60);
+    }
+
+    const consTextCtx = canvasRef?.current?.getContext("2d");
+    if (consTextCtx) {
+      consTextCtx.font = "32px poppins";
+      consTextCtx.fillStyle = "#6667ab";
+      consTextCtx.textAlign = "center";
+      consTextCtx.fillText(`${consName}`, 960, 620);
+    }
+
+    // Draw
+    if (isPros === "true") {
+      canvasRef?.current?.getContext("2d").drawImage(myVideoRef?.current, 20, 100, 600, 450);
+      canvasRef?.current?.getContext("2d").drawImage(peerVideoRef?.current, 660, 100, 600, 450);
+    } else if (isPros === "false") {
+      canvasRef?.current?.getContext("2d").drawImage(peerVideoRef?.current, 20, 100, 600, 450);
+      canvasRef?.current?.getContext("2d").drawImage(myVideoRef?.current, 660, 100, 600, 450);
+    }
+  }
+
+  function drawScreen() {
+    // Eraser
+    const EraserCtx = canvasRef?.current?.getContext("2d");
+    if (EraserCtx) {
+      EraserCtx.fillStyle = "White";
+      EraserCtx.fillRect(0, 40, 1280, 620);
+    }
+
+    // Resize
+    function resize(video) {
+      let width = 0;
+      let height = 0;
+
+      if (video.videoWidth >= video.videoHeight) {
+        width = 1280;
+        height = (1280 * video.videoHeight) / video.videoWidth;
+
+        if (height > 620) {
+          width = (1280 * 620) / height;
+          height = 620;
+        }
+      } else if (video.videoWidth < video.videoHeight) {
+        width = (620 * video.videoWidth) / video.videoHeight;
+        height = 620;
+      }
+
+      return [width, height];
+    }
+
+    // Draw
+    if ((isPros === "true" && isProsTurn) || (isPros === "false" && !isProsTurn)) {
+      const [width, height] = resize(myVideoRef?.current);
+      canvasRef?.current?.getContext("2d").drawImage(myVideoRef?.current, 640 - width / 2, 350 - height / 2, width, height);
+    } else if ((isPros === "true" && !isProsTurn) || (isPros === "false" && isProsTurn)) {
+      const [width, height] = resize(peerVideoRef?.current);
+      canvasRef?.current?.getContext("2d").drawImage(peerVideoRef?.current, 640 - width / 2, 350 - height / 2, width, height);
+    }
+  }
+
+  // ---Disconnect
+  function disconnect() {
+    myVideoRef?.current?.srcObject.getTracks().forEach((track) => {
+      track.stop();
+    });
+
+    peerVideoRef?.current?.srcObject?.getTracks().forEach((track) => {
+      track.stop();
+    });
+
+    myPeer?.current?.destroy();
+
+    socket.emit("leave", { debateId });
+    socket.disconnect();
+  }
+
+  // ---Muted(default)
   useEffect(() => {
     if (isConnected) {
+      toggleMuteAudio(true);
       toggleMuteVideo(true);
     }
   }, [isConnected]);
 
-  // Hook: Notice
+  // ---Notice
   useEffect(() => {
     let color;
     switch (notice?.turn) {
@@ -270,10 +357,11 @@ export default function RealtimeDebate({ socket, debateId }) {
       noticeCtx.textAlign = "center";
     }
 
+    //! 타이머 추가해서 수정 필요
     noticeCtx.fillText(`${notice.text}`, canvasRef?.current?.width / 2, 25);
   }, [notice.text]);
 
-  // Buttons
+  // ---Buttons
   function toggleMuteAudio(boolean) {
     if (stream) {
       setIsAudioMuted(boolean);
@@ -293,14 +381,24 @@ export default function RealtimeDebate({ socket, debateId }) {
       myPeer?.current?.replaceTrack(stream?.getVideoTracks()[0], screenStream?.getVideoTracks()[0], stream);
       if (myVideoRef.current) {
         myVideoRef.current.srcObject = screenStream;
+        if (isPros === "true") {
+          setIsProsScreenOn(true);
+        } else if (isPros === "false") {
+          setIsConsScreenOn(true);
+        }
+        socket.emit("screen_on", { debateId, isPros });
       }
-      console.log("공유"); //* console
       screenStream.getTracks()[0].onended = () => {
         myPeer?.current?.replaceTrack(screenStream?.getVideoTracks()[0], stream?.getVideoTracks()[0], stream);
         if (myVideoRef.current) {
           myVideoRef.current.srcObject = stream;
         }
-        console.log("종료"); //* console
+        if (isPros === "true") {
+          setIsProsScreenOn(false);
+        } else if (isPros === "false") {
+          setIsConsScreenOn(false);
+        }
+        socket.emit("screen_off", { debateId, isPros });
       };
     });
   }
@@ -310,13 +408,12 @@ export default function RealtimeDebate({ socket, debateId }) {
       <Modals
         socket={socket}
         debateId={debateId}
-        stream={stream}
-        myPeer={myPeer}
         isExceedModalOn={isExceedModalOn}
         isErrorModalOn={isErrorModalOn}
         isPeerLeaveModalOn={isPeerLeaveModalOn}
         isLeaveModalOn={isLeaveModalOn}
         setIsLeaveModalOn={setIsLeaveModalOn}
+        disconnect={disconnect}
       />
       <div className="w-screen h-screen flex justify-center items-center fixed">
         <video ref={myVideoRef} muted autoPlay playsInline width="0" height="0"></video>
@@ -341,7 +438,7 @@ export default function RealtimeDebate({ socket, debateId }) {
         <div>
           <canvas ref={canvasRef} width="1280px" height="660px"></canvas>
         </div>
-        <Buttons isAudioMuted={isAudioMuted} toggleMuteAudio={toggleMuteAudio} isVideoMuted={isVideoMuted} toggleMuteVideo={toggleMuteVideo} shareScreen={shareScreen} />
+        <Buttons isAudioMuted={isAudioMuted} toggleMuteAudio={toggleMuteAudio} isVideoMuted={isVideoMuted} toggleMuteVideo={toggleMuteVideo} shareScreen={shareScreen} isConnected={isConnected} />
       </div>
     </div>
   );

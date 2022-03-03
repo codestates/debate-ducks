@@ -99,6 +99,14 @@ io.on("connection", (socket) => {
       socket.to(room).emit("peer_disconnecting");
     });
   });
+
+  socket.on("screen_on", (data) => {
+    socket.to(data.debateId).emit("screen_on", { isPros: data.isPros });
+  });
+
+  socket.on("screen_off", (data) => {
+    socket.to(data.debateId).emit("screen_off", { isPros: data.isPros });
+  });
 });
 
 app.use((req, res, next) => {
