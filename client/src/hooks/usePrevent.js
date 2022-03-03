@@ -14,13 +14,14 @@ export default function usePrevent() {
     return () => window.removeEventListener("popstate", preventGoBack);
   }, []);
 
-  useEffect(() => {
-    const listener = (ev) => {
-      ev.preventDefault();
-      ev.returnValue = "";
-    };
-    window.addEventListener("beforeunload", listener);
+  // useEffect(() => {
+  //   const listener = (ev) => {
+  //     ev.preventDefault()
+  //     ev.returnValue = "";
+  //   };
 
-    return () => window.removeEventListener("beforeunload", listener);
-  }, []);
+  //   window.addEventListener("beforeunload", listener);
+
+  //   return () => window.removeEventListener("beforeunload", listener);
+  // }, []);
 }

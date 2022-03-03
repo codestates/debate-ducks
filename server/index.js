@@ -50,7 +50,7 @@ io.on("connection", (socket) => {
       done();
     } else {
       socket.join(data.debateId);
-      socket.to(data.debateId).emit("guest_join", { userName: data.userName });
+      socket.to(data.debateId).emit("guest_join");
     }
   });
 
@@ -63,12 +63,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("leave", (data) => {
-    socket.to(data.debateId).emit("peer_disconnect");
+    socket.to(data.debateId).emit("peer_disconnecting");
   });
 
-  socket.on("disconnect", () => {
+  socket.on("disconnecting", () => {
     socket.rooms.forEach((room) => {
-      socket.to(room).emit("peer_disconnect");
+      socket.to(room).emit("peer_disconnecting");
     });
   });
 });

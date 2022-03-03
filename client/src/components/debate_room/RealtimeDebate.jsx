@@ -1,46 +1,69 @@
 import PropTypes from "prop-types";
 import Peer from "simple-peer";
 import { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import usePrevent from "../../hooks/usePrevent";
-import JustConfirmModal from "../modal/JustConfirmModal";
-import ConfirmModal from "../modal/ConfirmModal";
+import { YellowBtn } from "../btn/BaseBtn";
+import Modals from "./Modals";
+import Buttons from "./Buttons";
+import useQuery from "../../hooks/useQuery"; //! 테스트용
 
 RealtimeDebate.propTypes = { socket: PropTypes.object, debateId: PropTypes.string };
 
 export default function RealtimeDebate({ socket, debateId }) {
-  const navigate = useNavigate();
+  //! 테스트용
+  const query = useQuery();
+  const isPros = query.get("pros");
+  //! 임시 변수;
+  const [isStarted] = useState(false);
+  const prosName = "Yuchan";
+  const consName = "Chesley";
+  const debateInfo = { title: "Does Alien Exist?" };
 
-  const [notice, setNotice] = useState("");
-  const [stream, setStream] = useState(null);
-  const [isConnected, setIsConnected] = useState(false);
-  const [audioMuted, setAudioMuted] = useState(false);
-  const [videoMuted, setVideoMuted] = useState(false);
+  // Variable: Modals
   const [isExceedModalOn, setIsExceedModalOn] = useState(false);
   const [isErrorModalOn, setIsErrorModalOn] = useState(false);
   const [isPeerLeaveModalOn, setIsPeerLeaveModalOn] = useState(false);
   const [isLeaveModalOn, setIsLeaveModalOn] = useState(false);
 
+  // Variable: Buttons
+  const [isAudioMuted, setIsAudioMuted] = useState(false);
+  const [isVideoMuted, setIsVideoMuted] = useState(false);
+
+  // Variable: Socket, WebRTC
+  const [stream, setStream] = useState(null);
+  const [isConnected, setIsConnected] = useState(false);
+  const myPeer = useRef();
   const myVideoRef = useRef(null);
   const peerVideoRef = useRef(null);
-  const myPeer = useRef();
 
-  //! 임시 변수
-  const userName = "Yuchan";
-  const isStarted = false;
+  // Variable: Canvas
+  const canvasRef = useRef(null);
+  const [notice, setNotice] = useState({ turn: "pre", text: "" });
 
+  // Hook: 뒤로가기 방지
   usePrevent();
 
+  // Hook: 입장
   useEffect(() => {
     // console.log("join"); //*console
-    socket.emit("join", { debateId, userName }, () => {
+    socket.emit("join", { debateId }, () => {
       setIsExceedModalOn(true);
     });
 
-    // 두 번째 사람 입장 시 첫 번째 사람에게 발생하는 이벤트
-    socket.on("guest_join", (data) => {
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
+      setStream(stream);
+
+      if (myVideoRef.current) {
+        myVideoRef.current.srcObject = stream;
+      }
+    });
+
+    setNotice({ ...notice, ...{ turn: "pre", text: "Waiting for another debater to join." } });
+
+    // Event: 두 번째 사람 입장 시 첫 번째 사람에게 발생
+    socket.on("guest_join", () => {
       // console.log("host/guest_join"); //*console
-      setNotice(`${data.userName} join the room.`);
+      setNotice({ ...notice, ...{ turn: "pros", text: "To start the debate, press the start button in the upper right corner." } });
 
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })
@@ -90,7 +113,7 @@ export default function RealtimeDebate({ socket, debateId }) {
             peer.signal(data.signal);
           });
 
-          socket.on("peer_disconnect", () => {
+          socket.on("peer_disconnecting", () => {
             setIsConnected(false);
             setIsPeerLeaveModalOn(true);
           });
@@ -101,10 +124,10 @@ export default function RealtimeDebate({ socket, debateId }) {
         });
     });
 
-    // 두 번째 사람 입장 시 두 번째 사람에게 발생하는 이벤트
+    // Event: 두 번째 사람 입장 시 두 번째 사람에게 발생
     socket.on("host_signal", (data) => {
       // console.log("guest/host_signal"); //*console
-      setNotice(`You join the room.`);
+      setNotice({ ...notice, ...{ turn: "cons", text: "To start the debate, press the start button in the upper right corner." } });
 
       navigator.mediaDevices
         .getUserMedia({ video: true, audio: true })
@@ -141,7 +164,7 @@ export default function RealtimeDebate({ socket, debateId }) {
 
           peer.signal(data.signal);
 
-          socket.on("peer_disconnect", () => {
+          socket.on("peer_disconnecting", () => {
             setIsConnected(false);
             setIsPeerLeaveModalOn(true);
           });
@@ -151,121 +174,175 @@ export default function RealtimeDebate({ socket, debateId }) {
           setIsErrorModalOn(true);
         });
     });
+
+    // Event: Canvas
+    function drawImage() {
+      // Pros
+      const prosCtx = canvasRef?.current?.getContext("2d");
+      if (prosCtx) {
+        prosCtx.fillStyle = "#ff9425";
+        prosCtx.fillRect(10, 90, 620, 470);
+      }
+
+      const prosBgCtx = canvasRef?.current?.getContext("2d");
+      if (prosBgCtx) {
+        prosBgCtx.fillStyle = "White";
+        prosBgCtx.fillRect(20, 580, 600, 60);
+      }
+
+      const prosTextCtx = canvasRef?.current?.getContext("2d");
+      if (prosTextCtx) {
+        prosTextCtx.font = "32px poppins";
+        prosTextCtx.fillStyle = "#ff9425";
+        prosTextCtx.textAlign = "center";
+        prosTextCtx.fillText(`${prosName}`, 320, 620);
+      }
+
+      // Cons
+      const consCtx = canvasRef?.current?.getContext("2d");
+      if (consCtx) {
+        consCtx.fillStyle = "#6667ab";
+        consCtx.fillRect(650, 90, 620, 470);
+      }
+
+      const consBgCtx = canvasRef?.current?.getContext("2d");
+      if (consBgCtx) {
+        consBgCtx.fillStyle = "White";
+        consBgCtx.fillRect(660, 580, 600, 60);
+      }
+
+      const consTextCtx = canvasRef?.current?.getContext("2d");
+      if (consTextCtx) {
+        consTextCtx.font = "32px poppins";
+        consTextCtx.fillStyle = "#6667ab";
+        consTextCtx.textAlign = "center";
+        consTextCtx.fillText(`${consName}`, 960, 620);
+      }
+
+      // Draw
+      if (isPros === "true") {
+        canvasRef?.current?.getContext("2d").drawImage(myVideoRef?.current, 20, 100, 600, 450);
+        canvasRef?.current?.getContext("2d").drawImage(peerVideoRef?.current, 660, 100, 600, 450);
+      } else if (isPros === "false") {
+        canvasRef?.current?.getContext("2d").drawImage(peerVideoRef?.current, 20, 100, 600, 450);
+        canvasRef?.current?.getContext("2d").drawImage(myVideoRef?.current, 660, 100, 600, 450);
+      }
+      //! 자기턴 화면공유일 때는 전체 보여주는 로직 짜야함 따로 빼서 짜야 할 듯
+    }
+
+    window.setInterval(() => {
+      drawImage();
+    }, 1000 / 60);
   }, []);
 
-  // 음소거 및 카메라 끄기
-  function toggleMuteAudio() {
-    if (stream) {
-      setAudioMuted(!audioMuted);
-      stream.getAudioTracks()[0].enabled = audioMuted;
-    }
-  }
-
-  function toggleMuteVideo() {
-    if (stream) {
-      setVideoMuted(!videoMuted);
-      stream.getVideoTracks()[0].enabled = videoMuted;
-    }
-  }
-
+  // Hook: 연결 시 화면 꺼진 상태가 기본값
   useEffect(() => {
-    if (stream) {
-      setVideoMuted(true);
-      stream.getVideoTracks()[0].enabled = false;
+    if (isConnected) {
+      toggleMuteVideo(true);
     }
   }, [isConnected]);
 
-  // 화면 공유
+  // Hook: Notice
+  useEffect(() => {
+    let color;
+    switch (notice?.turn) {
+      case "pre":
+        color = "black";
+        break;
+      case "pros":
+        color = "#ff9425";
+        break;
+      case "cons":
+        color = "#6667ab";
+        break;
+    }
+
+    const backgroundCtx = canvasRef?.current?.getContext("2d");
+    if (backgroundCtx) {
+      backgroundCtx.fillStyle = color;
+      backgroundCtx.fillRect(0, 0, canvasRef?.current?.width, 40);
+    }
+
+    const noticeCtx = canvasRef?.current?.getContext("2d");
+    if (noticeCtx) {
+      noticeCtx.font = "18px poppins";
+      noticeCtx.fillStyle = "White";
+      noticeCtx.textAlign = "center";
+    }
+
+    noticeCtx.fillText(`${notice.text}`, canvasRef?.current?.width / 2, 25);
+  }, [notice.text]);
+
+  // Buttons
+  function toggleMuteAudio(boolean) {
+    if (stream) {
+      setIsAudioMuted(boolean);
+      stream.getAudioTracks()[0].enabled = !boolean;
+    }
+  }
+
+  function toggleMuteVideo(boolean) {
+    if (stream) {
+      setIsVideoMuted(boolean);
+      stream.getVideoTracks()[0].enabled = !boolean;
+    }
+  }
+
   function shareScreen() {
     navigator.mediaDevices.getDisplayMedia({ cursor: true }).then((screenStream) => {
-      myPeer.current.replaceTrack(stream.getVideoTracks()[0], screenStream.getVideoTracks()[0], stream);
-      myVideoRef.current.srcObject = screenStream;
+      myPeer?.current?.replaceTrack(stream?.getVideoTracks()[0], screenStream?.getVideoTracks()[0], stream);
+      if (myVideoRef.current) {
+        myVideoRef.current.srcObject = screenStream;
+      }
+      console.log("공유"); //* console
       screenStream.getTracks()[0].onended = () => {
-        myPeer.current.replaceTrack(screenStream.getVideoTracks()[0], stream.getVideoTracks()[0], stream);
-        myVideoRef.current.srcObject = stream;
+        myPeer?.current?.replaceTrack(screenStream?.getVideoTracks()[0], stream?.getVideoTracks()[0], stream);
+        if (myVideoRef.current) {
+          myVideoRef.current.srcObject = stream;
+        }
+        console.log("종료"); //* console
       };
     });
   }
 
-  // 방 나가기
-  function goToDebate() {
-    if (stream) {
-      stream.getTracks().forEach((track) => {
-        track.stop();
-      });
-    }
-    if (myPeer.current) {
-      myPeer.current.destroy();
-    }
-    socket.emit("leave", { debateId });
-    socket.disconnect();
-    navigate(`/forum/debate/${debateId}`);
-  }
-
-  const modalClass = "w-screen h-screen flex justify-center items-center absolute bg-black bg-opacity-20 z-50";
-
   return (
     <div>
-      {isExceedModalOn ? (
-        <div className={modalClass}>
-          <JustConfirmModal
-            content={{ title: "Sorry!", text: "Entry is not allowed. The room is currently full.", btn: "OK" }}
-            callback={() => {
-              socket.disconnect();
-              navigate(`/forum/debate/${debateId}`);
-            }}
-          />
-        </div>
-      ) : null}
-      {isErrorModalOn ? (
-        <div className={modalClass}>
-          <JustConfirmModal content={{ title: "Sorry!", text: "There's an unexpected error. Try joining again.", btn: "OK" }} callback={goToDebate} />
-        </div>
-      ) : null}
-      {isPeerLeaveModalOn ? (
-        <div className={modalClass}>
-          <JustConfirmModal content={{ title: "Finished!", text: "Your partner has ended the debate. You will be redirected to the debate page. ", btn: "OK" }} callback={goToDebate} />
-        </div>
-      ) : null}
-      {isLeaveModalOn ? (
-        <div className={modalClass}>
-          <ConfirmModal
-            content={{ title: "Finished!", text: "Are you sure you want to end the call?", left: "NO", right: "YES" }}
-            cancelCallback={() => {
-              setIsLeaveModalOn(false);
-            }}
-            confirmCallback={goToDebate}
-          />
-        </div>
-      ) : null}
-      {!isConnected ? null : (
-        <div>
-          <div>{notice}</div>
-          {!isStarted ? (
-            <div>
-              <div>토론전</div>
-              <video className="reverse" ref={myVideoRef} muted autoPlay playsInline width="400" height="400"></video>
-              <video className="reverse" ref={peerVideoRef} autoPlay playsInline width="400" height="400"></video>
-              <button>Start</button>
-            </div>
-          ) : (
-            <div>토론중</div>
-          )}
-          <div>
-            <button onClick={toggleMuteAudio}>{audioMuted ? "Unmute" : "Mute"}</button>
-            <button onClick={toggleMuteVideo}>{videoMuted ? "On" : "Off"}</button>
-            <button onClick={shareScreen}>ShareScreen</button>
-            <button
-              onClick={() => {
+      <Modals
+        socket={socket}
+        debateId={debateId}
+        stream={stream}
+        myPeer={myPeer}
+        isExceedModalOn={isExceedModalOn}
+        isErrorModalOn={isErrorModalOn}
+        isPeerLeaveModalOn={isPeerLeaveModalOn}
+        isLeaveModalOn={isLeaveModalOn}
+        setIsLeaveModalOn={setIsLeaveModalOn}
+      />
+      <div className="w-screen h-screen flex justify-center items-center fixed">
+        <video ref={myVideoRef} muted autoPlay playsInline width="0" height="0"></video>
+        <video ref={peerVideoRef} autoPlay playsInline width="0" height="0"></video>
+      </div>
+      <div className="max-w-7xl min-w-max m-auto relative pt-1 pb-1">
+        <div className="flex justify-between items-center">
+          <div className="w-14 flex justify-start">
+            <div className="bg-logo bg-cover w-46 h-40 mb-2"></div>
+          </div>
+          <div className="font-poppins font-bold text-24">{debateInfo.title}</div>
+          <div className="w-14 flex justify-end">
+            {isStarted ? <YellowBtn text="Start" callback={() => {}} /> : null}
+            <YellowBtn
+              text="Exit"
+              callback={() => {
                 setIsLeaveModalOn(true);
               }}
-            >
-              Leave
-            </button>
-            {!isConnected ? <button>토론 시작</button> : null}
+            />
           </div>
         </div>
-      )}
+        <div>
+          <canvas ref={canvasRef} width="1280px" height="660px"></canvas>
+        </div>
+        <Buttons isAudioMuted={isAudioMuted} toggleMuteAudio={toggleMuteAudio} isVideoMuted={isVideoMuted} toggleMuteVideo={toggleMuteVideo} shareScreen={shareScreen} />
+      </div>
     </div>
   );
 }
