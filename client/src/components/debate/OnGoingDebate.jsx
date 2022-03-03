@@ -1,9 +1,11 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { StrawBtn } from "../btn/BigBtn";
+import { StrawBtn as AddBtn } from "../btn/BaseBtn";
 import { Politics, Society, Economics, Science, IT, Environment, Education, History, Sports, Philosophy, Culture, JustForFun } from "./CategoryBackground";
+// import useInput from "../../hooks/useInput";
 
 export default function OnGoingDebate(debate) {
   const navigate = useNavigate();
@@ -13,8 +15,8 @@ export default function OnGoingDebate(debate) {
   const [isModalOn, setIsModalOn] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  console.log("isModalOn : ", isModalOn);
-  console.log("isConfirmOpen : ", isConfirmOpen);
+  // console.log("isModalOn : ", isModalOn);
+  // console.log("isConfirmOpen : ", isConfirmOpen);
 
   function toggleModal() {
     setIsModalOn(!isModalOn);
@@ -88,6 +90,28 @@ export default function OnGoingDebate(debate) {
     }
   };
 
+  useEffect(() => {});
+  const [desc, setDesc] = useState("");
+  const [url, setUrl] = useState("");
+  const [factCheckList, setFactCheckList] = useState([]);
+
+  function handleDesc(e) {
+    setDesc(e.target.value);
+    // e.target.reset();
+  }
+
+  function handleUrl(e) {
+    setUrl(e.target.value);
+  }
+
+  function handleAdd() {
+    axios.post(`${process.env.REACT_APP_API_URL}/factcheck/${userInfo.id}/${debateId}`, { pros: userInfo.id === debate.debateInfo.pros_id, contents: `${desc} ${url}` }).then((res) => {
+      console.log(res.data.data);
+      const reference = res.data.data.contents;
+      setFactCheckList([...factCheckList, reference]);
+    });
+  }
+
   return (
     <div className="flex flex-col items-center">
       <Background {...debate} />
@@ -160,6 +184,35 @@ export default function OnGoingDebate(debate) {
       <div className="my-60">
         <h1 className="text-center font-bold text-24 mb-40">Topic</h1>
         <div className="w-960 h-540 bg-ducks-gray-ccc"></div>
+      </div>
+
+      {/* fact check */}
+      <div>
+        <h1 className="text-center font-bold text-24 mb-40">Fact Check</h1>
+        <div>
+          {/* input */}
+          <div className="w-960 flex justify-between">
+            <input onChange={handleDesc} type="text" className="border border-ducks-gray-ccc rounded-full w-304 h-32 mr-12 text-14" placeholder="Describe your URL" />
+            <input onChange={handleUrl} type="text" className="border border-ducks-gray-ccc rounded-full w-full h-32 mr-12 text-14" placeholder="Link your reference URL address" />
+            <AddBtn text="add" callback={handleAdd}></AddBtn>
+          </div>
+          <div className="test"></div>
+          {/* pros & cons */}
+          <div className="w-960 flex">
+            {/* pros */}
+            <div className="w-full h-336 rounded-12 border border-solid border-ducks-orange-ff9425 overflow-hidden mr-4">
+              <div className="text-center leading-36 text-white h-36 bg-ducks-orange-ff9425">pros</div>
+              {factCheckList.map((fact) => {
+                <div>{fact}</div>;
+              })}
+            </div>
+            {/* cons */}
+            <div className="w-full h-336 rounded-12 border border-solid border-ducks-blue-6667ab overflow-hidden">
+              <div className="text-center leading-36 text-white h-36 bg-ducks-blue-6667ab">pros</div>
+              {userInfo.id}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
