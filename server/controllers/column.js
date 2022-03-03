@@ -1,5 +1,7 @@
 require("dotenv").config();
 const models = require("../models");
+const { Op } = require("@sequelize/core");
+const { sequelize } = require("../models");
 
 module.exports = {
   create_column: async (req, res) => {
@@ -134,8 +136,168 @@ module.exports = {
   },
 
   get_columns: async (req, res) => {
-    const columnList = await models.column.findAll({});
+    const { user_id, category, likey, page, search } = req.query;
 
-    res.status(200).json({ data: columnList, message: "아직 미구현입니다." });
+    let pageNum = page || 1;
+    let offset = 0;
+    let limit = 10;
+
+    if (pageNum > 1) {
+      offset = limit * (pageNum - 1);
+    }
+
+    if (search) {
+      await models.column
+        .findAll({
+          offset: offset,
+          limit: limit,
+          where: {
+            title: {
+              [Op.like]: `%${search}%`,
+            },
+          },
+        })
+        .then((result) => {
+          console.log("result : ", result);
+          return res.status(200).json({ data: result, message: "조회 성공" });
+        })
+        .catch((error) => {
+          console.log("error : ", error);
+          return res.status(500).json({ data: null, message: "조회 실패 에러 발생" });
+        });
+    } else {
+      if (user_id) {
+        if (likey) {
+          const userLikeyList = await models.likey.findAll({
+            offset: offset,
+            limit: limit,
+            attributes: [column_id],
+            where: {
+              [Op.and]: [
+                { user_id: user_id },
+                {
+                  debate_id: {
+                    [Op.is]: null,
+                  },
+                },
+              ],
+            },
+          });
+
+          console.log("userLikeyList : ", userLikeyList);
+
+          if (Array.isArray(category)) {
+            // 유저 ID ON, Likey On Category On
+            await models.column
+              .findAll({
+                offset: offset,
+                limit: limit,
+                where: {
+                  [Op.or]: [
+                    {
+                      id: {
+                        [Op.in]: userLikeyList,
+                      },
+                    },
+                    {
+                      category: {
+                        [Op.in]: category,
+                      },
+                    },
+                  ],
+                },
+              })
+              .then((result) => {
+                console.log("result : ", result);
+                return res.status(200).json({ data: result, message: "조회 성공" });
+              })
+              .catch((error) => {
+                console.log("error : ", error);
+                return res.status(500).json({ data: null, message: "조회 실패 에러 발생" });
+              });
+          } else {
+            // 유저 예스 라이키 예스 카테고리 노
+            await models.column
+              .findAll({
+                offset: offset,
+                limit: limit,
+                where: {
+                  id: {
+                    [Op.in]: userLikeyList,
+                  },
+                },
+              })
+              .then((result) => {
+                console.log("result : ", result);
+                return res.status(200).json({ data: result, message: "조회 성공" });
+              })
+              .catch((error) => {
+                console.log("error : ", error);
+                return res.status(500).json({ data: null, message: "조회 실패 에러 발생" });
+              });
+          }
+        } else {
+          //유저 예스 라이키 노 카테고리 예스
+          if (Array.isArray(category)) {
+            await models.column
+              .findAll({
+                offset: offset,
+                limit: limit,
+                where: {
+                  category: {
+                    [Op.in]: category,
+                  },
+                },
+              })
+              .then((result) => {
+                console.log("result : ", result);
+                return res.status(200).json({ data: result, message: "조회 성공" });
+              })
+              .catch((error) => {
+                console.log("error : ", error);
+                return res.status(500).json({ data: null, message: "조회 실패 에러 발생" });
+              });
+          }
+        }
+      } else {
+        if (Array.isArray(category)) {
+          // 유저 노 => (라이키 엑스) 카테고리 예스
+          await models.column
+            .findAll({
+              offset: offset,
+              limit: limit,
+              where: {
+                category: {
+                  [Op.in]: category,
+                },
+              },
+            })
+            .then((result) => {
+              console.log("result : ", result);
+              return res.status(200).json({ data: result, message: "조회 성공" });
+            })
+            .catch((error) => {
+              console.log("error : ", error);
+              return res.status(500).json({ data: null, message: "조회 실패 에러 발생" });
+            });
+        } else {
+          await models.column
+            .findAll({
+              offset: offset,
+              limit: limit,
+            })
+            .then((result) => {
+              console.log("result : ", result);
+              return res.status(200).json({ data: result, message: "조회 성공" });
+            })
+            .catch((error) => {
+              console.log("error : ", error);
+              return res.status(500).json({ data: null, message: "조회 실패 에러 발생" });
+            });
+        }
+      }
+    }
+
+    // res.status(200).json({ data: columnList, message: "아직 미구현입니다." });
   },
 };
