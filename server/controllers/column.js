@@ -137,6 +137,7 @@ module.exports = {
 
   get_columns: async (req, res) => {
     const { user_id, category, likey, page, search } = req.query;
+    const categoryArray = category.split(",");
 
     let pageNum = page || 1;
     let offset = 0;
@@ -171,7 +172,7 @@ module.exports = {
           const userLikeyList = await models.likey.findAll({
             offset: offset,
             limit: limit,
-            attributes: [column_id],
+            attributes: ["column_id"],
             where: {
               [Op.and]: [
                 { user_id: user_id },
@@ -184,9 +185,11 @@ module.exports = {
             },
           });
 
-          console.log("userLikeyList : ", userLikeyList);
+          const likeyArray = userLikeyList.map((data) => {
+            return data.column_id;
+          });
 
-          if (Array.isArray(category)) {
+          if (Array.isArray(categoryArray)) {
             // 유저 ID ON, Likey On Category On
             await models.column
               .findAll({
@@ -196,12 +199,12 @@ module.exports = {
                   [Op.or]: [
                     {
                       id: {
-                        [Op.in]: userLikeyList,
+                        [Op.in]: likeyArray,
                       },
                     },
                     {
                       category: {
-                        [Op.in]: category,
+                        [Op.in]: categoryArray,
                       },
                     },
                   ],
@@ -223,7 +226,7 @@ module.exports = {
                 limit: limit,
                 where: {
                   id: {
-                    [Op.in]: userLikeyList,
+                    [Op.in]: likeyArray,
                   },
                 },
               })
@@ -238,14 +241,14 @@ module.exports = {
           }
         } else {
           //유저 예스 라이키 노 카테고리 예스
-          if (Array.isArray(category)) {
+          if (Array.isArray(categoryArray)) {
             await models.column
               .findAll({
                 offset: offset,
                 limit: limit,
                 where: {
                   category: {
-                    [Op.in]: category,
+                    [Op.in]: categoryArray,
                   },
                 },
               })
@@ -260,7 +263,7 @@ module.exports = {
           }
         }
       } else {
-        if (Array.isArray(category)) {
+        if (Array.isArray(categoryArray)) {
           // 유저 노 => (라이키 엑스) 카테고리 예스
           await models.column
             .findAll({
@@ -268,7 +271,7 @@ module.exports = {
               limit: limit,
               where: {
                 category: {
-                  [Op.in]: category,
+                  [Op.in]: categoryArray,
                 },
               },
             })

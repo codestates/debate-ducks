@@ -1,5 +1,6 @@
 require("dotenv").config();
 const models = require("../models");
+const { Op } = require("@sequelize/core");
 
 module.exports = {
   create_debate: async (req, res) => {
@@ -101,12 +102,25 @@ module.exports = {
 
   update_debate: async (req, res) => {
     const debateId = req.params.debate_id;
-    const { title, topic, participant_id, pros_id, cons_id } = req.body;
+    const { category, title, topic, participant_id, pros_id, cons_id } = req.body;
 
     console.log("title, topic : ", title, topic);
 
     if (!debateId) {
       return res.status(400).json({ message: "debateId가 들어오지 않았습니다." });
+    }
+
+    if (category) {
+      await models.debate.update(
+        {
+          category: category,
+        },
+        {
+          where: {
+            id: debateId,
+          },
+        },
+      );
     }
 
     if (title) {
@@ -237,8 +251,83 @@ module.exports = {
     //   offset = limit * (pageNum - 1);
     // }
 
-    const debateList = await models.debate.findAll({});
+    const { user_id, category, status, likey, page, search } = req.query;
 
-    res.status(200).json({ data: debateList, message: "토론 리스트 조회 성공" });
+    const categoryArray = category.split(",");
+
+    if (search) {
+      const debateList = await models.debate.findAll({
+        where: {
+          title: {
+            [Op.like]: `%${search}%`,
+          },
+        },
+      });
+
+      if (debateList.length > 0) {
+        console.log("debateList : ", debateList);
+        return res.status(200).json({
+          data: debateList,
+          message: "검색어를 통한 토론 리스트 조회 성공",
+        });
+      } else if (debateList.length === 0) {
+        console.log("debateList의 항목이 비어있는 상태, ", debateList);
+        return res.status(200).json({
+          data: debateList,
+          message: "검색어를 통한 토론 리스트 조회 성공, 하지만 조회 된 레코드가 없음.",
+        });
+      } else {
+        console.log("Else, debateList : ", debateList);
+        return res.status(500).json({
+          data: null,
+          message: "debateList의 조회가 성공적으로 되지 않았습니다. (서버 내부 에러)",
+        });
+      }
+    } else {
+      if (user_id) {
+        if (likey) {
+          const userLikeyList = await models.likey.findAll({
+            offset: offset,
+            limit: limit,
+            attributes: ["debate_id"],
+            where: {
+              [Op.and]: [
+                { user_id: user_id },
+                {
+                  column_id: {
+                    [Op.is]: null,
+                  },
+                },
+              ],
+            },
+          });
+
+          const likeyArray = userLikeyList.map((data) => {
+            return data.column_id;
+          });
+
+          if (categoryArray.length > 0) {
+            const debateList = await models.debate.findAll({
+              where: {},
+              include: [
+                {
+                  model: models.likey,
+                  where: {
+                    user_id: user_id,
+                  },
+                },
+              ],
+            });
+          } else {
+          }
+        } else {
+        }
+      } else {
+      }
+    }
+
+    // const debateList = await models.debate.findAll({});
+
+    // res.status(200).json({ data: debateList, message: "토론 리스트 조회 성공" });
   },
 };
