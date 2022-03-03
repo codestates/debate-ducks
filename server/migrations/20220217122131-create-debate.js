@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       topic: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       title: {
         type: Sequelize.STRING,
@@ -30,7 +30,6 @@ module.exports = {
         type: Sequelize.STRING,
       },
       ended_at: {
-        allowNull: false,
         type: Sequelize.DATE,
       },
       host_id: {

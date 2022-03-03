@@ -40,6 +40,7 @@ module.exports = {
             email: email,
             name: profile.nickname,
             profile: profile.profile_image_url,
+            // created_at: Date.now(),
             sign_method: "kakao",
           });
 
@@ -62,27 +63,25 @@ module.exports = {
             },
             accessToken,
           );
+        } else {
+          const accessToken = generateAccessToken(
+            JSON.stringify({
+              userInfo,
+            }),
+          );
+          console.log("accessToken : ", accessToken);
+          sendAccessToken(
+            res,
+            {
+              id: userInfo.dataValues.id,
+              email: userInfo.dataValues.email,
+              name: userInfo.dataValues.name,
+              profile: userInfo.dataValues.profile,
+              sign_method: userInfo.dataValues.sign_method,
+            },
+            accessToken,
+          );
         }
-
-        const accessToken = generateAccessToken(
-          JSON.stringify({
-            userInfo,
-          }),
-        );
-
-        console.log("accessToken : ", accessToken);
-
-        sendAccessToken(
-          res,
-          {
-            id: userInfo.dataValues.id,
-            email: userInfo.dataValues.email,
-            name: userInfo.dataValues.name,
-            profile: userInfo.dataValues.profile,
-            sign_method: userInfo.dataValues.sign_method,
-          },
-          accessToken,
-        );
       }
     } catch (err) {
       console.log(err);

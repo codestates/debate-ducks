@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sequelize/core": "^7.0.0-alpha.10",
     "aws-sdk": "^2.1082.0",
     "axios": "^0.26.0",
     "bcrypt": "^5.0.1",

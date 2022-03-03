@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-const style = "w-370 h-40 rounded-20 capitalize text-14 font-poppins font-black duration-200 ease-linear";
+const style = "px-48 h-48 rounded-24 capitalize text-18 font-poppins font-medium duration-200 ease-linear";
 
 function BlueBtn({ text, callback }) {
   return (

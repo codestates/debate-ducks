@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.BOOLEAN,
       },
       contents: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       debate_id: {
         references: {

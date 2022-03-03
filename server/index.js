@@ -9,6 +9,15 @@ const fs = require("fs");
 
 const indexRouter = require("./routes/index");
 const userRouter = require("./routes/user");
+const debateRouter = require("./routes/debate");
+const columnRouter = require("./routes/column");
+const voteRouter = require("./routes/vote");
+const factcheckRouter = require("./routes/factcheck");
+const prepRouter = require("./routes/prep");
+const opinionRouter = require("./routes/opinion");
+const likeyRouter = require("./routes/likey");
+const alarmRouter = require("./routes/alarm");
+const reportRouter = require("./routes/report");
 const videoBoxRouter = require("./routes/videoBox");
 
 fs.readdir("uploads", (error) => {
@@ -17,6 +26,7 @@ fs.readdir("uploads", (error) => {
     fs.mkdirSync("uploads");
   }
 });
+
 app.use(express.static("uploads"));
 app.use(helmet());
 app.use(express.json());
@@ -28,12 +38,21 @@ app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
     credentials: true,
-    methods: ["GET", "POST", "OPTIONS", "PATCH"],
+    methods: ["GET", "POST", "OPTIONS", "PATCH", "DELETE"],
   }),
 );
 
 app.use("/", indexRouter);
 app.use("/user", userRouter);
+app.use("/debate", debateRouter);
+app.use("/column", columnRouter);
+app.use("/vote", voteRouter);
+app.use("/factcheck", factcheckRouter);
+app.use("/prep", prepRouter);
+app.use("/opinion", opinionRouter);
+app.use("/likey", likeyRouter);
+app.use("/alarm", alarmRouter);
+app.use("/report", reportRouter);
 app.use("/videoBox", videoBoxRouter);
 
 //! Local

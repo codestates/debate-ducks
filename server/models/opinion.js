@@ -30,14 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       author_id: DataTypes.INTEGER,
       column_id: DataTypes.INTEGER,
       debate_id: DataTypes.INTEGER,
-      created_at: {
-        type: DataTypes.DATEONLY,
-        defaultValue: DataTypes.NOW,
-      },
-      updated_at: {
-        type: DataTypes.DATEONLY,
-        defaultValue: DataTypes.NOW,
-      },
+      updated_at: DataTypes.DATEONLY,
     },
     {
       sequelize,
