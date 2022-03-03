@@ -6,7 +6,7 @@ export default function Main() {
   const navigate = useNavigate();
   return (
     <div className="font-poppins">
-      <div className={`${common} flex-col bg-main bg-cover bg-bottom text-white`}>
+      <div className={`${common} flex-col bg-main bg-cover bg-center bg-fixed text-white`}>
         <h1 className="capitalize text-48 font-bold mb-36">a real-time debate platform</h1>
         <p className="w-410 text-center">Debate Ducks cuts through the noise typically associated with social and online media, making it easy to engage in focused discussion.</p>
       </div>
