@@ -13,7 +13,8 @@ export default function Header() {
 
   const [isUserModalOn, setIsUserModalOn] = useState(false);
 
-  const userInfo = useSelector((state) => state.user.data);
+  const userId = useSelector((state) => state.user.data.id);
+  const userProfile = useSelector((state) => state.user.data.profile);
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/user`, { withCredentials: true }).then((res) => {
@@ -55,10 +56,10 @@ export default function Header() {
             support
           </li> */}
         </ul>
-        {userInfo?.id ? (
+        {userId ? (
           <div className="flex items-center">
             <HiBell className="text-24 mr-20 text-ducks-orange-ff9425" />
-            <img src={userInfo.profile} className="rounded-full w-32 h-32 bg-ducks-orange-ff9425 relative" onClick={toggleUserInfoModal}></img>
+            <img src={userProfile} className="rounded-full w-32 h-32 bg-ducks-orange-ff9425 relative" onClick={toggleUserInfoModal}></img>
             {isUserModalOn ? (
               <div className="z-50 absolute top-48 right-20 bg-white rounded-12 border border-solid border-ducks-orange-ff9425 text-14 text-ducks-orange-ff9425 overflow-hidden cursor-pointer">
                 <div
