@@ -29,18 +29,17 @@ module.exports = {
       video: {
         type: Sequelize.STRING,
       },
-      status: {
-        type: Sequelize.STRING,
-      },
       ended_at: {
         type: Sequelize.DATE,
       },
       host_id: {
+        allowNull: true,
         references: {
           model: "users",
           key: "id",
         },
         type: Sequelize.INTEGER,
+        onDelete: "cascade",
       },
     });
   },

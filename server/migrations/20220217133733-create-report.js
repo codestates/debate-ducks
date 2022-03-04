@@ -14,6 +14,8 @@ module.exports = {
           key: "id",
         },
         type: Sequelize.INTEGER,
+        allowNull: true,
+        onDelete: "cascade",
       },
       repoter_id: {
         references: {
@@ -21,6 +23,8 @@ module.exports = {
           key: "id",
         },
         type: Sequelize.INTEGER,
+        allowNull: true,
+        onDelete: "cascade",
       },
       column_id: {
         references: {
@@ -28,6 +32,8 @@ module.exports = {
           key: "id",
         },
         type: Sequelize.INTEGER,
+        allowNull: true,
+        onDelete: "cascade",
       },
       description: {
         type: Sequelize.STRING,

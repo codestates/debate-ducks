@@ -12,18 +12,19 @@ module.exports = (sequelize, DataTypes) => {
       models.factcheck.belongsTo(models.user, {
         foreignKey: "user_id",
         targetKey: "id",
+        onDelete: "cascade",
       });
       models.factcheck.belongsTo(models.debate, {
         foreignKey: "debate_id",
         targetKey: "id",
+        onDelete: "cascade",
       });
     }
   }
   Factcheck.init(
     {
       pros: DataTypes.BOOLEAN,
-      desc: DataTypes.TEXT,
-      url: DataTypes.STRING,
+      contents: DataTypes.TEXT,
       debate_id: DataTypes.INTEGER,
       user_id: DataTypes.INTEGER,
     },

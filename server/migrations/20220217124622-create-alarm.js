@@ -20,6 +20,8 @@ module.exports = {
           key: "id",
         },
         type: Sequelize.INTEGER,
+        allowNull: true,
+        onDelete: "cascade",
       },
       debate_id: {
         references: {
@@ -27,6 +29,8 @@ module.exports = {
           key: "id",
         },
         type: Sequelize.INTEGER,
+        allowNull: true,
+        onDelete: "cascade",
       },
       created_at: {
         allowNull: false,

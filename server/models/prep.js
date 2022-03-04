@@ -12,10 +12,12 @@ module.exports = (sequelize, DataTypes) => {
       models.prep.belongsTo(models.user, {
         foreignKey: "author_id",
         targetKey: "id",
+        onDelete: "cascade",
       });
       models.prep.belongsTo(models.debate, {
         foreignKey: "debate_id",
         targetKey: "id",
+        onDelete: "cascade",
       });
     }
   }

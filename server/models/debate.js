@@ -12,34 +12,42 @@ module.exports = (sequelize, DataTypes) => {
       models.debate.belongsTo(models.user, {
         foreignKey: "host_id",
         targetKey: "id",
+        onDelete: "cascade",
       });
       models.debate.hasMany(models.opinion, {
         foreignKey: "debate_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.debate.hasMany(models.prep, {
         foreignKey: "debate_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.debate.hasMany(models.factcheck, {
         foreignKey: "debate_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.debate.hasMany(models.vote, {
         foreignKey: "debate_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.debate.hasMany(models.alarm, {
         foreignKey: "debate_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.debate.hasMany(models.likey, {
         foreignKey: "debate_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.debate.hasMany(models.report, {
         foreignKey: "debate_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
     }
   }
@@ -53,6 +61,7 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING,
       video: DataTypes.STRING,
       ended_at: DataTypes.DATEONLY,
+
       status: {
         type: DataTypes.STRING,
         defaultValue: "ongoing",

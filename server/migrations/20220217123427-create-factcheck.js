@@ -11,11 +11,8 @@ module.exports = {
       pros: {
         type: Sequelize.BOOLEAN,
       },
-      desc: {
+      contents: {
         type: Sequelize.TEXT,
-      },
-      url: {
-        type: Sequelize.STRING,
       },
       debate_id: {
         references: {
@@ -23,6 +20,8 @@ module.exports = {
           key: "id",
         },
         type: Sequelize.INTEGER,
+        allowNull: true,
+        onDelete: "cascade",
       },
       user_id: {
         references: {
@@ -30,6 +29,8 @@ module.exports = {
           key: "id",
         },
         type: Sequelize.INTEGER,
+        allowNull: true,
+        onDelete: "cascade",
       },
     });
   },

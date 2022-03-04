@@ -21,11 +21,13 @@ module.exports = {
         type: Sequelize.STRING,
       },
       author_id: {
+        allowNull: true,
         references: {
           model: "users",
           key: "id",
         },
         type: Sequelize.INTEGER,
+        onDelete: "cascade",
       },
     });
   },
