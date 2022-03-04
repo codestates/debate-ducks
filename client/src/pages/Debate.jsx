@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import OnGoingDebate from "../components/debate/OnGoingDebate";
 import Voting from "../components/debate/Voting";
 import Completed from "../components/debate/Completed";
+import Loading from "../components/Loading";
 
 export default function Debate() {
   const [debate, setDebate] = useState({});
@@ -28,5 +29,5 @@ export default function Debate() {
   }, []);
 
   console.log(deadline);
-  return <div>{isLoading ? <div>Loading...</div> : !debate?.debateInfo.video ? <OnGoingDebate {...debate} /> : deadline > 0 ? <Voting {...debate} /> : <Completed {...debate} />}</div>;
+  return <div>{isLoading ? <Loading /> : !debate?.debateInfo.video ? <OnGoingDebate {...debate} /> : deadline > 0 ? <Voting {...debate} /> : <Completed {...debate} />}</div>;
 }
