@@ -105,6 +105,12 @@ module.exports = {
         culture: "url('../public/images/culture.jpg')",
         forfun: "url('../public/images/politics.jpg')",
       },
+      keyframes: {
+        colorBounce: {
+          "0%, 100%": { color: "#000000", "animation-timing-function": "cubic-bezier(0.8,0,1,1)" },
+          "50%": { color: "#ff9425", "animation-timing-function": "cubic-bezier(0,0,0.2,1)" },
+        },
+      },
     },
   },
   plugins: [require("@tailwindcss/forms")],
