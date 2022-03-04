@@ -13,10 +13,9 @@ RealtimeDebate.propTypes = { socket: PropTypes.object, debateId: PropTypes.strin
 export default function RealtimeDebate({ socket, debateId }) {
   //! 테스트용
   const query = useQuery();
-  const isPros = query.get("pros");
+  const isPro = query.get("pro");
   //! 임시 변수;
-  const debateInfo = { title: "Does Alien Exist?", prosName: "Yuchan", consName: "Chesley" };
-  const [notice, setNotice] = useState({ turn: "pre", text: "" });
+  const debateInfo = { title: "Does Alien Exist?", proName: "Yuchan", conName: "Chesley" };
 
   // ---Modals 변수
   const [isExceedModalOn, setIsExceedModalOn] = useState(false);
@@ -30,20 +29,21 @@ export default function RealtimeDebate({ socket, debateId }) {
   // ---Buttons 변수
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
-  const [isProsScreenOn, setIsProsScreenOn] = useState(false);
-  const [isConsScreenOn, setIsConsScreenOn] = useState(false);
+  const [isProScreenOn, setIsProScreenOn] = useState(false);
+  const [isConScreenOn, setIsConScreenOn] = useState(false);
 
   // ---Socket, WebRTC 변수
   const [stream, setStream] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
-  const [isProsTurn] = useState(true);
+  const [isProTurn, setIsProTurn] = useState(true);
   const myPeer = useRef();
   const myVideoRef = useRef(null);
   const peerVideoRef = useRef(null);
 
   // ---Canvas 변수
   const canvasRef = useRef(null);
+  const [notice, setNotice] = useState({ turn: "pre", text: "" });
 
   // ---뒤로가기 방지
   usePrevent();
@@ -180,18 +180,18 @@ export default function RealtimeDebate({ socket, debateId }) {
 
     // Screen Share
     socket.on("screen_on", (data) => {
-      if (data.isPros === "true") {
-        setIsProsScreenOn(true);
-      } else if (data.isPros === "false") {
-        setIsConsScreenOn(true);
+      if (data.isPro === "true") {
+        setIsProScreenOn(true);
+      } else if (data.isPro === "false") {
+        setIsConScreenOn(true);
       }
     });
 
     socket.on("screen_off", (data) => {
-      if (data.isPros === "true") {
-        setIsProsScreenOn(false);
-      } else if (data.isPros === "false") {
-        setIsConsScreenOn(false);
+      if (data.isPro === "true") {
+        setIsProScreenOn(false);
+      } else if (data.isPro === "false") {
+        setIsConScreenOn(false);
       }
     });
 
@@ -209,21 +209,208 @@ export default function RealtimeDebate({ socket, debateId }) {
       setIsStartBtnOn(true);
       setIsStarted(true);
     });
+
+    // <Debate>
+    // Opening
+    socket.on("debate_start", () => {
+      setNotice({ ...notice, ...{ turn: "pre", text: `Topic : ${debateInfo.title}` } });
+
+      setTimeout(() => {
+        setNotice({ ...notice, ...{ turn: "pre", text: "The debate will begin soon with the opening remarks of the pro. ( 60 sec )" } });
+      }, 3000);
+
+      setTimeout(() => {
+        socket.emit("debate_opening_pro", { debateId });
+      }, 6000);
+    });
+
+    socket.on("debate_opening_pro", (data) => {
+      setNotice({ ...notice, ...{ turn: "pro", text: "The opening remarks of the pro", time: data.time } });
+    });
+
+    socket.on("debate_opening_con_pre", () => {
+      setIsProTurn(false);
+
+      setNotice({ ...notice, ...{ turn: "pre", text: "Next turn, the opening remarks of the con. ( 60 sec )" } });
+
+      setTimeout(() => {
+        socket.emit("debate_opening_con", { debateId });
+      }, 3000);
+    });
+
+    socket.on("debate_opening_con", (data) => {
+      setNotice({ ...notice, ...{ turn: "con", text: "The opening remarks of the con", time: data.time } });
+    });
+
+    // 1st phase
+    socket.on("debate_contention1_pro_pre", () => {
+      setIsProTurn(true);
+
+      setNotice({ ...notice, ...{ turn: "pre", text: "Next turn, the contention of the pro on the 1st phase. ( 180 sec )" } });
+
+      setTimeout(() => {
+        socket.emit("debate_contention1_pro", { debateId });
+      }, 3000);
+    });
+
+    socket.on("debate_contention1_pro", (data) => {
+      setNotice({ ...notice, ...{ turn: "pro", text: "The contention of the pro on the 1st phase", time: data.time } });
+    });
+
+    socket.on("debate_cross1_con_pre", () => {
+      setIsProTurn(false);
+
+      setNotice({ ...notice, ...{ turn: "pre", text: "Next turn, the cross-examination of the con on the 1st phase. ( 120 sec )" } });
+
+      setTimeout(() => {
+        socket.emit("debate_cross1_con", { debateId });
+      }, 3000);
+    });
+
+    socket.on("debate_cross1_con", (data) => {
+      setNotice({ ...notice, ...{ turn: "con", text: "The cross-examination of the con on the 1st phase", time: data.time } });
+    });
+
+    socket.on("debate_contention1_con_pre", () => {
+      setNotice({ ...notice, ...{ turn: "pre", text: "Next turn, the contention of the con on the 1st phase. ( 180 sec )" } });
+
+      setTimeout(() => {
+        socket.emit("debate_contention1_con", { debateId });
+      }, 3000);
+    });
+
+    socket.on("debate_contention1_con", (data) => {
+      setNotice({ ...notice, ...{ turn: "con", text: "The contention of the con on the 1st phase", time: data.time } });
+    });
+
+    socket.on("debate_cross1_pro_pre", () => {
+      setIsProTurn(true);
+
+      setNotice({ ...notice, ...{ turn: "pre", text: "Next turn, the cross-examination of the pro  on the 1st phase. ( 120 sec )" } });
+
+      setTimeout(() => {
+        socket.emit("debate_cross1_pro", { debateId });
+      }, 3000);
+    });
+
+    socket.on("debate_cross1_pro", (data) => {
+      setNotice({ ...notice, ...{ turn: "pro", text: "The cross-examination of the pro on the 1st phase", time: data.time } });
+    });
+
+    // 2nd phase
+    socket.on("debate_contention2_con_pre", () => {
+      setIsProTurn(false);
+
+      setNotice({ ...notice, ...{ turn: "pre", text: "Next turn, the contention of the con on the 2nd phase. ( 180 sec )" } });
+
+      setTimeout(() => {
+        socket.emit("debate_contention2_con", { debateId });
+      }, 3000);
+    });
+
+    socket.on("debate_contention2_con", (data) => {
+      setNotice({ ...notice, ...{ turn: "con", text: "The contention of the con on the 2nd phase", time: data.time } });
+    });
+
+    socket.on("debate_cross2_pro_pre", () => {
+      setIsProTurn(true);
+
+      setNotice({ ...notice, ...{ turn: "pre", text: "Next turn, the cross-examination of the pro on the 2nd phase. ( 120 sec )" } });
+
+      setTimeout(() => {
+        socket.emit("debate_cross2_pro", { debateId });
+      }, 3000);
+    });
+
+    socket.on("debate_cross2_pro", (data) => {
+      setNotice({ ...notice, ...{ turn: "pro", text: "The cross-examination of the pro on the 2nd phase", time: data.time } });
+    });
+
+    socket.on("debate_contention2_pro_pre", () => {
+      setNotice({ ...notice, ...{ turn: "pre", text: "Next turn, the contention of the pro on the 2nd phase. ( 180 sec )" } });
+
+      setTimeout(() => {
+        socket.emit("debate_contention2_pro", { debateId });
+      }, 3000);
+    });
+
+    socket.on("debate_contention2_pro", (data) => {
+      setNotice({ ...notice, ...{ turn: "pro", text: "The contention of the pro on the 2nd phase", time: data.time } });
+    });
+
+    socket.on("debate_cross2_con_pre", () => {
+      setIsProTurn(false);
+
+      setNotice({ ...notice, ...{ turn: "pre", text: "Next turn, the cross-examination of the con on the 2nd phase. ( 120 sec )" } });
+
+      setTimeout(() => {
+        socket.emit("debate_cross2_con", { debateId });
+      }, 3000);
+    });
+
+    socket.on("debate_cross2_con", (data) => {
+      setNotice({ ...notice, ...{ turn: "con", text: "The cross-examination of the con on the 2nd phase", time: data.time } });
+    });
+
+    // Closing
+    socket.on("debate_closing_pro_pre", () => {
+      setIsProTurn(true);
+
+      setNotice({ ...notice, ...{ turn: "pre", text: "Next turn, the closing remarks of the pro. ( 60 sec )" } });
+
+      setTimeout(() => {
+        socket.emit("debate_closing_pro", { debateId });
+      }, 3000);
+    });
+
+    socket.on("debate_closing_pro", (data) => {
+      setNotice({ ...notice, ...{ turn: "pro", text: "The closing remarks of the pro", time: data.time } });
+    });
+
+    socket.on("debate_closing_con_pre", () => {
+      setIsProTurn(false);
+
+      setNotice({ ...notice, ...{ turn: "pre", text: "Next turn, the closing remarks of the con. ( 60 sec )" } });
+
+      setTimeout(() => {
+        socket.emit("debate_closing_con", { debateId });
+      }, 3000);
+    });
+
+    socket.on("debate_closing_con", (data) => {
+      setNotice({ ...notice, ...{ turn: "con", text: "The closing remarks of the con", time: data.time } });
+    });
+
+    socket.on("debate_finish_pre", () => {
+      socket.emit("debate_finish", { debateId });
+    });
+
+    //! 녹화 종료 및 토론 종료 로직
+    socket.on("debate_finish", () => {
+      setNotice({ ...notice, ...{ turn: "pre", text: "The debate has ended." } });
+    });
   }, []);
 
   // ---Canvas
   const [drawVideoStart, drawVideoStop] = useSetInterval(drawVideo, 1000 / 60);
-  const [drawScreenStart, drawScreenStop] = useSetInterval(drawScreen, 1000 / 60);
+  const [drawProScreenStart, drawProScreenStop] = useSetInterval(drawProScreen, 1000 / 60);
+  const [drawConScreenStart, drawConScreenStop] = useSetInterval(drawConScreen, 1000 / 60);
 
   useEffect(() => {
-    drawVideoStart();
-    if ((isProsScreenOn && isProsTurn) || (isConsScreenOn && !isProsTurn)) {
+    if (isProScreenOn && isProTurn) {
       drawVideoStop();
-      drawScreenStart();
+      drawConScreenStop();
+      drawProScreenStart();
+    } else if (isConScreenOn && !isProTurn) {
+      drawVideoStop();
+      drawProScreenStop();
+      drawConScreenStart();
     } else {
-      drawScreenStop();
+      drawProScreenStop();
+      drawConScreenStop();
+      drawVideoStart();
     }
-  }, [isProsScreenOn, isConsScreenOn]);
+  }, [isProScreenOn, isConScreenOn, isProTurn]);
 
   function drawVideo() {
     // Eraser
@@ -233,59 +420,59 @@ export default function RealtimeDebate({ socket, debateId }) {
       EraserCtx.fillRect(0, 40, 1280, 620);
     }
 
-    // Pros
-    const prosCtx = canvasRef?.current?.getContext("2d");
-    if (prosCtx) {
-      prosCtx.fillStyle = "#ff9425";
-      prosCtx.fillRect(10, 90, 620, 470);
+    // Pro
+    const proCtx = canvasRef?.current?.getContext("2d");
+    if (proCtx) {
+      proCtx.fillStyle = "#ff9425";
+      proCtx.fillRect(10, 90, 620, 470);
     }
 
-    const prosBgCtx = canvasRef?.current?.getContext("2d");
-    if (prosBgCtx) {
-      prosBgCtx.fillStyle = "White";
-      prosBgCtx.fillRect(20, 580, 600, 60);
+    const proBgCtx = canvasRef?.current?.getContext("2d");
+    if (proBgCtx) {
+      proBgCtx.fillStyle = "White";
+      proBgCtx.fillRect(20, 580, 600, 60);
     }
 
-    const prosTextCtx = canvasRef?.current?.getContext("2d");
-    if (prosTextCtx) {
-      prosTextCtx.font = "32px poppins";
-      prosTextCtx.fillStyle = "#ff9425";
-      prosTextCtx.textAlign = "center";
-      prosTextCtx.fillText(`${debateInfo.prosName}`, 320, 620);
+    const proTextCtx = canvasRef?.current?.getContext("2d");
+    if (proTextCtx) {
+      proTextCtx.font = "32px poppins";
+      proTextCtx.fillStyle = "#ff9425";
+      proTextCtx.textAlign = "center";
+      proTextCtx.fillText(`${debateInfo.proName}`, 320, 620);
     }
 
-    // Cons
-    const consCtx = canvasRef?.current?.getContext("2d");
-    if (consCtx) {
-      consCtx.fillStyle = "#6667ab";
-      consCtx.fillRect(650, 90, 620, 470);
+    // Con
+    const conCtx = canvasRef?.current?.getContext("2d");
+    if (conCtx) {
+      conCtx.fillStyle = "#6667ab";
+      conCtx.fillRect(650, 90, 620, 470);
     }
 
-    const consBgCtx = canvasRef?.current?.getContext("2d");
-    if (consBgCtx) {
-      consBgCtx.fillStyle = "White";
-      consBgCtx.fillRect(660, 580, 600, 60);
+    const conBgCtx = canvasRef?.current?.getContext("2d");
+    if (conBgCtx) {
+      conBgCtx.fillStyle = "White";
+      conBgCtx.fillRect(660, 580, 600, 60);
     }
 
-    const consTextCtx = canvasRef?.current?.getContext("2d");
-    if (consTextCtx) {
-      consTextCtx.font = "32px poppins";
-      consTextCtx.fillStyle = "#6667ab";
-      consTextCtx.textAlign = "center";
-      consTextCtx.fillText(`${debateInfo.consName}`, 960, 620);
+    const conTextCtx = canvasRef?.current?.getContext("2d");
+    if (conTextCtx) {
+      conTextCtx.font = "32px poppins";
+      conTextCtx.fillStyle = "#6667ab";
+      conTextCtx.textAlign = "center";
+      conTextCtx.fillText(`${debateInfo.conName}`, 960, 620);
     }
 
     // Draw
-    if (isPros === "true") {
+    if (isPro === "true") {
       canvasRef?.current?.getContext("2d").drawImage(myVideoRef?.current, 20, 100, 600, 450);
       canvasRef?.current?.getContext("2d").drawImage(peerVideoRef?.current, 660, 100, 600, 450);
-    } else if (isPros === "false") {
+    } else if (isPro === "false") {
       canvasRef?.current?.getContext("2d").drawImage(peerVideoRef?.current, 20, 100, 600, 450);
       canvasRef?.current?.getContext("2d").drawImage(myVideoRef?.current, 660, 100, 600, 450);
     }
   }
 
-  function drawScreen() {
+  function drawProScreen() {
     // Eraser
     const EraserCtx = canvasRef?.current?.getContext("2d");
     if (EraserCtx) {
@@ -315,10 +502,49 @@ export default function RealtimeDebate({ socket, debateId }) {
     }
 
     // Draw
-    if ((isPros === "true" && isProsTurn) || (isPros === "false" && !isProsTurn)) {
+    if (isPro === "true") {
       const [width, height] = resize(myVideoRef?.current);
       canvasRef?.current?.getContext("2d").drawImage(myVideoRef?.current, 640 - width / 2, 350 - height / 2, width, height);
-    } else if ((isPros === "true" && !isProsTurn) || (isPros === "false" && isProsTurn)) {
+    } else if (isPro === "false") {
+      const [width, height] = resize(peerVideoRef?.current);
+      canvasRef?.current?.getContext("2d").drawImage(peerVideoRef?.current, 640 - width / 2, 350 - height / 2, width, height);
+    }
+  }
+
+  function drawConScreen() {
+    // Eraser
+    const EraserCtx = canvasRef?.current?.getContext("2d");
+    if (EraserCtx) {
+      EraserCtx.fillStyle = "White";
+      EraserCtx.fillRect(0, 40, 1280, 620);
+    }
+
+    // Resize
+    function resize(video) {
+      let width = 0;
+      let height = 0;
+
+      if (video.videoWidth >= video.videoHeight) {
+        width = 1280;
+        height = (1280 * video.videoHeight) / video.videoWidth;
+
+        if (height > 620) {
+          width = (1280 * 620) / height;
+          height = 620;
+        }
+      } else if (video.videoWidth < video.videoHeight) {
+        width = (620 * video.videoWidth) / video.videoHeight;
+        height = 620;
+      }
+
+      return [width, height];
+    }
+
+    // Draw
+    if (isPro === "false") {
+      const [width, height] = resize(myVideoRef?.current);
+      canvasRef?.current?.getContext("2d").drawImage(myVideoRef?.current, 640 - width / 2, 350 - height / 2, width, height);
+    } else if (isPro === "true") {
       const [width, height] = resize(peerVideoRef?.current);
       canvasRef?.current?.getContext("2d").drawImage(peerVideoRef?.current, 640 - width / 2, 350 - height / 2, width, height);
     }
@@ -340,7 +566,7 @@ export default function RealtimeDebate({ socket, debateId }) {
     socket.disconnect();
   }
 
-  // ---Buttons
+  // ---Mute Toggle
   function toggleMuteAudio(boolean) {
     if (stream) {
       setIsAudioMuted(boolean);
@@ -355,40 +581,49 @@ export default function RealtimeDebate({ socket, debateId }) {
     }
   }
 
-  function shareScreen() {
-    navigator.mediaDevices.getDisplayMedia({ cursor: true }).then((screenStream) => {
-      myPeer?.current?.replaceTrack(stream?.getVideoTracks()[0], screenStream?.getVideoTracks()[0], stream);
-      if (myVideoRef.current) {
-        myVideoRef.current.srcObject = screenStream;
-        if (isPros === "true") {
-          setIsProsScreenOn(true);
-        } else if (isPros === "false") {
-          setIsConsScreenOn(true);
-        }
-        socket.emit("screen_on", { debateId, isPros });
-      }
-      screenStream.getTracks()[0].onended = () => {
-        myPeer?.current?.replaceTrack(screenStream?.getVideoTracks()[0], stream?.getVideoTracks()[0], stream);
-        if (myVideoRef.current) {
-          myVideoRef.current.srcObject = stream;
-        }
-        if (isPros === "true") {
-          setIsProsScreenOn(false);
-        } else if (isPros === "false") {
-          setIsConsScreenOn(false);
-        }
-        socket.emit("screen_off", { debateId, isPros });
-      };
-    });
-  }
-
   // ---Muted(default)
   useEffect(() => {
     if (isConnected) {
+      //! Audio는 Test용
       toggleMuteAudio(true);
       toggleMuteVideo(true);
     }
   }, [isConnected]);
+
+  // ---Screen Share
+  function shareScreen() {
+    navigator.mediaDevices.getDisplayMedia({ cursor: true }).then((screenStream) => {
+      myPeer?.current?.replaceTrack(stream?.getVideoTracks()[0], screenStream?.getVideoTracks()[0], stream);
+
+      if (myVideoRef?.current) {
+        myVideoRef.current.srcObject = screenStream;
+
+        if (isPro === "true") {
+          setIsProScreenOn(true);
+        } else if (isPro === "false") {
+          setIsConScreenOn(true);
+        }
+
+        socket.emit("screen_on", { debateId, isPro });
+      }
+
+      screenStream.getTracks()[0].onended = () => {
+        myPeer?.current?.replaceTrack(screenStream?.getVideoTracks()[0], stream?.getVideoTracks()[0], stream);
+
+        if (myVideoRef?.current) {
+          myVideoRef.current.srcObject = stream;
+
+          if (isPro === "true") {
+            setIsProScreenOn(false);
+          } else if (isPro === "false") {
+            setIsConScreenOn(false);
+          }
+
+          socket.emit("screen_off", { debateId, isPro });
+        }
+      };
+    });
+  }
 
   // ---Start
   function startDebate() {
@@ -403,10 +638,10 @@ export default function RealtimeDebate({ socket, debateId }) {
       case "pre":
         color = "black";
         break;
-      case "pros":
+      case "pro":
         color = "#ff9425";
         break;
-      case "cons":
+      case "con":
         color = "#6667ab";
         break;
     }
@@ -422,11 +657,21 @@ export default function RealtimeDebate({ socket, debateId }) {
       noticeCtx.font = "18px poppins";
       noticeCtx.fillStyle = "White";
       noticeCtx.textAlign = "center";
-    }
 
-    //! 타이머 추가해서 수정 필요
-    noticeCtx.fillText(`${notice.text}`, canvasRef?.current?.width / 2, 25);
+      if (notice?.turn === "pre") {
+        noticeCtx.fillText(`${notice?.text}`, canvasRef?.current?.width / 2, 25);
+      } else if (notice?.turn === "pro" || notice?.turn === "con") {
+        noticeCtx.fillText(`${notice?.text} ( ${notice?.time} sec )`, canvasRef?.current?.width / 2, 25);
+      }
+    }
   }, [notice.text, notice.time]);
+
+  // ---Debate
+  useEffect(() => {
+    if (isStarted) {
+      socket.emit("debate_start", { debateId });
+    }
+  }, [isStarted]);
 
   return (
     <div>
@@ -456,11 +701,13 @@ export default function RealtimeDebate({ socket, debateId }) {
           </div>
           <div className="font-poppins font-bold text-24">{debateInfo.title}</div>
           <div className="w-14 flex justify-end">
-            {isStarted ? null : isStartBtnOn ? (
-              <YellowBtn text="Start" callback={startDebate} />
-            ) : (
-              <div className="mt-2 mr-4 capitalize text-14 font-poppins font-medium text-ducks-blue-6667ab">Waiting...</div>
-            )}
+            {isConnected && !isStarted ? (
+              isStartBtnOn ? (
+                <YellowBtn text="Start" callback={startDebate} />
+              ) : (
+                <div className="mt-2 mr-4 capitalize text-14 font-poppins font-medium text-ducks-blue-6667ab">Waiting...</div>
+              )
+            ) : null}
             <YellowBtn
               text="Exit"
               callback={() => {
