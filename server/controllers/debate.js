@@ -254,9 +254,17 @@ module.exports = {
     const { user_id, category, status, likey, page, search } = req.query;
 
     const categoryArray = category.split(",");
+    let pageNum = page || 1;
+    let offset = 0;
+    let limit = 10;
+    if (pageNum > 1) {
+      offset = limit * (pageNum - 1);
+    }
 
     if (search) {
       const debateList = await models.debate.findAll({
+        offset: offset,
+        limit: limit,
         where: {
           title: {
             [Op.like]: `%${search}%`,
@@ -285,10 +293,12 @@ module.exports = {
       }
     } else {
       if (user_id) {
+        //user_id O
+
         if (likey) {
+          //user_id O likey O
+
           const userLikeyList = await models.likey.findAll({
-            offset: offset,
-            limit: limit,
             attributes: ["debate_id"],
             where: {
               [Op.and]: [
@@ -303,31 +313,332 @@ module.exports = {
           });
 
           const likeyArray = userLikeyList.map((data) => {
-            return data.column_id;
+            return data.debate_id;
           });
 
           if (categoryArray.length > 0) {
-            const debateList = await models.debate.findAll({
-              where: {},
-              include: [
-                {
-                  model: models.likey,
+            // user_id O likey O category O
+
+            if (status) {
+              // user_id O likey O category O status O
+
+              await models.debate
+                .findAll({
+                  offset: offset,
+                  limit: limit,
                   where: {
-                    user_id: user_id,
+                    [Op.or]: [
+                      {
+                        [Op.and]: [
+                          {
+                            id: {
+                              [Op.in]: likeyArray,
+                            },
+                          },
+                          {
+                            status: status,
+                          },
+                        ],
+                      },
+                      {
+                        [Op.and]: [
+                          {
+                            category: {
+                              [Op.in]: categoryArray,
+                            },
+                          },
+                          {
+                            status: status,
+                          },
+                        ],
+                      },
+                    ],
                   },
-                },
-              ],
-            });
+                })
+                .then((result) => {
+                  console.log("result : ", result);
+                  return res.status(200).json({ data: result, message: "조회 성공" });
+                })
+                .catch((error) => {
+                  console.log("error : ", error);
+                  return res.status(500).json({ data: null, message: "토론 조회 실패 에러 발생" });
+                });
+            } else {
+              // user_id O likey O category O status X
+
+              await models.debate
+                .findAll({
+                  offset: offset,
+                  limit: limit,
+                  where: {
+                    [Op.or]: [
+                      {
+                        id: {
+                          [Op.in]: likeyArray,
+                        },
+                      },
+                      {
+                        category: {
+                          [Op.in]: categoryArray,
+                        },
+                      },
+                    ],
+                  },
+                })
+                .then((result) => {
+                  console.log("result : ", result);
+                  return res.status(200).json({ data: result, message: "조회 성공" });
+                })
+                .catch((error) => {
+                  console.log("error : ", error);
+                  return res.status(500).json({ data: null, message: "토론 조회 실패 에러 발생" });
+                });
+            }
           } else {
+            // user_id O likey O category X
+
+            if (status) {
+              // user_id O likey O category X status O
+
+              await models.debate
+                .findAll({
+                  offset: offset,
+                  limit: limit,
+                  where: {
+                    [Op.and]: [
+                      {
+                        id: {
+                          [Op.in]: likeyArray,
+                        },
+                      },
+                      {
+                        status: status,
+                      },
+                    ],
+                  },
+                })
+                .then((result) => {
+                  console.log("result : ", result);
+                  return res.status(200).json({ data: result, message: "조회 성공" });
+                })
+                .catch((error) => {
+                  console.log("error : ", error);
+                  return res.status(500).json({ data: null, message: "토론 조회 실패 에러 발생" });
+                });
+            } else {
+              // user_id O likey O category X status X
+
+              await models.debate
+                .findAll({
+                  offset: offset,
+                  limit: limit,
+                  where: {
+                    id: {
+                      [Op.in]: likeyArray,
+                    },
+                  },
+                })
+                .then((result) => {
+                  console.log("result : ", result);
+                  return res.status(200).json({ data: result, message: "조회 성공" });
+                })
+                .catch((error) => {
+                  console.log("error : ", error);
+                  return res.status(500).json({ data: null, message: "토론 조회 실패 에러 발생" });
+                });
+            }
           }
         } else {
+          // user_id O likey X
+
+          if (categoryArray.length > 0) {
+            // user_id O likey X category O
+
+            if (status) {
+              // user_id O likey X category O status O
+
+              await models.debate
+                .findAll({
+                  offset: offset,
+                  limit: limit,
+                  where: {
+                    [Op.and]: [
+                      {
+                        category: {
+                          [Op.in]: categoryArray,
+                        },
+                      },
+                      {
+                        status: status,
+                      },
+                    ],
+                  },
+                })
+                .then((result) => {
+                  console.log("result : ", result);
+                  return res.status(200).json({ data: result, message: "조회 성공" });
+                })
+                .catch((error) => {
+                  console.log("error : ", error);
+                  return res.status(500).json({ data: null, message: "토론 조회 실패 에러 발생" });
+                });
+            } else {
+              // user_id O likey X category O status X
+
+              await models.debate
+                .findAll({
+                  offset: offset,
+                  limit: limit,
+                  where: {
+                    category: {
+                      [Op.in]: categoryArray,
+                    },
+                  },
+                })
+                .then((result) => {
+                  console.log("result : ", result);
+                  return res.status(200).json({ data: result, message: "조회 성공" });
+                })
+                .catch((error) => {
+                  console.log("error : ", error);
+                  return res.status(500).json({ data: null, message: "토론 조회 실패 에러 발생" });
+                });
+            }
+          } else {
+            // user_id O likey X category X
+
+            if (status) {
+              // user_id O likey X category X status O
+
+              await models.debate
+                .findAll({
+                  offset: offset,
+                  limit: limit,
+                  where: {
+                    status: status,
+                  },
+                })
+                .then((result) => {
+                  console.log("result : ", result);
+                  return res.status(200).json({ data: result, message: "조회 성공" });
+                })
+                .catch((error) => {
+                  console.log("error : ", error);
+                  return res.status(500).json({ data: null, message: "토론 조회 실패 에러 발생" });
+                });
+            } else {
+              // user_id O likey X category X status X
+              await models.debate
+                .findAll({
+                  offset: offset,
+                  limit: limit,
+                })
+                .then((result) => {
+                  console.log("result : ", result);
+                  return res.status(200).json({ data: result, message: "조회 성공" });
+                })
+                .catch((error) => {
+                  console.log("error : ", error);
+                  return res.status(500).json({ data: null, message: "토론 조회 실패 에러 발생" });
+                });
+            }
+          }
         }
       } else {
+        //user_id X
+
+        if (categoryArray.length > 0) {
+          // user_id X category O
+
+          if (status) {
+            // user_id X category O status O
+
+            await models.debate
+              .findAll({
+                offset: offset,
+                limit: limit,
+                where: {
+                  [Op.and]: [
+                    {
+                      category: {
+                        [Op.in]: categoryArray,
+                      },
+                    },
+                    {
+                      status: status,
+                    },
+                  ],
+                },
+              })
+              .then((result) => {
+                console.log("result : ", result);
+                return res.status(200).json({ data: result, message: "조회 성공" });
+              })
+              .catch((error) => {
+                console.log("error : ", error);
+                return res.status(500).json({ data: null, message: "토론 조회 실패 에러 발생" });
+              });
+          } else {
+            // user_id X cateogry O status X
+
+            await models.debate
+              .findAll({
+                offset: offset,
+                limit: limit,
+                where: {
+                  category: {
+                    [Op.in]: categoryArray,
+                  },
+                },
+              })
+              .then((result) => {
+                console.log("result : ", result);
+                return res.status(200).json({ data: result, message: "조회 성공" });
+              })
+              .catch((error) => {
+                console.log("error : ", error);
+                return res.status(500).json({ data: null, message: "토론 조회 실패 에러 발생" });
+              });
+          }
+        } else {
+          // user_id X category X
+
+          if (status) {
+            // user_id X category X status O
+            await models.debate
+              .findAll({
+                offset: offset,
+                limit: limit,
+                where: {
+                  status: status,
+                },
+              })
+              .then((result) => {
+                console.log("result : ", result);
+                return res.status(200).json({ data: result, message: "조회 성공" });
+              })
+              .catch((error) => {
+                console.log("error : ", error);
+                return res.status(500).json({ data: null, message: "토론 조회 실패 에러 발생" });
+              });
+          } else {
+            // user_id X category X status X
+            await models.debate
+              .findAll({
+                offset: offset,
+                limit: limit,
+              })
+              .then((result) => {
+                console.log("result : ", result);
+                return res.status(200).json({ data: result, message: "조회 성공" });
+              })
+              .catch((error) => {
+                console.log("error : ", error);
+                return res.status(500).json({ data: null, message: "토론 조회 실패 에러 발생" });
+              });
+          }
+        }
       }
     }
-
-    // const debateList = await models.debate.findAll({});
-
-    // res.status(200).json({ data: debateList, message: "토론 리스트 조회 성공" });
   },
 };

@@ -8,7 +8,7 @@ const fileStorageEngine = multer.diskStorage({
     cb(null, "./uploads");
   },
   filename: (req, file, cb) => {
-    cb(null, req.params.userId + "profileImg.jpg");
+    cb(null, req.params.userId + parseInt(Math.random() * 16) + "profileImg.jpg");
   },
 });
 

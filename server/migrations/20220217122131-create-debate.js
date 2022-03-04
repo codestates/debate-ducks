@@ -29,6 +29,9 @@ module.exports = {
       video: {
         type: Sequelize.STRING,
       },
+      status: {
+        type: Sequelize.STRING,
+      },
       ended_at: {
         type: Sequelize.DATE,
       },
