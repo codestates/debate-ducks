@@ -24,6 +24,7 @@ module.exports = {
         80: "5rem",
         90: "5.625rem",
         92: "5.75rem",
+        98: "6.125rem",
         112: "7rem",
         140: "8.75rem",
         274: "17.125rem",
@@ -84,6 +85,7 @@ module.exports = {
       },
       backgroundImage: {
         logo: "url('../public/images/Logo1.png')",
+        bigLogo: "url('../public/images/debate-ducks-symbol.png')",
         logoWhite: "url('../public/images/Logo3.png')",
         orangeduck: "url('../public/images/profile-theme-orange.png')",
         greenduck: "url('../public/images/profile-theme-green.png')",
