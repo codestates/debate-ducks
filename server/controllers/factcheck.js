@@ -5,13 +5,7 @@ const models = require("../models");
 module.exports = {
   create_factcheck: async (req, res) => {
     const { user_id, debate_id } = req.params;
-    const { pros, contents } = req.body;
-
-    console.log("req.body : ", req.body);
-    console.log("body.pros : ", req.body.pros);
-    console.log("typeof body.pros", typeof req.body.pros);
-    console.log("pros : ", pros);
-    console.log("contents: ", contents);
+    const { pros, desc, url } = req.body;
 
     if (!user_id || !debate_id) {
       return res.status(400).json({ data: null, message: "팩트체크 생성에 필요한 user id와 debate id가 전달되지 않았습니다." });
@@ -27,7 +21,8 @@ module.exports = {
           debate_id: debate_id,
           user_id: user_id,
           pros: true,
-          contents: contents,
+          desc: desc,
+          url: url,
         })
         .then((result) => {
           console.log("result : ", result);
@@ -43,7 +38,8 @@ module.exports = {
           debate_id: debate_id,
           user_id: user_id,
           pros: false,
-          contents: contents,
+          desc: desc,
+          url: url,
         })
         .then((result) => {
           console.log("result : ", result);
@@ -79,17 +75,38 @@ module.exports = {
   },
   update_factcheck: async (req, res) => {
     const factcheckId = req.params.factcheck_id;
-    const contents = req.body.contents;
+    const { desc, url } = req.body;
 
     if (!factcheckId) {
       return res.status(400).json({ data: null, message: "factcheck id가 존재하지 않습니다." });
     }
 
-    if (contents) {
+    if (desc) {
       await models.column
         .update(
           {
-            contents: contents,
+            desc: desc,
+          },
+          {
+            where: {
+              id: factcheckId,
+            },
+          },
+        )
+        .then((result) => {
+          console.log("result : ", result);
+        })
+        .catch((error) => {
+          console.log("팩트체크 업데이트 중 error : ", error);
+          return res.status(500).json({ data: null, message: "팩트체크 업데이트 중 에러 발생" });
+        });
+    }
+
+    if (url) {
+      await models.column
+        .update(
+          {
+            url: url,
           },
           {
             where: {

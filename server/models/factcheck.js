@@ -22,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
   Factcheck.init(
     {
       pros: DataTypes.BOOLEAN,
-      contents: DataTypes.TEXT,
+      desc: DataTypes.TEXT,
+      url: DataTypes.STRING,
       debate_id: DataTypes.INTEGER,
       user_id: DataTypes.INTEGER,
     },

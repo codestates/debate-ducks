@@ -65,7 +65,7 @@ module.exports = {
         },
         {
           where: {
-            id: debateId,
+            id: columnId,
           },
         },
       );
@@ -78,7 +78,7 @@ module.exports = {
         },
         {
           where: {
-            id: debateId,
+            id: columnId,
           },
         },
       );
@@ -91,7 +91,7 @@ module.exports = {
         },
         {
           where: {
-            id: debateId,
+            id: columnId,
           },
         },
       );
@@ -170,8 +170,6 @@ module.exports = {
       if (user_id) {
         if (likey) {
           const userLikeyList = await models.likey.findAll({
-            offset: offset,
-            limit: limit,
             attributes: ["column_id"],
             where: {
               [Op.and]: [
@@ -189,7 +187,7 @@ module.exports = {
             return data.column_id;
           });
 
-          if (Array.isArray(categoryArray)) {
+          if (categoryArray.length > 0) {
             // 유저 ID ON, Likey On Category On
             await models.column
               .findAll({
@@ -241,7 +239,7 @@ module.exports = {
           }
         } else {
           //유저 예스 라이키 노 카테고리 예스
-          if (Array.isArray(categoryArray)) {
+          if (categoryArray.length > 0) {
             await models.column
               .findAll({
                 offset: offset,
@@ -263,7 +261,7 @@ module.exports = {
           }
         }
       } else {
-        if (Array.isArray(categoryArray)) {
+        if (categoryArray.length > 0) {
           // 유저 노 => (라이키 엑스) 카테고리 예스
           await models.column
             .findAll({
