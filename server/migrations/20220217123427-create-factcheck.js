@@ -11,8 +11,11 @@ module.exports = {
       pros: {
         type: Sequelize.BOOLEAN,
       },
-      contents: {
+      desc: {
         type: Sequelize.TEXT,
+      },
+      url: {
+        type: Sequelize.STRING,
       },
       debate_id: {
         references: {
