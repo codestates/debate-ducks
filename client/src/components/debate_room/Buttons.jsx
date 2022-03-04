@@ -5,19 +5,46 @@ import { BsFillCameraVideoOffFill } from "react-icons/bs";
 import { BsFillCameraVideoFill } from "react-icons/bs";
 import { MdScreenShare } from "react-icons/md";
 
-Buttons.propTypes = { isAudioMuted: PropTypes.bool, toggleMuteAudio: PropTypes.func, isVideoMuted: PropTypes.bool, toggleMuteVideo: PropTypes.func, shareScreen: PropTypes.func };
+Buttons.propTypes = {
+  isAudioMuted: PropTypes.bool,
+  toggleMuteAudio: PropTypes.func,
+  isVideoMuted: PropTypes.bool,
+  toggleMuteVideo: PropTypes.func,
+  shareScreen: PropTypes.func,
+  isStarted: PropTypes.bool,
+};
 
-export default function Buttons({ isAudioMuted, toggleMuteAudio, isVideoMuted, toggleMuteVideo, shareScreen }) {
-  // Styles
-  const btnCSS = "border  rounded-full max-w-max min-w-max p-1 text-2xl text-ducks-blue-6667ab bg-ducks-yellow-fedd00 cursor-pointer hover:text-white hover:bg-ducks-blue-6667ab duration-200";
+export default function Buttons({ isAudioMuted, toggleMuteAudio, isVideoMuted, toggleMuteVideo, shareScreen, isStarted }) {
+  const btnOnCSS =
+    "border  rounded-full max-w-max min-w-max p-1 text-2xl text-ducks-blue-6667ab bg-ducks-yellow-fedd00 cursor-pointer hover:text-ducks-yellow-fedd00 hover:bg-ducks-blue-6667ab duration-200 ease-linear";
+  const btnOffCSS =
+    "border  rounded-full max-w-max min-w-max p-1 text-2xl text-ducks-yellow-fedd00 bg-ducks-blue-6667ab cursor-pointer hover:text-ducks-blue-6667ab hover:bg-ducks-yellow-fedd00 duration-200 ease-linear";
 
   return (
     <div className="flex justify-center gap-8 mt-2 mb-2">
-      <div className={btnCSS}>{isAudioMuted ? <BsMicMuteFill onClick={() => toggleMuteAudio(false)} /> : <BsMicFill onClick={() => toggleMuteAudio(true)} />}</div>
-      <div className={btnCSS}>{isVideoMuted ? <BsFillCameraVideoOffFill onClick={() => toggleMuteVideo(false)} /> : <BsFillCameraVideoFill onClick={() => toggleMuteVideo(true)} />}</div>
-      <div className={btnCSS}>
-        <MdScreenShare onClick={shareScreen} />
-      </div>
+      {isAudioMuted ? (
+        <div className={btnOffCSS}>
+          <BsMicMuteFill onClick={() => toggleMuteAudio(false)} />
+        </div>
+      ) : (
+        <div className={btnOnCSS}>
+          <BsMicFill onClick={() => toggleMuteAudio(true)} />
+        </div>
+      )}
+      {isVideoMuted ? (
+        <div className={btnOffCSS}>
+          <BsFillCameraVideoOffFill onClick={() => toggleMuteVideo(false)} />
+        </div>
+      ) : (
+        <div className={btnOnCSS}>
+          <BsFillCameraVideoFill onClick={() => toggleMuteVideo(true)} />
+        </div>
+      )}
+      {isStarted ? (
+        <div className={btnOnCSS}>
+          <MdScreenShare onClick={shareScreen} />
+        </div>
+      ) : null}
     </div>
   );
 }

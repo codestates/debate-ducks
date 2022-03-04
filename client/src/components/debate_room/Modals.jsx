@@ -6,39 +6,45 @@ import ConfirmModal from "../modal/ConfirmModal";
 Modals.propTypes = {
   socket: PropTypes.object,
   debateId: PropTypes.string,
-  stream: PropTypes.object,
-  myPeer: PropTypes.object,
   isExceedModalOn: PropTypes.bool,
   isErrorModalOn: PropTypes.bool,
   isPeerLeaveModalOn: PropTypes.bool,
   isLeaveModalOn: PropTypes.bool,
   setIsLeaveModalOn: PropTypes.func,
+  disconnect: PropTypes.func,
+  isStartModalOn: PropTypes.bool,
+  setIsStartModalOn: PropTypes.func,
+  setIsStarted: PropTypes.func,
+  isRejectModalOn: PropTypes.bool,
+  setIsRejectModalOn: PropTypes.func,
 };
 
-export default function Modals({ socket, debateId, stream, myPeer, isExceedModalOn, isErrorModalOn, isPeerLeaveModalOn, isLeaveModalOn, setIsLeaveModalOn }) {
+export default function Modals({
+  socket,
+  debateId,
+  isExceedModalOn,
+  isErrorModalOn,
+  isPeerLeaveModalOn,
+  isLeaveModalOn,
+  setIsLeaveModalOn,
+  disconnect,
+  isStartModalOn,
+  setIsStartModalOn,
+  setIsStarted,
+  isRejectModalOn,
+  setIsRejectModalOn,
+}) {
   const navigate = useNavigate();
 
-  // 방 나가기
   function goToDebate() {
-    if (stream) {
-      stream.getTracks().forEach((track) => {
-        track.stop();
-      });
-    }
-    if (myPeer.current) {
-      myPeer.current.destroy();
-    }
-    socket.emit("leave", { debateId });
-    socket.disconnect();
+    disconnect();
     navigate(`/forum/debate/${debateId}`);
   }
 
-  // Styles
   const modalCSS = "w-screen h-screen flex justify-center items-center absolute z-50";
 
   return (
     <div>
-      {/* Modals */}
       {!isExceedModalOn ? null : (
         <div className={modalCSS}>
           <JustConfirmModal
@@ -57,8 +63,7 @@ export default function Modals({ socket, debateId, stream, myPeer, isExceedModal
       )}
       {!isPeerLeaveModalOn ? null : (
         <div className={modalCSS}>
-          <div width="1280px" height="764px"></div>
-          <JustConfirmModal content={{ title: "Finished!", text: "Your partner has ended the debate. You will be redirected to the debate page. ", btn: "OK" }} callback={goToDebate} />
+          <JustConfirmModal content={{ title: "Finished!", text: "Your opponent has ended the debate. You will be redirected to the debate post.", btn: "OK" }} callback={goToDebate} />
         </div>
       )}
       {!isLeaveModalOn ? null : (
@@ -69,6 +74,32 @@ export default function Modals({ socket, debateId, stream, myPeer, isExceedModal
               setIsLeaveModalOn(false);
             }}
             confirmCallback={goToDebate}
+          />
+        </div>
+      )}
+      {!isStartModalOn ? null : (
+        <div className={modalCSS}>
+          <ConfirmModal
+            content={{ title: "Start!", text: "Are you ready to start the debate?", left: "NO", right: "YES" }}
+            cancelCallback={() => {
+              setIsStartModalOn(false);
+              socket.emit("start_debate_reject", { debateId });
+            }}
+            confirmCallback={() => {
+              setIsStartModalOn(false);
+              setIsStarted(true);
+              socket.emit("start_debate_consent", { debateId });
+            }}
+          />
+        </div>
+      )}
+      {!isRejectModalOn ? null : (
+        <div className={modalCSS}>
+          <JustConfirmModal
+            content={{ title: "Rejected!", text: "Your opponent has rejected your request to start the debate. Please ask your opponent again.", btn: "OK" }}
+            callback={() => {
+              setIsRejectModalOn(false);
+            }}
           />
         </div>
       )}
