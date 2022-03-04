@@ -137,7 +137,12 @@ module.exports = {
 
   get_columns: async (req, res) => {
     const { user_id, category, likey, page, search } = req.query;
-    const categoryArray = category.split(",");
+
+    let categoryArray = [];
+
+    if (category) {
+      categoryArray = category.split(",");
+    }
 
     let pageNum = page || 1;
     let offset = 0;

@@ -237,23 +237,14 @@ module.exports = {
   },
 
   get_debates: async (req, res) => {
-    // status x likey 내가 제공
-    // const { category, page, search } = req.query;
-    // console.log("req.query : ", req.query);
-
-    // // res.status(200).json({ data: null, message: "토론 리스트를 조회합니다. 아직 미구현입니다." });
-
-    // let pageNum = page;
-    // let offset = 0;
-    // let limit = 10;
-
-    // if (pageNum > 1) {
-    //   offset = limit * (pageNum - 1);
-    // }
-
     const { user_id, category, status, likey, page, search } = req.query;
 
-    const categoryArray = category.split(",");
+    let categoryArray = [];
+
+    if (category) {
+      categoryArray = category.split(",");
+    }
+
     let pageNum = page || 1;
     let offset = 0;
     let limit = 10;

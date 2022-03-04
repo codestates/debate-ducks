@@ -17,6 +17,8 @@ module.exports = {
           key: "id",
         },
         type: Sequelize.INTEGER,
+        allowNull: true,
+        onDelete: "cascade",
       },
       voter_id: {
         references: {
@@ -24,6 +26,8 @@ module.exports = {
           key: "id",
         },
         type: Sequelize.INTEGER,
+        allowNull: true,
+        onDelete: "cascade",
       },
     });
   },

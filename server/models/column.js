@@ -12,18 +12,22 @@ module.exports = (sequelize, DataTypes) => {
       models.column.belongsTo(models.user, {
         foreignKey: "author_id",
         targetKey: "id",
+        onDelete: "cascade",
       });
       models.column.hasMany(models.opinion, {
         foreignKey: "column_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.column.hasMany(models.likey, {
         foreignKey: "column_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.column.hasMany(models.report, {
         foreignKey: "column_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
     }
   }
