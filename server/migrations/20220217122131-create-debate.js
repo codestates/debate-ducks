@@ -35,6 +35,12 @@ module.exports = {
       status: {
         type: Sequelize.STRING,
       },
+      prosProfile: {
+        type: Sequelize.STRING,
+      },
+      consProfile: {
+        type: Sequelize.STRING,
+      },
       updated_at: {
         type: Sequelize.DATE,
       },

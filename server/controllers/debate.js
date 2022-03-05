@@ -9,6 +9,17 @@ module.exports = {
     if (!hostId) {
       return res.status(400).json({ data: null, message: "host id가 존재하지 않습니다." });
     }
+
+    const userInfo = await models.user.findOne({
+      where: {
+        id: hostId,
+      },
+    });
+
+    if (!userInfo) {
+      return res.status(500).json({ data: null, message: "서버 내부 에러 발생. n, ui" });
+    }
+
     try {
       if (!pros_id) {
         const debateInfo = await models.debate.create({
@@ -17,6 +28,7 @@ module.exports = {
           title: title,
           topic: topic,
           cons_id: cons_id,
+          consProfile: userInfo.profile,
           updated_at: Date.now(),
         });
 
@@ -28,6 +40,7 @@ module.exports = {
           title: title,
           topic: topic,
           pros_id: pros_id,
+          prosProfile: userInfo.profile,
           updated_at: Date.now(),
         });
 
@@ -46,19 +59,14 @@ module.exports = {
     let consName = "";
 
     if (!debateId) {
-      console.log("DI : ", debateId);
       return res.status(400).json({ data: null, message: "해당하는 토론 id가 없습니다." });
     }
-
-    console.log("DI 2 : ", debateId);
 
     const debateInfo = await models.debate.findOne({
       where: {
         id: debateId,
       },
     });
-
-    console.log("debateInfo : ", debateInfo);
 
     if (!debateInfo) {
       return res.status(404).json({ data: null, message: "해당하는 정보가 없습니다." });
@@ -165,9 +173,16 @@ module.exports = {
     }
 
     if (pros_id) {
+      const userInfo = await models.user.findOne({
+        where: {
+          id: pros_id,
+        },
+      });
+
       await models.debate.update(
         {
           pros_id: pros_id,
+          prosProfile: userInfo.profile,
         },
         {
           where: {
@@ -178,9 +193,16 @@ module.exports = {
     }
 
     if (cons_id) {
+      const userInfo = await models.user.findOne({
+        where: {
+          id: cons_id,
+        },
+      });
+
       await models.debate.update(
         {
           cons_id: cons_id,
+          consProfile: userInfo.profile,
         },
         {
           where: {
@@ -249,7 +271,7 @@ module.exports = {
 
     let pageNum = page || 1;
     let offset = 0;
-    let limit = 10;
+    let limit = 9;
     if (pageNum > 1) {
       offset = limit * (pageNum - 1);
     }
