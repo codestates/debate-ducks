@@ -29,7 +29,7 @@ module.exports = {
           topic: topic,
           cons_id: cons_id,
           consProfile: userInfo.profile,
-          updated_at: Date.now(),
+          updated_at: new Date(),
         });
 
         res.status(201).json({ data: debateInfo, message: "debate 생성 성공" });
@@ -41,7 +41,7 @@ module.exports = {
           topic: topic,
           pros_id: pros_id,
           prosProfile: userInfo.profile,
-          updated_at: Date.now(),
+          updated_at: new Date(),
         });
 
         res.status(201).json({ data: debateInfo, message: "debate 생성 성공" });

@@ -2,8 +2,10 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export const getDebates = createAsyncThunk("debates/getDebates", async (payload) => {
-  const { userId, status, categories, isLiked, page, searchValue, sort } = payload;
-  const response = await axios.get(`${process.env.REACT_APP_API_URL}/debates/list/${userId}?status=${status}&category=${categories}&likey=${isLiked}&page=${page}&search=${searchValue}&sort=${sort}`, {
+  // const { userId, status, categories, isLiked, page, searchValue } = payload;
+  const { userId, status, categories, page, searchValue } = payload;
+  const response = await axios.get(`${process.env.REACT_APP_API_URL}/debate/list?user_id=${userId}&status=${status}&category=${categories}&page=${page}&search=${searchValue}`, {
+    // const response = await axios.get(`${process.env.REACT_APP_API_URL}/debate/list`, {
     withCredentials: true,
   });
   return response.data;

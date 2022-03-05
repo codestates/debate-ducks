@@ -12,7 +12,7 @@ export default function Category({ categories, setCategories, list }) {
   };
 
   return (
-    <div>
+    <div className="w-960 mx-auto mb-60 flex flex-wrap justify-center">
       {list.map((category, idx) => (
         <BlueBtn key={idx} onClick={clickCategory} text={category}>
           {/* {category} */}
