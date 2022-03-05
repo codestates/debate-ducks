@@ -203,7 +203,9 @@ io.on("connection", (socket) => {
   });
 
   //! 녹화 종료 및 토론 종료 로직
-  socket.on("debate_finish", () => {});
+  socket.on("debate_finish", (data) => {
+    socket.to(data.debateId).emit("debate_finish");
+  });
 });
 
 app.use((req, res, next) => {

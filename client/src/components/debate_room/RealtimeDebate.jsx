@@ -16,6 +16,7 @@ export default function RealtimeDebate({ socket, debateId }) {
   const isPro = query.get("pro");
   //! 임시 변수;
   const debateInfo = { title: "Does Alien Exist?", proName: "Yuchan", conName: "Chesley" };
+  const amRef = useRef(null);
 
   // ---Modals 변수
   const [isExceedModalOn, setIsExceedModalOn] = useState(false);
@@ -34,9 +35,10 @@ export default function RealtimeDebate({ socket, debateId }) {
 
   // ---Socket, WebRTC 변수
   const [stream, setStream] = useState(null);
+  const [peerStream, setPeerStream] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
-  const [isProTurn, setIsProTurn] = useState(true);
+  const [isProTurn, setIsProTurn] = useState(null);
   const myPeer = useRef();
   const myVideoRef = useRef(null);
   const peerVideoRef = useRef(null);
@@ -44,6 +46,15 @@ export default function RealtimeDebate({ socket, debateId }) {
   // ---Canvas 변수
   const canvasRef = useRef(null);
   const [notice, setNotice] = useState({ turn: "pre", text: "" });
+
+  // ---Record 변수
+  const mergedAudioTracks = useRef({});
+  const canvasStream = useRef({});
+  const mergedStream = useRef({});
+  const mergedRecorder = useRef({});
+  const mergedBlobs = useRef([]);
+  const mergedBlob = useRef({});
+  const mergedUrl = useRef("");
 
   // ---뒤로가기 방지
   usePrevent();
@@ -106,6 +117,8 @@ export default function RealtimeDebate({ socket, debateId }) {
           });
 
           peer.on("stream", (stream) => {
+            setPeerStream(stream);
+
             if (peerVideoRef.current) {
               peerVideoRef.current.srcObject = stream;
             }
@@ -153,6 +166,8 @@ export default function RealtimeDebate({ socket, debateId }) {
           });
 
           peer.on("stream", (stream) => {
+            setPeerStream(stream);
+
             if (peerVideoRef.current) {
               peerVideoRef.current.srcObject = stream;
             }
@@ -213,9 +228,35 @@ export default function RealtimeDebate({ socket, debateId }) {
     // <Debate>
     // Opening
     socket.on("debate_start", () => {
+      // Create Canvas Stream
+      canvasStream.current = canvasRef?.current?.captureStream();
+
+      // Merge Tracks
+      const mergeTracks = [...canvasStream.current.getVideoTracks(), ...mergedAudioTracks.current];
+
+      mergedStream.current = new MediaStream(mergeTracks);
+
+      mergedRecorder.current = new MediaRecorder(mergedStream?.current, { mimeType: "video/webm" });
+
+      mergedRecorder.current.ondataavailable = (ev) => {
+        mergedBlobs.current = [...mergedBlobs.current, ev.data];
+      };
+
+      mergedRecorder.current.onstop = () => {
+        mergedBlob.current = new Blob(mergedBlobs?.current, { type: "video/webm" });
+
+        mergedUrl.current = window.URL.createObjectURL(mergedBlob?.current);
+
+        amRef.current.href = mergedUrl?.current;
+      };
+
+      // Record Start
+      mergedRecorder?.current?.start(1000 / 60);
+
       setNotice({ ...notice, ...{ turn: "pre", text: `Topic : ${debateInfo.title}` } });
 
       setTimeout(() => {
+        setIsProTurn(true);
         setNotice({ ...notice, ...{ turn: "pre", text: "The debate will begin soon with the opening remarks of the pro. ( 60 sec )" } });
       }, 3000);
 
@@ -382,12 +423,19 @@ export default function RealtimeDebate({ socket, debateId }) {
     });
 
     socket.on("debate_finish_pre", () => {
-      socket.emit("debate_finish", { debateId });
+      setTimeout(() => {
+        socket.emit("debate_finish", { debateId });
+      }, 500);
     });
 
-    //! 녹화 종료 및 토론 종료 로직
+    // Finish
     socket.on("debate_finish", () => {
+      setIsStarted(false);
       setNotice({ ...notice, ...{ turn: "pre", text: "The debate has ended." } });
+
+      setTimeout(() => {
+        mergedRecorder?.current?.stop();
+      }, 500);
     });
   }, []);
 
@@ -397,11 +445,11 @@ export default function RealtimeDebate({ socket, debateId }) {
   const [drawConScreenStart, drawConScreenStop] = useSetInterval(drawConScreen, 1000 / 60);
 
   useEffect(() => {
-    if (isProScreenOn && isProTurn) {
+    if (isProScreenOn && isProTurn && isProTurn !== null && isStarted) {
       drawVideoStop();
       drawConScreenStop();
       drawProScreenStart();
-    } else if (isConScreenOn && !isProTurn) {
+    } else if (isConScreenOn && !isProTurn && isProTurn !== null && isStarted) {
       drawVideoStop();
       drawProScreenStop();
       drawConScreenStart();
@@ -410,7 +458,7 @@ export default function RealtimeDebate({ socket, debateId }) {
       drawConScreenStop();
       drawVideoStart();
     }
-  }, [isProScreenOn, isConScreenOn, isProTurn]);
+  }, [isProScreenOn, isConScreenOn, isProTurn, isStarted]);
 
   function drawVideo() {
     // Eraser
@@ -673,8 +721,33 @@ export default function RealtimeDebate({ socket, debateId }) {
     }
   }, [isStarted]);
 
+  // ---Merge Audio Track
+  useEffect(() => {
+    function mergeAudioTracks(myStream, peerStream) {
+      const context = new AudioContext();
+      const destination = context.createMediaStreamDestination();
+
+      const source1 = context.createMediaStreamSource(myStream);
+      const myStreamGain = context.createGain();
+      source1.connect(myStreamGain).connect(destination);
+
+      const source2 = context.createMediaStreamSource(peerStream);
+      const peerStreamGain = context.createGain();
+      source2.connect(peerStreamGain).connect(destination);
+
+      return destination.stream.getAudioTracks();
+    }
+
+    if (stream && peerStream) {
+      mergedAudioTracks.current = mergeAudioTracks(stream, peerStream);
+    }
+  }, [stream, peerStream]);
+
   return (
     <div>
+      <a ref={amRef} download="video">
+        Test
+      </a>
       <Modals
         socket={socket}
         debateId={debateId}
@@ -719,7 +792,7 @@ export default function RealtimeDebate({ socket, debateId }) {
         <div>
           <canvas ref={canvasRef} width="1280px" height="660px"></canvas>
         </div>
-        <Buttons isAudioMuted={isAudioMuted} toggleMuteAudio={toggleMuteAudio} isVideoMuted={isVideoMuted} toggleMuteVideo={toggleMuteVideo} shareScreen={shareScreen} isStarted={isStarted} />
+        <Buttons isAudioMuted={isAudioMuted} toggleMuteAudio={toggleMuteAudio} isVideoMuted={isVideoMuted} toggleMuteVideo={toggleMuteVideo} shareScreen={shareScreen} isConnected={isConnected} />
       </div>
     </div>
   );
