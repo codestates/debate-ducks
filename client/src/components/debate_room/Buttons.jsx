@@ -11,10 +11,10 @@ Buttons.propTypes = {
   isVideoMuted: PropTypes.bool,
   toggleMuteVideo: PropTypes.func,
   shareScreen: PropTypes.func,
-  isStarted: PropTypes.bool,
+  isConnected: PropTypes.bool,
 };
 
-export default function Buttons({ isAudioMuted, toggleMuteAudio, isVideoMuted, toggleMuteVideo, shareScreen, isStarted }) {
+export default function Buttons({ isAudioMuted, toggleMuteAudio, isVideoMuted, toggleMuteVideo, shareScreen, isConnected }) {
   const btnOnCSS =
     "border  rounded-full max-w-max min-w-max p-1 text-2xl text-ducks-blue-6667ab bg-ducks-yellow-fedd00 cursor-pointer hover:text-ducks-yellow-fedd00 hover:bg-ducks-blue-6667ab duration-200 ease-linear";
   const btnOffCSS =
@@ -40,7 +40,7 @@ export default function Buttons({ isAudioMuted, toggleMuteAudio, isVideoMuted, t
           <BsFillCameraVideoFill onClick={() => toggleMuteVideo(true)} />
         </div>
       )}
-      {isStarted ? (
+      {isConnected ? (
         <div className={btnOnCSS}>
           <MdScreenShare onClick={shareScreen} />
         </div>

@@ -16,6 +16,12 @@ export default function RealtimeDebate({ socket, debateId }) {
   const isPro = query.get("pro");
   //! 임시 변수;
   const debateInfo = { title: "Does Alien Exist?", proName: "Yuchan", conName: "Chesley" };
+  const canvasStream = useRef({});
+  const canvasRecorder = useRef({});
+  const canvasBlobs = useRef([]);
+  const canvasBlob = useRef({});
+  const canvasUrl = useRef("");
+  const aRef = useRef(null);
 
   // ---Modals 변수
   const [isExceedModalOn, setIsExceedModalOn] = useState(false);
@@ -36,7 +42,7 @@ export default function RealtimeDebate({ socket, debateId }) {
   const [stream, setStream] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
-  const [isProTurn, setIsProTurn] = useState(true);
+  const [isProTurn, setIsProTurn] = useState(null);
   const myPeer = useRef();
   const myVideoRef = useRef(null);
   const peerVideoRef = useRef(null);
@@ -213,9 +219,29 @@ export default function RealtimeDebate({ socket, debateId }) {
     // <Debate>
     // Opening
     socket.on("debate_start", () => {
+      // Record Canvas
+      canvasStream.current = canvasRef?.current?.captureStream();
+
+      canvasRecorder.current = new MediaRecorder(canvasStream?.current, { mimeType: "video/webm" });
+
+      canvasRecorder.current.ondataavailable = (ev) => {
+        canvasBlobs.current = [...canvasBlobs.current, ev.data];
+      };
+
+      canvasRecorder.current.onstop = () => {
+        canvasBlob.current = new Blob(canvasBlobs?.current, { type: "video/webm" });
+
+        canvasUrl.current = window.URL.createObjectURL(canvasBlob?.current);
+
+        aRef.current.href = canvasUrl?.current;
+      };
+
+      canvasRecorder?.current?.start(1000 / 60);
+
       setNotice({ ...notice, ...{ turn: "pre", text: `Topic : ${debateInfo.title}` } });
 
       setTimeout(() => {
+        setIsProTurn(true);
         setNotice({ ...notice, ...{ turn: "pre", text: "The debate will begin soon with the opening remarks of the pro. ( 60 sec )" } });
       }, 3000);
 
@@ -382,12 +408,19 @@ export default function RealtimeDebate({ socket, debateId }) {
     });
 
     socket.on("debate_finish_pre", () => {
-      socket.emit("debate_finish", { debateId });
+      setTimeout(() => {
+        socket.emit("debate_finish", { debateId });
+      }, 500);
     });
 
     //! 녹화 종료 및 토론 종료 로직
     socket.on("debate_finish", () => {
+      setIsStarted(false);
       setNotice({ ...notice, ...{ turn: "pre", text: "The debate has ended." } });
+
+      setTimeout(() => {
+        canvasRecorder?.current?.stop();
+      }, 500);
     });
   }, []);
 
@@ -397,11 +430,11 @@ export default function RealtimeDebate({ socket, debateId }) {
   const [drawConScreenStart, drawConScreenStop] = useSetInterval(drawConScreen, 1000 / 60);
 
   useEffect(() => {
-    if (isProScreenOn && isProTurn) {
+    if (isProScreenOn && isProTurn && isProTurn !== null && isStarted) {
       drawVideoStop();
       drawConScreenStop();
       drawProScreenStart();
-    } else if (isConScreenOn && !isProTurn) {
+    } else if (isConScreenOn && !isProTurn && isProTurn !== null && isStarted) {
       drawVideoStop();
       drawProScreenStop();
       drawConScreenStart();
@@ -410,7 +443,7 @@ export default function RealtimeDebate({ socket, debateId }) {
       drawConScreenStop();
       drawVideoStart();
     }
-  }, [isProScreenOn, isConScreenOn, isProTurn]);
+  }, [isProScreenOn, isConScreenOn, isProTurn, isStarted]);
 
   function drawVideo() {
     // Eraser
@@ -675,6 +708,9 @@ export default function RealtimeDebate({ socket, debateId }) {
 
   return (
     <div>
+      <a ref={aRef} download="test">
+        Test
+      </a>
       <Modals
         socket={socket}
         debateId={debateId}
@@ -719,7 +755,7 @@ export default function RealtimeDebate({ socket, debateId }) {
         <div>
           <canvas ref={canvasRef} width="1280px" height="660px"></canvas>
         </div>
-        <Buttons isAudioMuted={isAudioMuted} toggleMuteAudio={toggleMuteAudio} isVideoMuted={isVideoMuted} toggleMuteVideo={toggleMuteVideo} shareScreen={shareScreen} isStarted={isStarted} />
+        <Buttons isAudioMuted={isAudioMuted} toggleMuteAudio={toggleMuteAudio} isVideoMuted={isVideoMuted} toggleMuteVideo={toggleMuteVideo} shareScreen={shareScreen} isConnected={isConnected} />
       </div>
     </div>
   );
