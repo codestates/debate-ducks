@@ -17,6 +17,7 @@ module.exports = {
           title: title,
           topic: topic,
           cons_id: cons_id,
+          updated_at: Date.now(),
         });
 
         res.status(201).json({ data: debateInfo, message: "debate 생성 성공" });
@@ -27,6 +28,7 @@ module.exports = {
           title: title,
           topic: topic,
           pros_id: pros_id,
+          updated_at: Date.now(),
         });
 
         res.status(201).json({ data: debateInfo, message: "debate 생성 성공" });
