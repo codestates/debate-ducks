@@ -1,3 +1,4 @@
+import { BlueBtn } from "../btn/BaseBtn";
 import PropTypes from "prop-types";
 Category.propTypes = { categories: PropTypes.array, setCategories: PropTypes.func, list: PropTypes.array };
 
@@ -13,9 +14,9 @@ export default function Category({ categories, setCategories, list }) {
   return (
     <div>
       {list.map((category, idx) => (
-        <button key={idx} onClick={clickCategory}>
-          {category}
-        </button>
+        <BlueBtn key={idx} onClick={clickCategory} text={category}>
+          {/* {category} */}
+        </BlueBtn>
       ))}
     </div>
   );

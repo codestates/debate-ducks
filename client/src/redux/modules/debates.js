@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const getDebates = createAsyncThunk("debates/getDebates", async (payload) => {
   const { userId, status, categories, isLiked, page, searchValue, sort } = payload;
-  const response = await axios.get(`${process.env.REACT_APP_API_URL}/debates/${userId}?status=${status}&category=${categories}&likey=${isLiked}&page=${page}&search=${searchValue}&sort=${sort}`, {
+  const response = await axios.get(`${process.env.REACT_APP_API_URL}/debates/list/${userId}?status=${status}&category=${categories}&likey=${isLiked}&page=${page}&search=${searchValue}&sort=${sort}`, {
     withCredentials: true,
   });
   return response.data;

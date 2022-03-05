@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 Status.propTypes = { status: PropTypes.array, setStatus: PropTypes.func };
+import { OrangeBtn } from "../btn/BaseBtn";
 
 export default function Status({ status, setStatus }) {
   const listOfStatus = ["On-going", "Voting", "Completed"];
@@ -13,11 +14,10 @@ export default function Status({ status, setStatus }) {
 
   return (
     <div>
-      <h1>-Status-</h1>
       {listOfStatus.map((status, idx) => (
-        <button key={idx} onClick={clickStatus}>
-          {status}
-        </button>
+        <OrangeBtn key={idx} onClick={clickStatus} text={status}>
+          {/* {status} */}
+        </OrangeBtn>
       ))}
     </div>
   );
