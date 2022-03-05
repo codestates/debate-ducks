@@ -17,6 +17,8 @@ Modals.propTypes = {
   setIsStarted: PropTypes.func,
   isRejectModalOn: PropTypes.bool,
   setIsRejectModalOn: PropTypes.func,
+  isFinishedModalOn: PropTypes.bool,
+  download: PropTypes.func,
 };
 
 export default function Modals({
@@ -33,6 +35,8 @@ export default function Modals({
   setIsStarted,
   isRejectModalOn,
   setIsRejectModalOn,
+  isFinishedModalOn,
+  download,
 }) {
   const navigate = useNavigate();
 
@@ -99,6 +103,20 @@ export default function Modals({
             content={{ title: "Rejected!", text: "Your opponent has rejected your request to start the debate. Please ask your opponent again.", btn: "OK" }}
             callback={() => {
               setIsRejectModalOn(false);
+            }}
+          />
+        </div>
+      )}
+      {!isFinishedModalOn ? null : (
+        <div className={modalCSS}>
+          <ConfirmModal
+            content={{ title: "Finished!", text: "The debate has ended. Would you like to download a recording of the discussion process?", left: "NO", right: "YES" }}
+            cancelCallback={() => {
+              goToDebate();
+            }}
+            confirmCallback={() => {
+              download();
+              goToDebate();
             }}
           />
         </div>

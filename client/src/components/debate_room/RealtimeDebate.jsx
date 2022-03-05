@@ -14,9 +14,9 @@ export default function RealtimeDebate({ socket, debateId }) {
   //! 테스트용
   const query = useQuery();
   const isPro = query.get("pro");
+
   //! 임시 변수;
-  const debateInfo = { title: "Does Alien Exist?", proName: "Yuchan", conName: "Chesley" };
-  const amRef = useRef(null);
+  const debateInfo = { title: "Does Alien Exist?", proName: "Yuchan", conName: "Chesley", proId: 1, conId: 2 };
 
   // ---Modals 변수
   const [isExceedModalOn, setIsExceedModalOn] = useState(false);
@@ -25,11 +25,12 @@ export default function RealtimeDebate({ socket, debateId }) {
   const [isLeaveModalOn, setIsLeaveModalOn] = useState(false);
   const [isStartModalOn, setIsStartModalOn] = useState(false);
   const [isRejectModalOn, setIsRejectModalOn] = useState(false);
-  const [isStartBtnOn, setIsStartBtnOn] = useState(true);
+  const [isFinishedModalOn, setIsFinishedModalOn] = useState(false);
 
   // ---Buttons 변수
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
+  const [isStartBtnOn, setIsStartBtnOn] = useState(true);
   const [isProScreenOn, setIsProScreenOn] = useState(false);
   const [isConScreenOn, setIsConScreenOn] = useState(false);
 
@@ -55,6 +56,7 @@ export default function RealtimeDebate({ socket, debateId }) {
   const mergedBlobs = useRef([]);
   const mergedBlob = useRef({});
   const mergedUrl = useRef("");
+  const aRef = useRef(null);
 
   // ---뒤로가기 방지
   usePrevent();
@@ -186,13 +188,6 @@ export default function RealtimeDebate({ socket, debateId }) {
         });
     });
 
-    // Disconnecting
-    socket.on("peer_disconnecting", () => {
-      disconnect();
-      setIsConnected(false);
-      setIsPeerLeaveModalOn(true);
-    });
-
     // Screen Share
     socket.on("screen_on", (data) => {
       if (data.isPro === "true") {
@@ -245,9 +240,12 @@ export default function RealtimeDebate({ socket, debateId }) {
       mergedRecorder.current.onstop = () => {
         mergedBlob.current = new Blob(mergedBlobs?.current, { type: "video/webm" });
 
+        //!
+        console.log(mergedBlob?.current);
+
         mergedUrl.current = window.URL.createObjectURL(mergedBlob?.current);
 
-        amRef.current.href = mergedUrl?.current;
+        aRef.current.href = mergedUrl?.current;
       };
 
       // Record Start
@@ -435,9 +433,42 @@ export default function RealtimeDebate({ socket, debateId }) {
 
       setTimeout(() => {
         mergedRecorder?.current?.stop();
+        setIsFinishedModalOn(true);
+        disconnect();
+        setIsConnected(false);
       }, 500);
     });
   }, []);
+
+  // ---Disconnecting
+  useEffect(() => {
+    socket.on("peer_disconnecting", () => {
+      if (!isStarted) {
+        disconnect();
+        setIsConnected(false);
+        setIsPeerLeaveModalOn(true);
+      } else {
+        disconnect();
+        setIsConnected(false);
+        setIsFinishedModalOn(true);
+      }
+    });
+  }, [isStarted]);
+
+  function disconnect() {
+    myVideoRef?.current?.srcObject.getTracks().forEach((track) => {
+      track.stop();
+    });
+
+    peerVideoRef?.current?.srcObject?.getTracks().forEach((track) => {
+      track.stop();
+    });
+
+    myPeer?.current?.destroy();
+
+    socket.emit("leave", { debateId });
+    socket.disconnect();
+  }
 
   // ---Canvas
   const [drawVideoStart, drawVideoStop] = useSetInterval(drawVideo, 1000 / 60);
@@ -598,22 +629,6 @@ export default function RealtimeDebate({ socket, debateId }) {
     }
   }
 
-  // ---Disconnect
-  function disconnect() {
-    myVideoRef?.current?.srcObject.getTracks().forEach((track) => {
-      track.stop();
-    });
-
-    peerVideoRef?.current?.srcObject?.getTracks().forEach((track) => {
-      track.stop();
-    });
-
-    myPeer?.current?.destroy();
-
-    socket.emit("leave", { debateId });
-    socket.disconnect();
-  }
-
   // ---Mute Toggle
   function toggleMuteAudio(boolean) {
     if (stream) {
@@ -743,11 +758,13 @@ export default function RealtimeDebate({ socket, debateId }) {
     }
   }, [stream, peerStream]);
 
+  function download() {
+    aRef?.current?.click();
+  }
+
   return (
     <div>
-      <a ref={amRef} download="video">
-        Test
-      </a>
+      <a ref={aRef} download={`${debateInfo.title}_${debateId}`} />
       <Modals
         socket={socket}
         debateId={debateId}
@@ -762,6 +779,8 @@ export default function RealtimeDebate({ socket, debateId }) {
         setIsStarted={setIsStarted}
         isRejectModalOn={isRejectModalOn}
         setIsRejectModalOn={setIsRejectModalOn}
+        isFinishedModalOn={isFinishedModalOn}
+        download={download}
       />
       <div className="w-screen h-screen flex justify-center items-center fixed">
         <video ref={myVideoRef} muted autoPlay playsInline width="0" height="0"></video>
@@ -774,19 +793,24 @@ export default function RealtimeDebate({ socket, debateId }) {
           </div>
           <div className="font-poppins font-bold text-24">{debateInfo.title}</div>
           <div className="w-14 flex justify-end">
-            {isConnected && !isStarted ? (
-              isStartBtnOn ? (
-                <YellowBtn text="Start" callback={startDebate} />
-              ) : (
-                <div className="mt-2 mr-4 capitalize text-14 font-poppins font-medium text-ducks-blue-6667ab">Waiting...</div>
-              )
+            {!isConnected ? (
+              <YellowBtn
+                text="Exit"
+                callback={() => {
+                  setIsLeaveModalOn(true);
+                }}
+              />
+            ) : !isStarted ? (
+              <>
+                {isStartBtnOn ? <YellowBtn text="Start" callback={startDebate} /> : <div className="mt-2 mr-4 capitalize text-14 font-poppins font-medium text-ducks-blue-6667ab">Waiting...</div>}
+                <YellowBtn
+                  text="Exit"
+                  callback={() => {
+                    setIsLeaveModalOn(true);
+                  }}
+                />
+              </>
             ) : null}
-            <YellowBtn
-              text="Exit"
-              callback={() => {
-                setIsLeaveModalOn(true);
-              }}
-            />
           </div>
         </div>
         <div>
