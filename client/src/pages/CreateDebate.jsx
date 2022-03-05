@@ -20,7 +20,7 @@ export default function CreateDebate() {
   const [isOpen, setIsOpen] = useState(false);
 
   // Sort
-  const options = ["Politics", "Society", "Business", "Science", "IT", "Environment", "Education", "History", "Sports", "Philosophy", "Just For Fun"];
+  const options = ["Politics", "Society", "Economics", "Science", "IT", "Environment", "Education", "History", "Sports", "Philosophy", "Just For Fun"];
   const sort = useSelect(options[0]);
 
   const titleInput = (e) => {
@@ -44,8 +44,6 @@ export default function CreateDebate() {
   };
 
   const Host = () => {
-    //console.log("isPros상태", isPros);
-
     if (isPros) {
       axios
         .post(`${process.env.REACT_APP_API_URL}/debate/${userInfo.data.id}`, {
@@ -58,6 +56,7 @@ export default function CreateDebate() {
         .then((res) => {
           console.log(res.data.data.id);
           navigate(`/forum/debate/${res.data.data.id}`);
+          window.scroll({ top: 0, behavior: "smooth" });
           //dispatch(setUserInfo(res.data.data));
           //console.log("바뀐유저인포", userInfo);
         })
@@ -74,6 +73,7 @@ export default function CreateDebate() {
         .then((res) => {
           console.log(res.data.data.id);
           navigate(`/forum/debate/${res.data.data.id}`);
+          window.scroll({ top: 0, behavior: "smooth" });
           //console.log("바뀐유저인포", userInfo);
         })
         .catch((err) => err);
@@ -81,35 +81,51 @@ export default function CreateDebate() {
   };
 
   return (
-    <div className="flex flex-col items-center">
-      <h1 className="text-ducks-orange-ff9425 font-bold text-24 text-left">Create Your Debate</h1>
-      <h2 className="text-ducks-gray-ccc">What you would like to debate about? Create a debate, and wait until someone chooses to debate with you!</h2>
-
-      <div className="flex flex-col">
-        Title : <textarea className="flex flex-row w-304 h-32" placeholder="Type..." onChange={titleInput}></textarea>
-        <div className="">Author : {userInfo?.data.name}</div>
-        <Sort sort={sort} options={options}></Sort>
-        <div className="flex flex-col">Topic : </div>
-        <div className="flex flex-col">
-          <div>
-            <input type="radio" onClick={clickPros} name="position" value="pros"></input>
-            <span>Pros</span>
-            <input type="radio" onClick={clickCons} name="position" value="cons"></input>
-            <span>Cons</span>
+    <div className="flex flex-col">
+      <h1 className="text-ducks-orange-ff9425 font-bold text-36 mt-24 ml-70 mb-12">Create Your Debate</h1>
+      <h2 className="text-ducks-gray-ccc -mt-1 ml-70">What you would like to debate about? Create a debate, and wait until someone chooses to debate with you!</h2>
+      <div className="w-960 h-0 ml-24 mt-18 border-solid border-b border-ducks-gray-eee"></div>
+      <div className="flex flex-col items-center">
+        <div className="flex flex-col my-60">
+          <h1 className="font-bold text-24 mb-12">Title</h1>
+          <div className="w-960 h-0 -ml-2 mt-12 border-solid border-b border-ducks-gray-eee"></div>
+          <div className="flex flex-row right-align font-light text-18 mt-12 mb-12">
+            Author <div className="ml-12 mb-12 font-light"> {userInfo?.data.name}</div>
           </div>
-          <textarea className="w-304 h-304" placeholder="Type..." onChange={topicInput}></textarea>
-        </div>{" "}
+          <textarea className="w-960 h-48 text-justify rounded-md border-ducks-gray-ccc shadow-sm" placeholder="Type..." onChange={titleInput}></textarea>
+          <h1 className="font-bold text-24 mb-12 mt-60">Topic</h1>
+          <div className="w-960 h-0 -ml-2 mt-12 border-solid border-b border-ducks-gray-eee"></div>
+          <div className="m-20">
+            <div className="flex flex-row">
+              <div className="flex right-align font-light text-18 mt-12 mb-12 -ml-18 mr-32">Category</div>
+              <div className="flex mt-12">
+                <Sort sort={sort} options={options}></Sort>
+              </div>
+            </div>
+            <div className="flex flex-row">
+              <div className="flex font-light text-18 mt-12 mb-12 -ml-18 mr-32">Position</div>
+              <input type="radio" onClick={clickPros} name="position" value="pros" className="m-18"></input>
+              <span className="mt-12">Pros</span>
+              <input type="radio" onClick={clickCons} name="position" value="cons" className="m-18"></input>
+              <span className="mt-12">Cons</span>
+            </div>
+          </div>
+          <textarea className="w-960 h-370 text-justify rounded-md border-ducks-gray-ccc shadow-sm" placeholder="Type..." onChange={topicInput}></textarea>
+          <div className="flex justify-center items-center mt-18">
+            <OrangeBtn callback={openModalHandler} text="Save"></OrangeBtn>
+          </div>
+
+          {isOpen ? (
+            <ConfirmModal
+              content={{ title: "Confirm", text: "Do you want to post this debate?", left: "NO", right: "YES" }}
+              cancelCallback={() => {
+                setIsOpen(false);
+              }}
+              confirmCallback={Host}
+            />
+          ) : null}
+        </div>
       </div>
-      <OrangeBtn callback={openModalHandler} text="Save"></OrangeBtn>
-      {isOpen ? (
-        <ConfirmModal
-          content={{ title: "Confirm", text: "Do you want to post this debate?", left: "NO", right: "YES" }}
-          cancelCallback={() => {
-            setIsOpen(false);
-          }}
-          confirmCallback={Host}
-        />
-      ) : null}
     </div>
   );
 }
