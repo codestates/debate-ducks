@@ -56,20 +56,20 @@ app.use("/report", reportRouter);
 app.use("/videoBox", videoBoxRouter);
 
 //! Local
-const options = {
-  key: fs.readFileSync(__dirname + "/key.pem", "utf-8"),
-  cert: fs.readFileSync(__dirname + "/cert.pem", "utf-8"),
-};
-const https = require("https");
-const server = https.createServer(options, app);
-const { Server } = require("socket.io");
-const io = new Server(server, { cors: { origin: "*" } });
-
-//! Deploy;
-// const http = require("http");
-// const server = http.createServer(app);
+// const options = {
+//   key: fs.readFileSync(__dirname + "/key.pem", "utf-8"),
+//   cert: fs.readFileSync(__dirname + "/cert.pem", "utf-8"),
+// };
+// const https = require("https");
+// const server = https.createServer(options, app);
 // const { Server } = require("socket.io");
 // const io = new Server(server, { cors: { origin: "*" } });
+
+//! Deploy;
+const http = require("http");
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server, { cors: { origin: "*" } });
 
 io.on("connection", (socket) => {
   // ---Timer
@@ -203,7 +203,9 @@ io.on("connection", (socket) => {
   });
 
   //! 녹화 종료 및 토론 종료 로직
-  socket.on("debate_finish", () => {});
+  socket.on("debate_finish", (data) => {
+    socket.to(data.debateId).emit("debate_finish");
+  });
 });
 
 app.use((req, res, next) => {
