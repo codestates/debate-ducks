@@ -16,12 +16,7 @@ export default function RealtimeDebate({ socket, debateId }) {
   const isPro = query.get("pro");
   //! 임시 변수;
   const debateInfo = { title: "Does Alien Exist?", proName: "Yuchan", conName: "Chesley" };
-  const canvasStream = useRef({});
-  const canvasRecorder = useRef({});
-  const canvasBlobs = useRef([]);
-  const canvasBlob = useRef({});
-  const canvasUrl = useRef("");
-  const aRef = useRef(null);
+  const amRef = useRef(null);
 
   // ---Modals 변수
   const [isExceedModalOn, setIsExceedModalOn] = useState(false);
@@ -40,6 +35,7 @@ export default function RealtimeDebate({ socket, debateId }) {
 
   // ---Socket, WebRTC 변수
   const [stream, setStream] = useState(null);
+  const [peerStream, setPeerStream] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
   const [isProTurn, setIsProTurn] = useState(null);
@@ -50,6 +46,15 @@ export default function RealtimeDebate({ socket, debateId }) {
   // ---Canvas 변수
   const canvasRef = useRef(null);
   const [notice, setNotice] = useState({ turn: "pre", text: "" });
+
+  // ---Record 변수
+  const mergedAudioTracks = useRef({});
+  const canvasStream = useRef({});
+  const mergedStream = useRef({});
+  const mergedRecorder = useRef({});
+  const mergedBlobs = useRef([]);
+  const mergedBlob = useRef({});
+  const mergedUrl = useRef("");
 
   // ---뒤로가기 방지
   usePrevent();
@@ -112,6 +117,8 @@ export default function RealtimeDebate({ socket, debateId }) {
           });
 
           peer.on("stream", (stream) => {
+            setPeerStream(stream);
+
             if (peerVideoRef.current) {
               peerVideoRef.current.srcObject = stream;
             }
@@ -159,6 +166,8 @@ export default function RealtimeDebate({ socket, debateId }) {
           });
 
           peer.on("stream", (stream) => {
+            setPeerStream(stream);
+
             if (peerVideoRef.current) {
               peerVideoRef.current.srcObject = stream;
             }
@@ -219,24 +228,30 @@ export default function RealtimeDebate({ socket, debateId }) {
     // <Debate>
     // Opening
     socket.on("debate_start", () => {
-      // Record Canvas
+      // Create Canvas Stream
       canvasStream.current = canvasRef?.current?.captureStream();
 
-      canvasRecorder.current = new MediaRecorder(canvasStream?.current, { mimeType: "video/webm" });
+      // Merge Tracks
+      const mergeTracks = [...canvasStream.current.getVideoTracks(), ...mergedAudioTracks.current];
 
-      canvasRecorder.current.ondataavailable = (ev) => {
-        canvasBlobs.current = [...canvasBlobs.current, ev.data];
+      mergedStream.current = new MediaStream(mergeTracks);
+
+      mergedRecorder.current = new MediaRecorder(mergedStream?.current, { mimeType: "video/webm" });
+
+      mergedRecorder.current.ondataavailable = (ev) => {
+        mergedBlobs.current = [...mergedBlobs.current, ev.data];
       };
 
-      canvasRecorder.current.onstop = () => {
-        canvasBlob.current = new Blob(canvasBlobs?.current, { type: "video/webm" });
+      mergedRecorder.current.onstop = () => {
+        mergedBlob.current = new Blob(mergedBlobs?.current, { type: "video/webm" });
 
-        canvasUrl.current = window.URL.createObjectURL(canvasBlob?.current);
+        mergedUrl.current = window.URL.createObjectURL(mergedBlob?.current);
 
-        aRef.current.href = canvasUrl?.current;
+        amRef.current.href = mergedUrl?.current;
       };
 
-      canvasRecorder?.current?.start(1000 / 60);
+      // Record Start
+      mergedRecorder?.current?.start(1000 / 60);
 
       setNotice({ ...notice, ...{ turn: "pre", text: `Topic : ${debateInfo.title}` } });
 
@@ -413,13 +428,13 @@ export default function RealtimeDebate({ socket, debateId }) {
       }, 500);
     });
 
-    //! 녹화 종료 및 토론 종료 로직
+    // Finish
     socket.on("debate_finish", () => {
       setIsStarted(false);
       setNotice({ ...notice, ...{ turn: "pre", text: "The debate has ended." } });
 
       setTimeout(() => {
-        canvasRecorder?.current?.stop();
+        mergedRecorder?.current?.stop();
       }, 500);
     });
   }, []);
@@ -706,9 +721,31 @@ export default function RealtimeDebate({ socket, debateId }) {
     }
   }, [isStarted]);
 
+  // ---Merge Audio Track
+  useEffect(() => {
+    function mergeAudioTracks(myStream, peerStream) {
+      const context = new AudioContext();
+      const destination = context.createMediaStreamDestination();
+
+      const source1 = context.createMediaStreamSource(myStream);
+      const myStreamGain = context.createGain();
+      source1.connect(myStreamGain).connect(destination);
+
+      const source2 = context.createMediaStreamSource(peerStream);
+      const peerStreamGain = context.createGain();
+      source2.connect(peerStreamGain).connect(destination);
+
+      return destination.stream.getAudioTracks();
+    }
+
+    if (stream && peerStream) {
+      mergedAudioTracks.current = mergeAudioTracks(stream, peerStream);
+    }
+  }, [stream, peerStream]);
+
   return (
     <div>
-      <a ref={aRef} download="test">
+      <a ref={amRef} download="video">
         Test
       </a>
       <Modals
