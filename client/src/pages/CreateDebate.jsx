@@ -20,7 +20,7 @@ export default function CreateDebate() {
   const [isOpen, setIsOpen] = useState(false);
 
   // Sort
-  const options = ["Politics", "Society", "Business", "Science", "IT", "Environment", "Education", "History", "Sports", "Philosophy", "Just For Fun"];
+  const options = ["Politics", "Society", "Economics", "Science", "IT", "Environment", "Education", "History", "Sports", "Philosophy", "Just For Fun"];
   const sort = useSelect(options[0]);
 
   const titleInput = (e) => {
