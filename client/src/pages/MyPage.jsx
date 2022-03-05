@@ -9,7 +9,6 @@ import { useState } from "react";
 import getByteLength from "../utils/getByteLength";
 import axios from "axios";
 import { setUserInfo } from "../redux/modules/user";
-import { OrangeBtn } from "../components/btn/BaseBtn";
 import { FiUpload } from "react-icons/fi";
 
 export default function MyPage() {
@@ -68,7 +67,6 @@ export default function MyPage() {
   const [image, setImage] = useState({});
 
   const fileChangeHandler = (e) => {
-    //console.log(e.target.files["0"]);
     setImage(e.target.files["0"]);
   };
 
@@ -124,16 +122,21 @@ export default function MyPage() {
             {" "}
             <label
               htmlFor="file-upload-button"
-              className="flex flex-col border border-solid w-140 h-60 mt-18 mb-18 p-2 rounded-16 items-center text-ducks-blue-6667ab bg-white hover:bg-ducks-blue-6667ab hover:text-white cursor-pointer"
+              className="flex flex-row border border-dotted w-170 h-48 mt-18 mb-18 p-2 rounded-full text-14 items-center text-ducks-blue-6667ab bg-white hover:bg-ducks-blue-6667ab hover:text-white cursor-pointer"
             >
-              <FiUpload className="flex flex-col" />
+              <div className="ml-12 mr-12">
+                <FiUpload />
+              </div>
               Change Profile
               <input type="file" name="img" id="file-upload-button" onChange={fileChangeHandler} style={{ display: "none" }} />
             </label>
           </form>
-          <div className="w-92 h-92 ml-90">
-            <OrangeBtn callback={onSubmitHandler} text="Save"></OrangeBtn>
-          </div>
+          <button
+            className="w-168 h-46 ml-52 p-1 box-border rounded-full h-32 px-24 capitalize text-14 font-poppins font-medium duration-200 ease-linear border border-ducks-orange-ff9425 text-ducks-orange-ff9425 hover:bg-ducks-orange-ff9425 hover:text-white"
+            onClick={onSubmitHandler}
+          >
+            Save
+          </button>
         </div>
 
         <div className="flex flex-col h-410 rounded-12 ml-20">
@@ -159,8 +162,8 @@ export default function MyPage() {
               <div className="flex text-18 font-poppins">{userInfo?.email}</div>
             </div>
           </div>
-          <div className="flex flex-col mt-24 mb-30">
-            <button className="flex text-ducks-gray-666 underline" onClick={() => navigate(`/activities/:username`)}>
+          <div className="flex flex-col mt-36 mb-30">
+            <button className="flex text-ducks-gray-666 underline mb-1" onClick={() => navigate(`/activities/:username`)}>
               My Activities
             </button>
             <button className="flex text-ducks-gray-666 underline" onClick={confirm}>
