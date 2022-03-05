@@ -61,7 +61,9 @@ module.exports = (sequelize, DataTypes) => {
       title: DataTypes.STRING,
       video: DataTypes.STRING,
       ended_at: DataTypes.DATEONLY,
-
+      updated_at: DataTypes.DATEONLY,
+      prosProfile: DataTypes.STRING,
+      consProfile: DataTypes.STRING,
       status: {
         type: DataTypes.STRING,
         defaultValue: "ongoing",

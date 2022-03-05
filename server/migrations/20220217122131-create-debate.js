@@ -32,6 +32,18 @@ module.exports = {
       ended_at: {
         type: Sequelize.DATE,
       },
+      status: {
+        type: Sequelize.STRING,
+      },
+      prosProfile: {
+        type: Sequelize.STRING,
+      },
+      consProfile: {
+        type: Sequelize.STRING,
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+      },
       host_id: {
         allowNull: true,
         references: {
