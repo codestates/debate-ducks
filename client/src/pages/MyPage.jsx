@@ -9,7 +9,6 @@ import { useState } from "react";
 import getByteLength from "../utils/getByteLength";
 import axios from "axios";
 import { setUserInfo } from "../redux/modules/user";
-//import { OrangeBtn } from "../components/btn/BaseBtn";
 import { FiUpload } from "react-icons/fi";
 
 export default function MyPage() {
@@ -68,7 +67,6 @@ export default function MyPage() {
   const [image, setImage] = useState({});
 
   const fileChangeHandler = (e) => {
-    //console.log(e.target.files["0"]);
     setImage(e.target.files["0"]);
   };
 
