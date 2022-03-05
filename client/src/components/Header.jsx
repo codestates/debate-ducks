@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { OrangeBtn as SignInBtn } from "./btn/BaseBtn";
-import { HiBell } from "react-icons/hi";
+// import { HiBell } from "react-icons/hi";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { setUserInfo } from "../redux/modules/user";
@@ -58,7 +58,7 @@ export default function Header() {
         </ul>
         {userId ? (
           <div className="flex items-center">
-            <HiBell className="text-24 mr-20 text-ducks-orange-ff9425" />
+            {/* <HiBell className="text-24 mr-20 text-ducks-orange-ff9425" /> */}
             <img src={userProfile} className="rounded-full w-32 h-32 bg-ducks-orange-ff9425 relative" onClick={toggleUserInfoModal}></img>
             {isUserModalOn ? (
               <div className="z-50 absolute top-48 right-20 bg-white rounded-12 border border-solid border-ducks-orange-ff9425 text-14 text-ducks-orange-ff9425 overflow-hidden cursor-pointer">
