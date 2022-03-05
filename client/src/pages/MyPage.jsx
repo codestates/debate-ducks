@@ -10,6 +10,7 @@ import getByteLength from "../utils/getByteLength";
 import axios from "axios";
 import { setUserInfo } from "../redux/modules/user";
 import { OrangeBtn } from "../components/btn/BaseBtn";
+import { FiUpload } from "react-icons/fi";
 
 export default function MyPage() {
   const dispatch = useDispatch();
@@ -113,33 +114,36 @@ export default function MyPage() {
       });
   };
 
-  // const signoutHandler = () => {
-  //   axios
-  //     .post(`${process.env.REACT_APP_API_URL}/signout`, {}, { withCredentials: true })
-  //     .then((res) => {
-  //       console.log(res);
-  //dispatch(setUserInfo({}));
-  //navigate("/");
-  //     })
-  //     .catch((err) => console.log(err));
-  // };
-
   return (
     <div className="flex justify-center items-center m-112">
       <div className="flex flex-row">
         <div className="flex flex-col w-274 h-410 rounded-20 mr-20">
           <img src={userProfile} className="rounded-full w-274 h-274 object-cover object-center" />
-          <form type="file" name="img" encType="multipart/form-data">
-            Change profile :
-            <input type="file" name="img" onChange={fileChangeHandler} />
+
+          <form type="file" name="img" encType="multipart/form-data" className="flex flex-col items-center">
+            {" "}
+            <label
+              htmlFor="file-upload-button"
+              className="flex flex-col border border-solid w-140 h-60 mt-18 mb-18 p-2 rounded-16 items-center text-ducks-blue-6667ab bg-white hover:bg-ducks-blue-6667ab hover:text-white cursor-pointer"
+            >
+              <FiUpload className="flex flex-col" />
+              Change Profile
+              <input type="file" name="img" id="file-upload-button" onChange={fileChangeHandler} style={{ display: "none" }} />
+            </label>
           </form>
-          <OrangeBtn callback={onSubmitHandler} text="Save"></OrangeBtn>
+          <div className="w-92 h-92 ml-90">
+            <OrangeBtn callback={onSubmitHandler} text="Save"></OrangeBtn>
+          </div>
         </div>
 
         <div className="flex flex-col h-410 rounded-12 ml-20">
           <div className="flex flex-col">
-            <div className="flex flex-row">
-              {!isEditUsername ? <div className="text-24 font-poppins">{userName}</div> : <input className="ml-12" onChange={changeUsernameInput} value={inputUsername} onKeyPress={onCheckEnter} />}
+            <div className="flex flex-row mt-24">
+              {!isEditUsername ? (
+                <div className="text-24 font-poppins">{userName}</div>
+              ) : (
+                <input type="text" className="ml-12" onChange={changeUsernameInput} placeholder={userName} defaultValue={userName} value={inputUsername} onKeyPress={onCheckEnter} />
+              )}
               {!isEditUsername ? (
                 <FiEdit className="m-12" onClick={onEditUsername} />
               ) : (
