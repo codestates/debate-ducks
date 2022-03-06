@@ -65,7 +65,7 @@ export default function Modals({
           <JustConfirmModal content={{ title: "Sorry!", text: "There's an unexpected error. Try joining again.", btn: "OK" }} callback={goToDebate} />
         </div>
       )}
-      {!isPeerLeaveModalOn ? null : (
+      {!isPeerLeaveModalOn || isFinishedModalOn ? null : (
         <div className={modalCSS}>
           <JustConfirmModal content={{ title: "Ended!", text: "Your opponent has ended the debate. You will be redirected to the debate post.", btn: "OK" }} callback={goToDebate} />
         </div>

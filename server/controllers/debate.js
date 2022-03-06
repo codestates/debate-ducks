@@ -660,4 +660,88 @@ module.exports = {
       }
     }
   },
+  get_debate_room: async (req, res) => {
+    const debateId = req.params.debate_id;
+
+    if (!debateId) {
+      return res.status(400).json({ data: null, message: "해당하는 토론 id가 없습니다." });
+    }
+
+    const debateInfo = await models.debate.findOne({
+      where: {
+        id: debateId,
+      },
+    });
+
+    if (!debateInfo) {
+      return res.status(404).json({ data: null, message: "해당하는 정보가 없습니다." });
+    }
+
+    if (debateInfo.status !== "ongoing") {
+      return res.status(404).json({ data: null, message: "이미 진행된 토론입니다." });
+    }
+
+    const { pros_id, cons_id } = debateInfo;
+
+    if (!pros_id || !cons_id) {
+      return res.status(404).json({ data: null, message: "상대방이 없는 토론입니다." });
+    }
+
+    const prosUserInfo = await models.user.findOne({
+      where: {
+        id: pros_id,
+      },
+    });
+    const proName = prosUserInfo.name;
+
+    const consUserInfo = await models.user.findOne({
+      where: {
+        id: cons_id,
+      },
+    });
+    const conName = consUserInfo.name;
+
+    if (!proName || !conName) {
+      return res.status(404).json({ data: null, message: "해당하는 정보가 없습니다." });
+    }
+
+    res.status(200).json({
+      data: {
+        title: debateInfo.title,
+        proId: pros_id,
+        conId: cons_id,
+        proName,
+        conName,
+      },
+      message: "Debate room 조회 성공",
+    });
+  },
+  update_debate_room_video: async (req, res) => {
+    const debateId = req.params.debate_id;
+    const { videoUrl } = req.body;
+
+    if (!debateId) {
+      return res.status(400).json({ message: "debateId가 들어오지 않았습니다." });
+    }
+
+    if (!videoUrl) {
+      return res.status(400).json({ message: "videoUrl이 들어오지 않았습니다." });
+    }
+
+    const date = new Date();
+    date.setDate(date.getDate() + 7);
+
+    await models.debate.update(
+      {
+        video: videoUrl,
+        status: "voting",
+        ended_at: date,
+      },
+      {
+        where: {
+          id: debateId,
+        },
+      },
+    );
+  },
 };

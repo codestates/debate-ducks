@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import Peer from "simple-peer";
+import axios from "axios";
 import { useState, useRef, useEffect } from "react";
 import usePrevent from "../../hooks/usePrevent";
 import { YellowBtn } from "../btn/BaseBtn";
@@ -7,18 +8,10 @@ import Modals from "./Modals";
 import Buttons from "./Buttons";
 import useSetInterval from "../../hooks/useSetInterval";
 import saveVideo from "../../utils/aws";
-import useQuery from "../../hooks/useQuery"; //! 테스트용
 
-RealtimeDebate.propTypes = { socket: PropTypes.object, debateId: PropTypes.string };
+RealtimeDebate.propTypes = { socket: PropTypes.object, debateId: PropTypes.string, debateInfo: PropTypes.object, isPro: PropTypes.bool };
 
-export default function RealtimeDebate({ socket, debateId }) {
-  //! 테스트용
-  const query = useQuery();
-  const isPro = query.get("pro");
-
-  //! 임시 변수;
-  const debateInfo = { title: "Does Alien Exist?", proName: "Yuchan", conName: "Chesley", proId: 1, conId: 2 };
-
+export default function RealtimeDebate({ socket, debateId, debateInfo, isPro }) {
   // ---Modals 변수
   const [isExceedModalOn, setIsExceedModalOn] = useState(false);
   const [isErrorModalOn, setIsErrorModalOn] = useState(false);
@@ -191,17 +184,17 @@ export default function RealtimeDebate({ socket, debateId }) {
 
     // Screen Share
     socket.on("screen_on", (data) => {
-      if (data.isPro === "true") {
+      if (data.isPro) {
         setIsProScreenOn(true);
-      } else if (data.isPro === "false") {
+      } else if (!data.isPro) {
         setIsConScreenOn(true);
       }
     });
 
     socket.on("screen_off", (data) => {
-      if (data.isPro === "true") {
+      if (data.isPro) {
         setIsProScreenOn(false);
-      } else if (data.isPro === "false") {
+      } else if (!data.isPro) {
         setIsConScreenOn(false);
       }
     });
@@ -238,14 +231,16 @@ export default function RealtimeDebate({ socket, debateId }) {
         mergedBlobs.current = [...mergedBlobs.current, ev.data];
       };
 
-      mergedRecorder.current.onstop = () => {
+      mergedRecorder.current.onstop = async () => {
         mergedBlob.current = new Blob(mergedBlobs?.current, { type: "video/webm" });
-
-        saveVideo(mergedBlob?.current, `${debateInfo.title}_${debateId}`);
 
         mergedUrl.current = window.URL.createObjectURL(mergedBlob?.current);
 
         aRef.current.href = mergedUrl?.current;
+
+        const videoUrl = await saveVideo(mergedBlob?.current, `${debateInfo.title}_${debateId}`);
+
+        axios.patch(`${process.env.REACT_APP_API_URL}/debate/debate_room/${debateId}/video`, { videoUrl }, { withCredentials: true });
       };
 
       // Record Start
@@ -444,13 +439,14 @@ export default function RealtimeDebate({ socket, debateId }) {
   useEffect(() => {
     socket.on("peer_disconnecting", () => {
       if (!isStarted) {
-        disconnect();
-        setIsConnected(false);
         setIsPeerLeaveModalOn(true);
-      } else {
         disconnect();
         setIsConnected(false);
+      } else {
+        mergedRecorder?.current?.stop();
         setIsFinishedModalOn(true);
+        disconnect();
+        setIsConnected(false);
       }
     });
   }, [isStarted]);
@@ -542,10 +538,10 @@ export default function RealtimeDebate({ socket, debateId }) {
     }
 
     // Draw
-    if (isPro === "true") {
+    if (isPro) {
       canvasRef?.current?.getContext("2d").drawImage(myVideoRef?.current, 20, 100, 600, 450);
       canvasRef?.current?.getContext("2d").drawImage(peerVideoRef?.current, 660, 100, 600, 450);
-    } else if (isPro === "false") {
+    } else if (!isPro) {
       canvasRef?.current?.getContext("2d").drawImage(peerVideoRef?.current, 20, 100, 600, 450);
       canvasRef?.current?.getContext("2d").drawImage(myVideoRef?.current, 660, 100, 600, 450);
     }
@@ -581,10 +577,10 @@ export default function RealtimeDebate({ socket, debateId }) {
     }
 
     // Draw
-    if (isPro === "true") {
+    if (isPro) {
       const [width, height] = resize(myVideoRef?.current);
       canvasRef?.current?.getContext("2d").drawImage(myVideoRef?.current, 640 - width / 2, 350 - height / 2, width, height);
-    } else if (isPro === "false") {
+    } else if (!isPro) {
       const [width, height] = resize(peerVideoRef?.current);
       canvasRef?.current?.getContext("2d").drawImage(peerVideoRef?.current, 640 - width / 2, 350 - height / 2, width, height);
     }
@@ -620,10 +616,10 @@ export default function RealtimeDebate({ socket, debateId }) {
     }
 
     // Draw
-    if (isPro === "false") {
+    if (!isPro) {
       const [width, height] = resize(myVideoRef?.current);
       canvasRef?.current?.getContext("2d").drawImage(myVideoRef?.current, 640 - width / 2, 350 - height / 2, width, height);
-    } else if (isPro === "true") {
+    } else if (isPro) {
       const [width, height] = resize(peerVideoRef?.current);
       canvasRef?.current?.getContext("2d").drawImage(peerVideoRef?.current, 640 - width / 2, 350 - height / 2, width, height);
     }
@@ -647,8 +643,6 @@ export default function RealtimeDebate({ socket, debateId }) {
   // ---Muted(default)
   useEffect(() => {
     if (isConnected) {
-      //! Audio는 Test용
-      toggleMuteAudio(true);
       toggleMuteVideo(true);
     }
   }, [isConnected]);
@@ -661,9 +655,9 @@ export default function RealtimeDebate({ socket, debateId }) {
       if (myVideoRef?.current) {
         myVideoRef.current.srcObject = screenStream;
 
-        if (isPro === "true") {
+        if (isPro) {
           setIsProScreenOn(true);
-        } else if (isPro === "false") {
+        } else if (!isPro) {
           setIsConScreenOn(true);
         }
 
@@ -676,9 +670,9 @@ export default function RealtimeDebate({ socket, debateId }) {
         if (myVideoRef?.current) {
           myVideoRef.current.srcObject = stream;
 
-          if (isPro === "true") {
+          if (isPro) {
             setIsProScreenOn(false);
-          } else if (isPro === "false") {
+          } else if (!isPro) {
             setIsConScreenOn(false);
           }
 
@@ -764,9 +758,6 @@ export default function RealtimeDebate({ socket, debateId }) {
 
   return (
     <div>
-      <video id="example_video_1" controls preload="auto" width="1600" height="900">
-        <source src="https://debate-ducks-video.s3.ap-northeast-2.amazonaws.com/Does%20Alien%20Exist%3F_2" type="video/webm" />
-      </video>
       <a ref={aRef} download={`${debateInfo.title}_${debateId}`} />
       <Modals
         socket={socket}
