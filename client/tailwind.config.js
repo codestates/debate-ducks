@@ -9,7 +9,9 @@ module.exports = {
       },
       spacing: {
         // padding, margin, width, height
+        10: "0.625rem",
         12: "0.75rem",
+        16: "1rem",
         18: "1.125rem",
         20: "1.25rem",
         24: "1.5rem",
@@ -21,6 +23,7 @@ module.exports = {
         48: "3rem",
         50: "3.125rem",
         52: "3.25rem",
+        53: "3.313rem",
         60: "3.75rem",
         61: "3.813rem",
         70: "4.375rem",
@@ -32,12 +35,15 @@ module.exports = {
         120: "7.5rem",
         130: "8.125rem",
         140: "8.75rem",
+        153: "9.563rem",
         168: "10.5rem",
         169: "10.563rem",
         170: "10.625rem",
         173: "10.813rem",
         176: "11rem",
+        180: "11.25rem",
         192: "12rem",
+        272: "17rem",
         274: "17.125rem",
         304: "19rem",
         320: "20rem",
@@ -63,6 +69,7 @@ module.exports = {
       },
       fontFamily: {
         poppins: ["Poppins"],
+        osDefault: ["-apple-system"],
       },
       fontSize: {
         12: "0.75rem",
