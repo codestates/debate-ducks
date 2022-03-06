@@ -202,7 +202,6 @@ io.on("connection", (socket) => {
     startTimer(data, 60, "debate_closing_con", "debate_finish_pre");
   });
 
-  //! 녹화 종료 및 토론 종료 로직
   socket.on("debate_finish", (data) => {
     socket.to(data.debateId).emit("debate_finish");
   });
