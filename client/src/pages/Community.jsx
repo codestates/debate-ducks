@@ -5,7 +5,6 @@ import useGetAsync from "../hooks/useGetAsync";
 import useInput from "../hooks/useInput";
 import useSelect from "../hooks/useSelect";
 import checkPageValid from "../utils/checkPageValid";
-import CommunityBanner from "../components/board/CommunityBanner";
 import Category from "../components/board/Category";
 import Like from "../components/board/Like";
 import Search from "../components/board/Search";
@@ -38,7 +37,6 @@ export default function Community() {
   return (
     <div>
       <h1>-Community-</h1>
-      <CommunityBanner userId={userId} />
       <Category categories={categories} setCategories={setCategories} list={categoryList} />
       <Like isLiked={isLiked} setIsLiked={setIsLiked} />
       <div>
