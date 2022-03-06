@@ -41,6 +41,12 @@ module.exports = {
       consProfile: {
         type: Sequelize.STRING,
       },
+      prosName: {
+        type: Sequelize.STRING,
+      },
+      consName: {
+        type: Sequelize.STRING,
+      },
       updated_at: {
         type: Sequelize.DATE,
       },
