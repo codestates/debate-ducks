@@ -29,7 +29,8 @@ module.exports = {
           topic: topic,
           cons_id: cons_id,
           consProfile: userInfo.profile,
-          updated_at: new Date(),
+          consName: userInfo.name,
+          updated_at: Date.now(),
         });
 
         res.status(201).json({ data: debateInfo, message: "debate 생성 성공" });
@@ -41,7 +42,8 @@ module.exports = {
           topic: topic,
           pros_id: pros_id,
           prosProfile: userInfo.profile,
-          updated_at: new Date(),
+          prosName: userInfo.name,
+          updated_at: Date.now(),
         });
 
         res.status(201).json({ data: debateInfo, message: "debate 생성 성공" });
@@ -183,6 +185,7 @@ module.exports = {
         {
           pros_id: pros_id,
           prosProfile: userInfo.profile,
+          prosName: userInfo.name,
         },
         {
           where: {
@@ -203,6 +206,7 @@ module.exports = {
         {
           cons_id: cons_id,
           consProfile: userInfo.profile,
+          consName: userInfo.name,
         },
         {
           where: {
