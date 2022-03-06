@@ -87,6 +87,7 @@ module.exports = {
           green: { cce8cc: "#cce8cc" },
           straw: { e5e366: "#e5e366" },
           yellow: { fedd00: "#fedd00" },
+          kakao: { fee500: "#fee500" },
           orange: { ff9425: "#ff9425" },
           gray: {
             eee: "#eeeeee",
