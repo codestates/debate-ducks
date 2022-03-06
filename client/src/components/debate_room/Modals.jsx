@@ -67,13 +67,13 @@ export default function Modals({
       )}
       {!isPeerLeaveModalOn ? null : (
         <div className={modalCSS}>
-          <JustConfirmModal content={{ title: "Finished!", text: "Your opponent has ended the debate. You will be redirected to the debate post.", btn: "OK" }} callback={goToDebate} />
+          <JustConfirmModal content={{ title: "Ended!", text: "Your opponent has ended the debate. You will be redirected to the debate post.", btn: "OK" }} callback={goToDebate} />
         </div>
       )}
       {!isLeaveModalOn ? null : (
         <div className={modalCSS}>
           <ConfirmModal
-            content={{ title: "Finished!", text: "Are you sure you want to leave the debate room?", left: "NO", right: "YES" }}
+            content={{ title: "Ended!", text: "Are you sure you want to leave the debate room?", left: "NO", right: "YES" }}
             cancelCallback={() => {
               setIsLeaveModalOn(false);
             }}

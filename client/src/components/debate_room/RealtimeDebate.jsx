@@ -6,6 +6,7 @@ import { YellowBtn } from "../btn/BaseBtn";
 import Modals from "./Modals";
 import Buttons from "./Buttons";
 import useSetInterval from "../../hooks/useSetInterval";
+import saveVideo from "../../utils/aws";
 import useQuery from "../../hooks/useQuery"; //! 테스트용
 
 RealtimeDebate.propTypes = { socket: PropTypes.object, debateId: PropTypes.string };
@@ -240,8 +241,7 @@ export default function RealtimeDebate({ socket, debateId }) {
       mergedRecorder.current.onstop = () => {
         mergedBlob.current = new Blob(mergedBlobs?.current, { type: "video/webm" });
 
-        //!
-        console.log(mergedBlob?.current);
+        saveVideo(mergedBlob?.current, `${debateInfo.title}_${debateId}`);
 
         mergedUrl.current = window.URL.createObjectURL(mergedBlob?.current);
 
@@ -436,7 +436,7 @@ export default function RealtimeDebate({ socket, debateId }) {
         setIsFinishedModalOn(true);
         disconnect();
         setIsConnected(false);
-      }, 500);
+      }, 1000);
     });
   }, []);
 
@@ -764,6 +764,9 @@ export default function RealtimeDebate({ socket, debateId }) {
 
   return (
     <div>
+      <video id="example_video_1" controls preload="auto" width="1600" height="900">
+        <source src="https://debate-ducks-video.s3.ap-northeast-2.amazonaws.com/Does%20Alien%20Exist%3F_2" type="video/webm" />
+      </video>
       <a ref={aRef} download={`${debateInfo.title}_${debateId}`} />
       <Modals
         socket={socket}
