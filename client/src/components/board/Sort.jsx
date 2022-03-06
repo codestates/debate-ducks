@@ -5,7 +5,6 @@ Sort.propTypes = { sort: PropTypes.object, options: PropTypes.array };
 export default function Sort({ sort, options }) {
   return (
     <div>
-      <h1>-Sort-</h1>
       <OrangeSelect attribute={sort.attribute} options={options} />
     </div>
   );

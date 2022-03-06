@@ -1,27 +1,16 @@
-import { DMYorHM } from "../../utils/formatStrDate";
+// import { DMYorHM } from "../../utils/formatStrDate";
+import DebateBox from "../card/DebateBox";
 
 import PropTypes from "prop-types";
 Debates.propTypes = { debates: PropTypes.object };
 
 export default function Debates({ debates }) {
+  console.log(debates);
   return (
-    <div>
-      <h1>-Debates-</h1>
-      <div>
+    <div className="flex justify-center items-center">
+      <div className="flex flex-wrap w-1200 justify-between">
         {debates.data?.map((debate) => (
-          <div key={debate.debateId}>
-            <div>---</div>
-            <div>{debate.status}</div>
-            <div>{debate.category}</div>
-            <div>{debate.prosName}</div>
-            <div>{debate.consName}</div>
-            <div>{debate.prosProfile}</div>
-            <div>{debate.consProfile}</div>
-            <div>{debate.title}</div>
-            <div>{DMYorHM(debate.date)}</div>
-            <div>{String(debate.likey)}</div>
-            <div>{debate.likeyCnt}</div>
-          </div>
+          <DebateBox key={debate.id} content={debate} />
         ))}
       </div>
     </div>

@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Likeys", {
+    await queryInterface.createTable("likeys", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,28 +10,34 @@ module.exports = {
       },
       user_id: {
         references: {
-          model: "Users",
+          model: "users",
           key: "id",
         },
         type: Sequelize.INTEGER,
+        allowNull: true,
+        onDelete: "cascade",
       },
       column_id: {
         references: {
-          model: "Columns",
+          model: "columns",
           key: "id",
         },
         type: Sequelize.INTEGER,
+        allowNull: true,
+        onDelete: "cascade",
       },
       debate_id: {
         references: {
-          model: "Debates",
+          model: "debates",
           key: "id",
         },
         type: Sequelize.INTEGER,
+        allowNull: true,
+        onDelete: "cascade",
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Likeys");
+    await queryInterface.dropTable("likeys");
   },
 };

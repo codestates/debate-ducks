@@ -12,14 +12,17 @@ module.exports = (sequelize, DataTypes) => {
       models.likey.belongsTo(models.user, {
         foreignKey: "user_id",
         targetKey: "id",
+        onDelete: "cascade",
       });
       models.likey.belongsTo(models.debate, {
         foreignKey: "debate_id",
         targetKey: "id",
+        onDelete: "cascade",
       });
       models.likey.belongsTo(models.column, {
         foreignKey: "column_id",
         targetKey: "id",
+        onDelete: "cascade",
       });
     }
   }

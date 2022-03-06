@@ -12,14 +12,17 @@ module.exports = (sequelize, DataTypes) => {
       models.opinion.belongsTo(models.user, {
         foreignKey: "author_id",
         targetKey: "id",
+        onDelete: "cascade",
       });
       models.opinion.belongsTo(models.debate, {
         foreignKey: "debate_id",
         targetKey: "id",
+        onDelete: "cascade",
       });
       models.opinion.belongsTo(models.column, {
         foreignKey: "column_id",
         targetKey: "id",
+        onDelete: "cascade",
       });
     }
   }
@@ -30,14 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       author_id: DataTypes.INTEGER,
       column_id: DataTypes.INTEGER,
       debate_id: DataTypes.INTEGER,
-      created_at: {
-        type: DataTypes.DATEONLY,
-        defaultValue: DataTypes.NOW,
-      },
-      updated_at: {
-        type: DataTypes.DATEONLY,
-        defaultValue: DataTypes.NOW,
-      },
+      updated_at: DataTypes.DATEONLY,
     },
     {
       sequelize,

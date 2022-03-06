@@ -1,7 +1,7 @@
 "use strict";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Debates", {
+    await queryInterface.createTable("debates", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       topic: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       title: {
         type: Sequelize.STRING,
@@ -29,16 +29,39 @@ module.exports = {
       video: {
         type: Sequelize.STRING,
       },
+      ended_at: {
+        type: Sequelize.DATE,
+      },
+      status: {
+        type: Sequelize.STRING,
+      },
+      prosProfile: {
+        type: Sequelize.STRING,
+      },
+      consProfile: {
+        type: Sequelize.STRING,
+      },
+      prosName: {
+        type: Sequelize.STRING,
+      },
+      consName: {
+        type: Sequelize.STRING,
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+      },
       host_id: {
+        allowNull: true,
         references: {
-          model: "Users",
+          model: "users",
           key: "id",
         },
         type: Sequelize.INTEGER,
+        onDelete: "cascade",
       },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Debates");
+    await queryInterface.dropTable("debates");
   },
 };

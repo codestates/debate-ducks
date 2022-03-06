@@ -1,29 +1,33 @@
-import { useSelector, useDispatch } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { onOffModal } from "../redux/modules/exceedModal";
-import JustConfirmModal from "../components/modal/JustConfirmModal";
-import { OrangeBtn } from "../components/btn/BaseBtn";
+import axios from "axios";
+import { useState } from "react";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import OnGoingDebate from "../components/debate/OnGoingDebate";
+import Voting from "../components/debate/Voting";
+import Completed from "../components/debate/Completed";
+import Loading from "../components/Loading";
 
 export default function Debate() {
-  const { debateId } = useParams();
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const [debate, setDebate] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [deadline, setDeadline] = useState(0);
 
-  const isExceedModalOpen = useSelector((state) => state.exceedModal.isOpen);
-  const closeModal = () => {
-    dispatch(onOffModal(false));
-  };
+  let { debateId } = useParams();
 
-  return (
-    <div>
-      {isExceedModalOpen ? <JustConfirmModal content={{ title: "퇴장", text: "인원이 다 찼습니다.", btn: "확인" }} callback={closeModal} /> : null}
-      <h1>Debate</h1>
-      <OrangeBtn
-        text="Enter"
-        callback={() => {
-          navigate(`/forum/debateroom/${debateId}`);
-        }}
-      />
-    </div>
-  );
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_API_URL}/debate/single/${debateId}`, { withCredentials: true }).then((data) => {
+      const dayOfDeadline = data.data.data.debateInfo.ended_at;
+      if (dayOfDeadline) {
+        const today = new Date();
+        const gap = new Date(dayOfDeadline).getTime() - today.getTime();
+        setDeadline(Math.floor(gap / (1000 * 60 * 60 * 24)) * -1);
+      }
+      console.log(data.data.data);
+      setDebate(data.data.data);
+      setIsLoading(false);
+    });
+  }, []);
+
+  console.log(deadline);
+  return <div>{isLoading ? <Loading /> : !debate?.debateInfo.video ? <OnGoingDebate {...debate} /> : deadline > 0 ? <Voting {...debate} /> : <Completed {...debate} />}</div>;
 }

@@ -12,38 +12,47 @@ module.exports = (sequelize, DataTypes) => {
       models.user.hasMany(models.debate, {
         foreignKey: "host_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.user.hasMany(models.column, {
         foreignKey: "author_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.user.hasMany(models.opinion, {
         foreignKey: "author_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.user.hasMany(models.prep, {
         foreignKey: "author_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.user.hasMany(models.factcheck, {
         foreignKey: "user_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.user.hasMany(models.vote, {
         foreignKey: "voter_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.user.hasMany(models.alarm, {
         foreignKey: "user_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.user.hasMany(models.likey, {
         foreignKey: "user_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
       models.user.hasMany(models.report, {
         foreignKey: "repoter_id",
         sourceKey: "id",
+        onDelete: "cascade",
       });
     }
   }

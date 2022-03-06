@@ -12,16 +12,18 @@ module.exports = (sequelize, DataTypes) => {
       models.prep.belongsTo(models.user, {
         foreignKey: "author_id",
         targetKey: "id",
+        onDelete: "cascade",
       });
       models.prep.belongsTo(models.debate, {
         foreignKey: "debate_id",
         targetKey: "id",
+        onDelete: "cascade",
       });
     }
   }
   Prep.init(
     {
-      contents: DataTypes.STRING,
+      contents: DataTypes.TEXT,
       debate_id: DataTypes.INTEGER,
       author_id: DataTypes.INTEGER,
     },

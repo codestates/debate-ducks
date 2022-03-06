@@ -1,3 +1,4 @@
+import { BlueBtn } from "../btn/BaseBtn";
 import PropTypes from "prop-types";
 Category.propTypes = { categories: PropTypes.array, setCategories: PropTypes.func, list: PropTypes.array };
 
@@ -11,11 +12,11 @@ export default function Category({ categories, setCategories, list }) {
   };
 
   return (
-    <div>
+    <div className="w-960 mx-auto mb-60 flex flex-wrap justify-center">
       {list.map((category, idx) => (
-        <button key={idx} onClick={clickCategory}>
-          {category}
-        </button>
+        <BlueBtn key={idx} onClick={clickCategory} text={category}>
+          {/* {category} */}
+        </BlueBtn>
       ))}
     </div>
   );
