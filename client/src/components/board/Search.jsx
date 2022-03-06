@@ -4,8 +4,7 @@ Search.propTypes = { search: PropTypes.object };
 export default function Search({ search }) {
   return (
     <div>
-      <h1>-Search-</h1>
-      <input {...search.attribute} placeholder="Search" />
+      <input {...search.attribute} placeholder="Search" className="px-24 w-274 h-32 rounded-full border border-solid border-ducks-orange-ff9425" />
     </div>
   );
 }

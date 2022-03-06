@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { BsChevronDoubleLeft, BsChevronDoubleRight, BsChevronLeft, BsChevronRight } from "react-icons/bs";
 Page.propTypes = { page: PropTypes.object, lastPage: PropTypes.number };
 
 export default function Page({ page, lastPage }) {
@@ -9,16 +10,38 @@ export default function Page({ page, lastPage }) {
     }
   };
 
+  const handleFirst = () => {
+    movePage(1);
+    window.scroll({ top: 0, behavior: "smooth" });
+  };
+  const handlePrev = () => {
+    movePage(page.state - 1);
+    window.scroll({ top: 0, behavior: "smooth" });
+  };
+  const handleNext = () => {
+    movePage(page.state + 1);
+    window.scroll({ top: 0, behavior: "smooth" });
+  };
+  const handleLast = () => {
+    movePage(lastPage);
+    window.scroll({ top: 0, behavior: "smooth" });
+  };
+
   return (
-    <div>
-      <h1>-Page-</h1>
-      <div>
-        <input {...page.attribute} placeholder={page.state} /> / {lastPage}
+    <div className="w-410 flex justify-between items-center my-60 mx-auto">
+      <BsChevronDoubleLeft onClick={handleFirst} className="font-bold text-18 cursor-pointer" />
+      <button onClick={handlePrev} className="flex items-center">
+        <BsChevronLeft className="font-bold text-18 mr-2" />
+        prev
+      </button>
+      <div className="bg-ducks-straw-e5e366 h-32 rounded-full px-3 flex justify-center items-center">
+        <input {...page.attribute} placeholder={page.state} className="w-40 mr-1 text-right bg-ducks-straw-e5e366" /> / {lastPage}
       </div>
-      <button onClick={() => movePage(1)}>first</button>
-      <button onClick={() => movePage(page.state - 1)}>next</button>
-      <button onClick={() => movePage(page.state + 1)}>prev</button>
-      <button onClick={() => movePage(lastPage)}>last</button>
+      <button onClick={handleNext} className="flex items-center">
+        next
+        <BsChevronRight className="font-bold text-18 ml-2" />
+      </button>
+      <BsChevronDoubleRight onClick={handleLast} className="font-bold text-18 cursor-pointer" />
     </div>
   );
 }

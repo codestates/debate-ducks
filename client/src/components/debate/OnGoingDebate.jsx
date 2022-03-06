@@ -50,7 +50,8 @@ export default function OnGoingDebate(debate) {
   }
 
   const Background = (debate) => {
-    switch (debate.debateInfo.category) {
+    console.log(debate);
+    switch (debate.debateInfo?.category) {
       case "Politics":
         return (
           <Politics
@@ -66,27 +67,159 @@ export default function OnGoingDebate(debate) {
           />
         );
       case "Society":
-        return <Society {...debate} />;
+        return (
+          <Society
+            debate={debate}
+            isModalOn={isModalOn}
+            toggleModal={toggleModal}
+            debateId={debateId}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            isConfirmOpen={isConfirmOpen}
+            setIsConfirmOpen={setIsConfirmOpen}
+            openModalHandler={openModalHandler}
+          />
+        );
       case "Economics":
-        return <Economics {...debate} />;
+        return (
+          <Economics
+            debate={debate}
+            isModalOn={isModalOn}
+            toggleModal={toggleModal}
+            debateId={debateId}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            isConfirmOpen={isConfirmOpen}
+            setIsConfirmOpen={setIsConfirmOpen}
+            openModalHandler={openModalHandler}
+          />
+        );
       case "Science":
-        return <Science {...debate} />;
+        return (
+          <Science
+            debate={debate}
+            isModalOn={isModalOn}
+            toggleModal={toggleModal}
+            debateId={debateId}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            isConfirmOpen={isConfirmOpen}
+            setIsConfirmOpen={setIsConfirmOpen}
+            openModalHandler={openModalHandler}
+          />
+        );
       case "IT":
-        return <IT {...debate} />;
+        return (
+          <IT
+            debate={debate}
+            isModalOn={isModalOn}
+            toggleModal={toggleModal}
+            debateId={debateId}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            isConfirmOpen={isConfirmOpen}
+            setIsConfirmOpen={setIsConfirmOpen}
+            openModalHandler={openModalHandler}
+          />
+        );
       case "Environment":
-        return <Environment {...debate} />;
+        return (
+          <Environment
+            debate={debate}
+            isModalOn={isModalOn}
+            toggleModal={toggleModal}
+            debateId={debateId}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            isConfirmOpen={isConfirmOpen}
+            setIsConfirmOpen={setIsConfirmOpen}
+            openModalHandler={openModalHandler}
+          />
+        );
       case "Education":
-        return <Education {...debate} />;
+        return (
+          <Education
+            debate={debate}
+            isModalOn={isModalOn}
+            toggleModal={toggleModal}
+            debateId={debateId}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            isConfirmOpen={isConfirmOpen}
+            setIsConfirmOpen={setIsConfirmOpen}
+            openModalHandler={openModalHandler}
+          />
+        );
       case "History":
-        return <History {...debate} />;
+        return (
+          <History
+            debate={debate}
+            isModalOn={isModalOn}
+            toggleModal={toggleModal}
+            debateId={debateId}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            isConfirmOpen={isConfirmOpen}
+            setIsConfirmOpen={setIsConfirmOpen}
+            openModalHandler={openModalHandler}
+          />
+        );
       case "Sports":
-        return <Sports {...debate} />;
+        return (
+          <Sports
+            debate={debate}
+            isModalOn={isModalOn}
+            toggleModal={toggleModal}
+            debateId={debateId}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            isConfirmOpen={isConfirmOpen}
+            setIsConfirmOpen={setIsConfirmOpen}
+            openModalHandler={openModalHandler}
+          />
+        );
       case "Philosophy":
-        return <Philosophy {...debate} />;
+        return (
+          <Philosophy
+            debate={debate}
+            isModalOn={isModalOn}
+            toggleModal={toggleModal}
+            debateId={debateId}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            isConfirmOpen={isConfirmOpen}
+            setIsConfirmOpen={setIsConfirmOpen}
+            openModalHandler={openModalHandler}
+          />
+        );
       case "Culture":
-        return <Culture {...debate} />;
+        return (
+          <Culture
+            debate={debate}
+            isModalOn={isModalOn}
+            toggleModal={toggleModal}
+            debateId={debateId}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            isConfirmOpen={isConfirmOpen}
+            setIsConfirmOpen={setIsConfirmOpen}
+            openModalHandler={openModalHandler}
+          />
+        );
       case "Just For Fun":
-        return <JustForFun {...debate} />;
+        return (
+          <JustForFun
+            debate={debate}
+            isModalOn={isModalOn}
+            toggleModal={toggleModal}
+            debateId={debateId}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+            isConfirmOpen={isConfirmOpen}
+            setIsConfirmOpen={setIsConfirmOpen}
+            openModalHandler={openModalHandler}
+          />
+        );
     }
   };
 
