@@ -22,18 +22,7 @@ function Oauth() {
       .catch((err) => console.log("Oauth err", err));
   }, []);
 
-  return (
-    <>
-      {userInfo?.id ? (
-        <Navigate to="/" />
-      ) : (
-        // <div className="flex justify-center items-center text-ducks-gray-666 font-poppins text-18 m-90 h-18 w-18" viewBox="0 0 24 24">
-        //   Logging In...
-        // </div>
-        <Loading />
-      )}
-    </>
-  );
+  return <>{userInfo?.id ? <Navigate to="/" /> : <Loading />}</>;
 }
 
 export default Oauth;
