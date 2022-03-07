@@ -35,7 +35,7 @@ export default function Page({ page, lastPage }) {
         prev
       </button>
       <div className="bg-ducks-straw-e5e366 h-32 rounded-full px-3 flex justify-center items-center">
-        <input {...page.attribute} placeholder={page.state} className="w-40 mr-1 text-right bg-ducks-straw-e5e366" /> / {lastPage}
+        <input {...page.attribute} placeholder={page.state} className="flex content-center w-40 mr-1 text-right bg-ducks-straw-e5e366 pr-14" />
       </div>
       <button onClick={handleNext} className="flex items-center">
         next
