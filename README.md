@@ -53,4 +53,4 @@
 <br />
   
   
-### ❗️ 자세한 부분들은 프로젝트의 WiKi를 참고 해주세요 :)
+### ❗️ 자세한 부분들은 프로젝트의 [WiKi](https://github.com/codestates/debate-ducks/wiki)를 참고 해주세요 :)
