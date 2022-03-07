@@ -17,7 +17,7 @@ export default function DebateBox({ content }) {
   console.log(content);
 
   return (
-    <div className="w-max border border-solid border-ducks-gray-eee rounded-12 cursor-pointer my-18" onClick={handleClick}>
+    <div className="w-max border border-solid border-ducks-gray-eee rounded-12 cursor-pointer my-18 mx-18 shadow-md hover:shadow-2xl" onClick={handleClick}>
       <DebateBoxBackground category={content.category} />
       <div className="px-48 flex items-center justify-between relative -translate-y-10">
         <div className="flex flex-col justify-center items-center">
@@ -39,7 +39,7 @@ export default function DebateBox({ content }) {
         </div>
       </div>
       <div className="px-20">
-        <div className="w-320 mb-12 text-18 font-bold capitalize relative -translate-y-5">{content.title}</div>
+        <div className="w-320 mb-18 p-24 pt-36 text-18 text-ducks-gray-666 items-center capitalize relative -translate-y-5">{content.title}</div>
         <div className="flex items-center justify-between mb-20">
           {/* <Likey likey={content.likey} likeyCnt={content.likeyCnt} /> */}
           {/* <Voted voted={content.voted} votedCnt={content.votedCnt} /> */}

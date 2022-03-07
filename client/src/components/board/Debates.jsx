@@ -8,7 +8,7 @@ export default function Debates({ debates }) {
   console.log(debates);
   return (
     <div className="flex justify-center items-center">
-      <div className="flex flex-wrap w-1200 justify-between">
+      <div className="flex flex-wrap w-1200 justify-start">
         {debates.data?.map((debate) => (
           <DebateBox key={debate.id} content={debate} />
         ))}

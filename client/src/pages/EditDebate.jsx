@@ -38,7 +38,7 @@ export default function EditDebate() {
   };
 
   //category수정
-  const options = ["Politics", "Society", "Economics", "Science", "IT", "Environment", "Education", "History", "Sports", "Philosophy", "Just For Fun"];
+  const options = ["Politics", "Society", "Economics", "Science", "IT", "Environment", "Education", "History", "Sports", "Philosophy", "ForFun"];
   const sort = useSelect(options[0]);
   // const index = options.indexOf(debateInfo.category);
   // const sort = useSelect(options[index]);

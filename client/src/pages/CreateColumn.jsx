@@ -16,7 +16,7 @@ export default function CreateColumn() {
   const [contents, setContents] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const options = ["Politics", "Society", "Economics", "Science", "IT", "Environment", "Education", "History", "Sports", "Philosophy", "Just For Fun"];
+  const options = ["Politics", "Society", "Economics", "Science", "IT", "Environment", "Education", "History", "Sports", "Philosophy", "ForFun"];
   const sort = useSelect(options[0]);
 
   const titleInput = (e) => {

@@ -11,6 +11,7 @@ module.exports = {
         // padding, margin, width, height
         10: "0.625rem",
         12: "0.75rem",
+        14: "0.875rem",
         16: "1rem",
         18: "1.125rem",
         20: "1.25rem",
@@ -76,6 +77,7 @@ module.exports = {
         14: "0.875rem",
         18: "1.125rem",
         24: "1.5rem",
+        32: "2rem",
         36: "2.25rem",
         48: "3rem",
         192: "12rem",
@@ -112,6 +114,7 @@ module.exports = {
         strawduck: "url('../public/images/profile-theme-straw.png')",
         grayduck: "url('../public/images/profile-theme-gray.png')",
         main: "url('../public/images/main.jpg')",
+        mainbottom: "url('../public/images/main-bottom.jpb')",
         forum: "url('../public/images/forum.jpg')",
         politics: "url('../public/images/politics.jpg')",
         society: "url('../public/images/society.jpg')",
