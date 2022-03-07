@@ -41,7 +41,7 @@ export default function Debate() {
           <div className="flex flex-col items-center">
             <div className="w-screen h-410 relative">
               <HiOutlineDotsVertical className="w-60 h-80 p-3 absolute top-0 right-0 text-white text-32 cursor-pointer z-20" />
-              <h1 className="font-poppins font-bold text-48 text-white z-20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">{debate.debateInfo.title}</h1>
+              <h1 className="font-poppins font-bold text-48 text-white z-20 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">{debate.debateInfo.title}</h1>
               <div className="w-full h-410 absolute bg-ducks-blue-6667ab z-10 mix-blend-exclusion"></div>
               <img className="object-cover object-center w-screen h-410" src={`/images/${debate.debateInfo.category.toLowerCase()}.jpg`} alt={debate.debateInfo.category} />
             </div>
@@ -107,7 +107,7 @@ export default function Debate() {
             {debate.debateInfo.status === "ongoing" ? (
               <OnGoingDebate debate={debate} isLoading={isLoading} setDebate={setDebate} />
             ) : debate.debateInfo.status === "voting" ? (
-              <Voting videoUrl={debate.debateInfo.video} />
+              <Voting debate={debate} />
             ) : debate.debateInfo.status === "completed" ? (
               <Completed />
             ) : null}

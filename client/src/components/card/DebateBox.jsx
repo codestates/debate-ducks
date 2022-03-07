@@ -39,7 +39,7 @@ export default function DebateBox({ content }) {
         </div>
       </div>
       <div className="px-20">
-        <div className="w-320 mb-18 p-24 pt-36 text-18 text-ducks-gray-666 items-center capitalize relative -translate-y-5">{content.title}</div>
+        <div className="w-320 mb-18 p-24 pt-36 text-18 text-ducks-gray-666 items-center capitalize relative -translate-y-5 text-center overflow-ellipsis">{content.title}</div>
         <div className="flex items-center justify-between mb-20">
           {/* <Likey likey={content.likey} likeyCnt={content.likeyCnt} /> */}
           {/* <Voted voted={content.voted} votedCnt={content.votedCnt} /> */}

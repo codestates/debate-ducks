@@ -91,7 +91,7 @@ export default function OnGoingDebate({ debate, isLoading, setDebate }) {
           <div className="w-960 h-0 border-solid border-b border-ducks-gray-eee"></div>
           <div className="my-60 text-center">
             <h1 className="font-bold text-24 mb-40">Topic</h1>
-            <div className="w-960 text-justify">{debate.debateInfo.topic}</div>
+            <div className="w-960 text-center">{debate.debateInfo.topic}</div>
           </div>
         </div>
       )}
