@@ -12,28 +12,26 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 export default function Debate() {
   const [debate, setDebate] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [deadline, setDeadline] = useState(0);
+  // const [deadline, setDeadline] = useState(0);
 
   let { debateId } = useParams();
 
-  console.log("useEffect outer", debate);
   useEffect(() => {
-    console.log("useEffect inner", debate);
     axios.get(`${process.env.REACT_APP_API_URL}/debate/single/${debateId}`, { withCredentials: true }).then((data) => {
-      const dayOfDeadline = data.data.data.debateInfo.ended_at;
-      if (dayOfDeadline) {
-        const today = new Date();
-        const gap = new Date(dayOfDeadline).getTime() - today.getTime();
-        setDeadline(Math.floor(gap / (1000 * 60 * 60 * 24)) * -1);
-      }
-      console.log(data.data.data);
+      // const dayOfDeadline = data.data.data.debateInfo.ended_at;
+      // if (dayOfDeadline) {
+      //   const today = new Date();
+      //   const gap = new Date(dayOfDeadline).getTime() - today.getTime();
+      //   setDeadline(Math.floor(gap / (1000 * 60 * 60 * 24)) * -1);
+      // }
+      // console.log(data.data.data);
       setDebate(data.data.data);
       setIsLoading(false);
     });
   }, [debate?.prosProfile, debate?.consProfile]);
 
-  console.log(deadline);
-  console.log("🔥🔥🔥🔥🔥🔥 its debate ", debate);
+  console.log(debate.debateInfo?.video);
+
   return (
     <div>
       {isLoading ? (
@@ -109,7 +107,7 @@ export default function Debate() {
             {debate.debateInfo.status === "ongoing" ? (
               <OnGoingDebate debate={debate} isLoading={isLoading} setDebate={setDebate} />
             ) : debate.debateInfo.status === "voting" ? (
-              <Voting />
+              <Voting videoUrl={debate.debateInfo.video} />
             ) : debate.debateInfo.status === "completed" ? (
               <Completed />
             ) : null}
@@ -118,19 +116,4 @@ export default function Debate() {
       )}
     </div>
   );
-
-  // <>
-
-  //   <div>
-  //     {isLoading ? (
-  //       <Loading />
-  //     ) : debate.debateInfo.status === "ongoing" ? (
-  //       <OnGoingDebate {...debate} />
-  //     ) : debate.debateInfo.status === "voting" ? (
-  //       <Voting {...debate} />
-  //     ) : debate.debateInfo.status === "completed" ? (
-  //       <Completed {...debate} />
-  //     ) : null}
-  //   </div>
-  // </>
 }
