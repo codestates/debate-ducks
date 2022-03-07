@@ -94,7 +94,7 @@ export default function Main() {
         </h1>
         {/* <p className="w-410 text-center mb-36">With Debate Ducks, you can take on issues big or small, build consensus on a topic, and explore every aspect of a debate.</p> */}
         <p className="w-410 text-center mb-36">토론을 시작할 준비가 되셨나요?</p>
-        <StrawBtn text="make room for debate" callback={() => navigate("/forum/create")}></StrawBtn>
+        <StrawBtn text="make room for debate" callback={() => navigate("/forum")}></StrawBtn>
         <div data-aos="fade-up" data-aos-delay="1000" data-aos-anchor="#last" className="text-ducks-blue-6667ab text-36 absolute bottom-40 right-40 cursor-pointer">
           <BsArrowUpCircle onClick={() => window.scroll({ top: 0, behavior: "smooth" })} />
         </div>

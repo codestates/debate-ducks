@@ -782,8 +782,8 @@ export default function RealtimeDebate({ socket, debateId, debateInfo, isPro }) 
       </div>
       <div className="max-w-7xl min-w-max m-auto relative pt-1 pb-1">
         <div className="flex justify-between items-center">
-          <div className="w-14 flex justify-start">
-            <div className="bg-logo bg-cover w-46 h-40 mb-2"></div>
+          <div className="w-46 flex justify-start">
+            <div className="bg-logo bg-cover w-80 h-40 mb-2"></div>
           </div>
           <div className="font-poppins font-bold text-24">{debateInfo.title}</div>
           <div className="w-14 flex justify-end">
