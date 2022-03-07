@@ -8,3 +8,4 @@ export default function Loading() {
     </div>
   );
 }
+//bg-biglogo bg-cover bg-center w-112 h-98 animate-bounce -m-24
