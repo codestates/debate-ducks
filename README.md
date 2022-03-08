@@ -1,5 +1,8 @@
 # 🐣 DEBATE DUCKS
 
+- [Notion](https://www.notion.so/2-SuSang-YuHee-Debate-Ducks-142843d8e3524de2ae72fa2b66fc54f2)
+- [Demo](https://debate-ducks.click/)
+
 ![white-debate-ducks-logo](https://user-images.githubusercontent.com/25292654/153126251-52ffb15e-9330-4ed8-8cba-d2d60192e3a6.png)
 
 > 키보드 배틀은 그만! 실시간 토론 플랫폼 DEBATE DUCKS
@@ -9,6 +12,10 @@
 - 화면공유가 가능한 영상 토론 공간!
 - 체계적인 토론 진행 방식 제공!
 - 영상으로 남는 나의 토론!
+
+<br/>
+
+![ezgif com-gif-maker (10)](https://user-images.githubusercontent.com/84524514/157165010-9eb69e44-fe59-4738-9c00-b288b16eb62b.gif)
 
 
 # 👋 TEAM MEMBER
