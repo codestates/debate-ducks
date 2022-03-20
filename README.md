@@ -1,6 +1,6 @@
 # 🐣 DEBATE DUCKS
 
-- [Notion](https://www.notion.so/2-SuSang-YuHee-Debate-Ducks-142843d8e3524de2ae72fa2b66fc54f2)
+- [Notion](https://codestates.notion.site/2-SuSang-YuHee-Debate-Ducks-142843d8e3524de2ae72fa2b66fc54f2)
 - [Demo](https://debate-ducks.click/)
 
 ![white-debate-ducks-logo](https://user-images.githubusercontent.com/25292654/153126251-52ffb15e-9330-4ed8-8cba-d2d60192e3a6.png)
