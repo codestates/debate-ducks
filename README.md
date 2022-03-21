@@ -1,56 +1,34 @@
-# Debate-Ducks
+# 🐣 DEBATE DUCKS
 
-## 실시간 소통 기반 토론 플랫폼
-
-<br />
+- [Notion](https://codestates.notion.site/2-SuSang-YuHee-Debate-Ducks-142843d8e3524de2ae72fa2b66fc54f2)
+- [Demo](https://debate-ducks.click/)
 
 ![white-debate-ducks-logo](https://user-images.githubusercontent.com/25292654/153126251-52ffb15e-9330-4ed8-8cba-d2d60192e3a6.png)
 
-<br />
-<br />
+> 키보드 배틀은 그만! 실시간 토론 플랫폼 DEBATE DUCKS
 
-# 🤖 우리가 사용한 스택을 나열해 보았어요  :>
-<br />
+- 언제 어디서나 쉬운 토론 참여!
+- 다양한 토론 주제!
+- 화면공유가 가능한 영상 토론 공간!
+- 체계적인 토론 진행 방식 제공!
+- 영상으로 남는 나의 토론!
 
-## FRONT
+<br/>
 
-<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=black"/>
-<img src="https://img.shields.io/badge/CSS-1572B6?style=for-the-badge&logo=CSS3&logoColor=white"/>
-<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=JavaScript&logoColor=black"/> 
-<img src="https://img.shields.io/badge/Tailwind-06B6D4?style=for-the-badge&logo=Tailwind CSS&logoColor=white"/>
-<img src="https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=Figma&logoColor=white"/>
-<img src="https://img.shields.io/badge/Redux-764ABC?style=for-the-badge&logo=Redux&logoColor=white"/>
-<img src="https://img.shields.io/badge/Axios-2480E6?style=for-the-badge&logo=A-Frame&logoColor=white"/>
+![ezgif com-gif-maker (10)](https://user-images.githubusercontent.com/84524514/157165010-9eb69e44-fe59-4738-9c00-b288b16eb62b.gif)
 
-<br />
 
-## BACK
-
-<img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white"/>
-<img src="https://img.shields.io/badge/express.js-000000?style=for-the-badge&logo=express&logoColor=white"/>
-<img src="https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=Sequelize&logoColor=white"/>
-<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white"/>
-<img src="https://img.shields.io/badge/Amazon EC2-232F3E?style=for-the-badge&logo=Amazon AWS&logoColor=white"/>
-<img src="https://img.shields.io/badge/Amazon RDS-4053D6?style=for-the-badge&logo=Amazon AWS&logoColor=white"/>
-<img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white"/>
-
-![Debate-ducks_1](https://user-images.githubusercontent.com/25292654/153828811-b22a5533-83b8-4a1f-87c9-be5a88c79024.png)
+# 👋 TEAM MEMBER
 
 <br />
 
-
-# 👋 우리 팀을 소개합니다
-
-<br />
-
-|김수빈|정유찬|김강희나|박상봉|
+|박상봉|김강희나|김수빈|정유찬|
 |:-:|:-:|:-:|:-:|
-|<img src="https://user-images.githubusercontent.com/75408145/151467902-d751e7c0-dfe0-41d2-b176-425704490f81.png" width="100" height="100">|<img src="https://user-images.githubusercontent.com/75408145/151467949-e1f0306e-df80-4273-bb1d-9f971e78b02a.png" width="100" height="100">|<img src="https://user-images.githubusercontent.com/75408145/151467971-a8accc5d-991d-4bd9-b0b8-1def663c691b.png" width="100" height="100">|<img src="https://user-images.githubusercontent.com/75408145/151467867-77c913d6-5f9e-4505-b9ea-04ced30b3f6d.png" width="100" height="100">|
-|crew|crew|crew|captain|
-|Front|Front|Front|Back|
-|[GitHub](https://github.com/strawberryoolongtea)|[GitHub](https://github.com/YuchanJeong)|[GitHub](https://github.com/jenjenhub)|[GitHub](https://github.com/ParkSangBong)|
+|<img src="https://user-images.githubusercontent.com/75408145/151467867-77c913d6-5f9e-4505-b9ea-04ced30b3f6d.png" width="100" height="100">|<img src="https://user-images.githubusercontent.com/75408145/151467971-a8accc5d-991d-4bd9-b0b8-1def663c691b.png" width="100" height="100">|<img src="https://user-images.githubusercontent.com/75408145/151467902-d751e7c0-dfe0-41d2-b176-425704490f81.png" width="100" height="100">|<img src="https://user-images.githubusercontent.com/75408145/151467949-e1f0306e-df80-4273-bb1d-9f971e78b02a.png" width="100" height="100">|
+|Captain|Crew|Crew|Crew|
+|Back|Front|Front|Full|
+|[GitHub](https://github.com/ParkSangBong)|[GitHub](https://github.com/jenjenhub)|[GitHub](https://github.com/strawberryoolongtea)|[GitHub](https://github.com/YuchanJeong)|
   
 <br />
   
-  
-### ❗️ 자세한 부분들은 프로젝트의 WiKi를 참고 해주세요 :)
+### ❗️ 자세한 내용은 프로젝트의 [WiKi](https://github.com/codestates/debate-ducks/wiki)를 참고 해주세요 :)
