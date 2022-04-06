@@ -28,7 +28,7 @@ export default function Main() {
         <div className="w-960 flex justify-between items-center">
           <div className="w-274">
             <h1 data-aos="fade-up" data-aos-delay="200" className="text-36 font-bold capitalize mb-24">
-              Start with the basic topics
+              Choose your topic, create a debate
             </h1>
             <div data-aos="fade-up" data-aos-delay="250">
               <p className="mb-48">
@@ -40,22 +40,21 @@ export default function Main() {
                 <br />
                 토론을 시작하세요
               </p>
-              {/* <YellowBtn text="Go" /> */}
             </div>
           </div>
           <div data-aos="fade-left" className="w-560 h-368 shadow-xl rounded-20 overflow-hidden">
-            <img src="https://picsum.photos/800/600" alt="pics" />
+            <img src="/images/forum-1.gif" alt="forum" />
           </div>
         </div>
       </div>
       <div className={`${common} text-right`}>
         <div className="w-960 flex justify-between items-center">
           <div data-aos="fade-right" className="w-560 h-368 shadow-xl rounded-20 overflow-hidden">
-            <img src="https://picsum.photos/800/600" alt="pics" />
+            <img src="/images/main-debateroom.gif" alt="pics" />
           </div>
           <div className="w-274">
             <h1 data-aos="fade-up" data-aos-delay="200" className="text-36 font-bold capitalize mb-24">
-              real pleasure of real-time
+              start debating in real-time
             </h1>
             <div data-aos="fade-up" data-aos-delay="250">
               <p className="mb-48">
@@ -67,7 +66,6 @@ export default function Main() {
                 <br />
                 화면에 공유할 수 있어요
               </p>
-              {/* <YellowBtn text="Go" /> */}
             </div>
           </div>
         </div>
@@ -76,15 +74,18 @@ export default function Main() {
         <div className="w-960 flex justify-between items-center">
           <div className="w-274">
             <h1 data-aos="fade-up" data-aos-delay="200" className="text-36 font-bold capitalize mb-24">
-              lorem ipsum dolor sit amet
+              watch debate videos
             </h1>
             <div data-aos="fade-up" data-aos-delay="250">
-              <p className="mb-48">토론 </p>
-              {/* <YellowBtn text="Go" /> */}
+              <p className="mb-48">
+                토론을 종료하고
+                <br />
+                완성된 비디오를 확인해 보세요
+              </p>
             </div>
           </div>
           <div data-aos="fade-left" className="w-560 h-368 shadow-xl rounded-20 overflow-hidden">
-            <img src="https://picsum.photos/800/600" alt="pics" />
+            <img src="/images/main-video.gif" alt="video" />
           </div>
         </div>
       </div>
@@ -94,7 +95,7 @@ export default function Main() {
         </h1>
         {/* <p className="w-410 text-center mb-36">With Debate Ducks, you can take on issues big or small, build consensus on a topic, and explore every aspect of a debate.</p> */}
         <p className="w-410 text-center mb-36">토론을 시작할 준비가 되셨나요?</p>
-        <StrawBtn text="make room for debate" callback={() => navigate("/forum")}></StrawBtn>
+        <StrawBtn text="join debate" callback={() => navigate("/forum")}></StrawBtn>
         <div data-aos="fade-up" data-aos-delay="1000" data-aos-anchor="#last" className="text-ducks-blue-6667ab text-36 absolute bottom-40 right-40 cursor-pointer">
           <BsArrowUpCircle onClick={() => window.scroll({ top: 0, behavior: "smooth" })} />
         </div>
